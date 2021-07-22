@@ -118,7 +118,7 @@ function Login() {
                 <Col>
                     <StyledCard>
                         <div className="card-header">
-                            <h2>ATTENDANCE SYSTEM</h2>
+                            <h2>Sistem Presensi</h2>
                         </div>
                         <Divider/>
                         <div>
@@ -140,18 +140,18 @@ function Login() {
                                     <Alert className="alert" message={messages.success} type="success"/>
                                 ) : null}
                                 <Form.Item
-                                    name="email"
+                                    name="username"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Masukkan email Anda',
+                                            message: 'Masukkan Username Anda',
                                         },
                                     ]}
                                 >
                                     <Input
                                         prefix={<UserOutlined className="site-form-item-icon"/>}
                                         className="input"
-                                        placeholder="Email"
+                                        placeholder="Username"
                                     />
                                 </Form.Item>
                                 <Form.Item
@@ -175,10 +175,6 @@ function Login() {
                                         Masuk
                                     </Button>
                                 </Form.Item>
-                                <Space align="center">
-                                    <Text>Belum memiliki akun? </Text>
-                                    <Link to={registerPath}>Daftar di sini!</Link>
-                                </Space>
                             </Form>
                         </div>
                     </StyledCard>
