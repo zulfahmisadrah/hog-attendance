@@ -1,4 +1,4 @@
-export const BASE_URL = "http://192.168.1.15:8080/";
+export const BASE_URL = "http://localhost:8000/";
 export const BASE_API_URL = `${BASE_URL}api/`;
 export const BASE_API_AUTH_URL = `${BASE_URL}auth/`;
 
