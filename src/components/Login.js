@@ -104,9 +104,6 @@ function Login() {
         })
     }
 
-    const resendEmailVerification = (user) => {
-    }
-
     const onFinish = (values) => {
         setIsLoading(true);
         loginUser(values)
