@@ -14,9 +14,8 @@ module.exports = override(
         lessOptions: {
             javascriptEnabled: true,
             modifyVars: {
-                "@primary-color": '#1890ff',
-                '@link-color': '#d09228',
-                '@layout-header-background': '#1890ff',
+                "@primary-color": '#0747A6',
+                '@layout-header-background': '#0747A6',
                 '@menu-dark-item-active-bg': '#aad09228',
                 '@form-item-margin-bottom': '18px',
                 '@primary-1': '#fffcf0',
