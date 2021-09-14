@@ -29,25 +29,41 @@ export const teacherPathTitle = {
 
 export const adminPath = {
     dashboard: `${adminRootPath}dashboard`,
+    courses: `${adminRootPath}courses`,
     meetings: `${adminRootPath}meetings`,
     attendances: `${adminRootPath}attendances`,
-    teachers: `${adminRootPath}teachers`,
+    datasets: `${adminRootPath}datasets`,
+    semesters: `${adminRootPath}semesters`,
+    schedules: `${adminRootPath}schedules`,
+    students: `${adminRootPath}students`,
+    lecturers: `${adminRootPath}lecturers`,
+    faculties: `${adminRootPath}faculties`,
+    departments: `${adminRootPath}departments`,
     users: `${adminRootPath}users`,
+    roles: `${adminRootPath}roles`,
 }
 
 export const pathName = {
     [adminRootPath]: 'Dashboard',
     [adminPath.dashboard]: 'Dashboard',
+    [adminPath.courses]: 'Mata Kuliah',
     [adminPath.meetings]: 'Pertemuan',
     [adminPath.attendances]: 'Kehadiran',
-    [adminPath.teachers]: 'Pengajar',
-    [adminPath.users]: 'User'
+    [adminPath.datasets]: 'Dataset',
+    [adminPath.semesters]: 'Semester',
+    [adminPath.schedules]: 'Jadwal',
+    [adminPath.students]: 'Mahasiswa',
+    [adminPath.lecturers]: 'Dosen',
+    [adminPath.faculties]: 'Fakultas',
+    [adminPath.departments]: 'Departemen',
+    [adminPath.users]: 'User',
+    [adminPath.roles]: 'Role'
 }
 
-export const pathGroupFirstMenu = [adminPath.meetings, adminPath.teachers];
-export const pathSuperAdmin = [adminPath.users];
+export const pathGroupFirstMenu = [adminPath.courses, adminPath.datasets];
+export const pathSuperAdmin = [adminPath.users, adminPath.roles];
 
 export const pathGroupName = {
-    [pathGroupFirstMenu[0]]: 'DATA',
-    [pathGroupFirstMenu[1]]: 'MANAGE'
+    [pathGroupFirstMenu[0]]: 'KULIAH',
+    [pathGroupFirstMenu[1]]: 'DATA'
 }
