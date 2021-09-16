@@ -4,8 +4,12 @@ export const BASE_API_AUTH_URL = `${BASE_URL}api/auth/`;
 export const APP_NAME = "NEO ATTENDANCE";
 
 export const listLetters = ['a', 'b', 'c', 'd', 'e'];
+export const dateFormat = "YYYY-MM-DD";
+export const timeFormat = "HH:mm:ss";
 export const dateTimeFormat = "YYYY/MM/DD HH:mm:ss Z";
 export const scheduleFormat = "DD/MM/YYYY HH:mm Z";
+export const dateTextFormat = "dddd, DD MMMM YYYY";
+export const timeTextFormat = "HH:mm";
 export const dateTimeTextFormat = "dddd, DD MMMM YYYY HH:mm";
 export const dateTimeISOFormat = "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
 export const dateTimeIdFormat = "YYYYMMDD_HHmmss";
