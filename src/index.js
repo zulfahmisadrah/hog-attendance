@@ -40,12 +40,13 @@ if (token) {
     setAuthToken(token)
     fetchUserData().then(res => {
         const user = res.data
-        if (user.emailVerified) {
+        if (user.is_active) {
+            const userRole = user.roles[0].id
             const payload = {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role.id
+                role: userRole
             }
             store.dispatch({type: "SET_LOGIN", payload: payload})
             render()
