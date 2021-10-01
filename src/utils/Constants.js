@@ -37,10 +37,10 @@ export const attendanceStatus = {
 }
 
 export const listRole = {
-    1: "Superadmin",
+    1: "Superuser",
     2: "Admin",
-    3: "Teacher",
-    4: "Student"
+    3: "Dosen",
+    4: "Mahasiswa"
 }
 
 export const listEducation = {
