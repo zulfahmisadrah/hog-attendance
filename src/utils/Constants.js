@@ -6,7 +6,7 @@ export const APP_NAME = "NEO ATTENDANCE";
 export const listLetters = ['a', 'b', 'c', 'd', 'e'];
 export const dateFormat = "YYYY-MM-DD";
 export const timeFormat = "HH:mm:ss";
-export const dateTimeFormat = "YYYY/MM/DD HH:mm:ss Z";
+export const dateTimeFormat = "YYYY-MM-DD HH:mm:ss Z";
 export const scheduleFormat = "DD/MM/YYYY HH:mm Z";
 export const dateTextFormat = "dddd, DD MMMM YYYY";
 export const timeTextFormat = "HH:mm";
@@ -47,8 +47,30 @@ export const listEducation = {
     Sarjana: "Sarjana",
     Magister: "Magister",
     Doktor: "Doktor",
-    SMA: "SMA",
-    SMP: "SMP",
+    Professor: "Professor",
+}
+
+export const CourseType = {
+    WAJIB: "Wajib",
+    PILIHAN: "Pilihan"
+}
+
+export const DataType = {
+    TEXT: "text",
+    DATETIME: "datetime",
+    DATE: "date",
+    TIME: "time",
+    IMAGE: "image"
+}
+
+export const DayOfWeek = {
+    1: "Senin",
+    2: "Selasa",
+    3: "Rabu",
+    4: "Kamis",
+    5: "Jumat",
+    6: "Sabtu",
+    7: "Minggu"
 }
 
 export const userProgram = ["Executive", "Medical", "Prestige", "Karantina", "Program Khusus Kedokteran", "Kedinasan STAN", "Kedinasan CAT Umum", "Lainnya"]
