@@ -2,6 +2,7 @@ import {
     dateTimeFormat,
     dateTimeIdFormat,
     dateTimeTextFormat,
+    CourseType,
     listEducation,
     listRole,
     listTopic
@@ -44,6 +45,12 @@ export const listEducationOptions = Object.keys(listEducation).map(key => ({
 export const listSubjectOptions = Object.keys(listTopic).map(key => ({
         label: key,
         value: key
+    })
+)
+
+export const listCourseTypeOptions = Object.values(CourseType).map(value => ({
+        label: value,
+        value: value
     })
 )
 
