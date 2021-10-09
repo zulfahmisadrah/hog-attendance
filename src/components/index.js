@@ -9,5 +9,9 @@ export {default as Header} from "./Header.js";
 export {default as Sidebar} from "./Sidebar.js";
 export {default as Page404} from "./Page404.js";
 export {default as Camera} from "./Camera.js";
+export {ColumnNumber} from "./ColumnNumber";
+export {ColumnCreatedAt} from "./ColumnCreatedAt";
+export {ColumnActions} from "./ColumnActions";
+export {ColumnActionsWithResetPassword} from "./ColumnActionsWithResetPassword";
 
 
