@@ -1,23 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Input, Row, Space, Table, Typography} from "antd";
+import {Col, Row, Table} from "antd";
 import PropTypes from "prop-types";
 import {
-    searchData, showDataAddedNotification,
+    formatMomentToString,
+    getDateTimeFromString,
+    showDataAddedNotification,
     showDataDeletedNotification,
     showDataUpdatedNotification,
 } from "../../../../utils/Commons";
 import {_columns} from "./_columns";
-import {ColumnNumber, ColumnCreatedAt, ColumnActions, ButtonAddData, SearchField} from "../../../../components";
+import {ColumnCreatedAt, ColumnActions, ButtonAddData} from "../../../../components";
 import {_detailRows} from "./_detailRows";
 import {ScheduleService} from "../../../../services/services";
 import {ScheduleFormModal} from "./ScheduleFormModal";
+import {timeFormat} from "../../../../utils/Constants";
 
 ScheduleTable.propTypes = {
     isSelectDataMode: PropTypes.bool,
     onDataSelected: PropTypes.func
 }
-
-const initialVisible = {create: false, edit: false}
 
 export function ScheduleTable() {
 
@@ -41,14 +42,49 @@ export function ScheduleTable() {
         fetchData();
     }, []);
 
-    const onCreateFinished = () => {
-        showDataAddedNotification()
-        fetchData()
+    const handleInitFormData = (formData) => {
+        formData.day_of_week = formData.day_of_week.toString();
+        formData.start_time = getDateTimeFromString(formData.start_time, timeFormat);
+        formData.end_time = getDateTimeFromString(formData.end_time, timeFormat);
     }
 
-    const onUpdateFinished = () => {
-        showDataUpdatedNotification()
-        fetchData()
+    const handleSubmit = (values, onSuccess, onError) => {
+        values.day_of_week = parseInt(values.day_of_week);
+        values.start_time = formatMomentToString(values.start_time, timeFormat);
+        values.end_time = formatMomentToString(values.end_time, timeFormat);
+        if (values.id) {
+            updateSchedule(values, onSuccess, onError);
+        } else {
+            createSchedule(values, onSuccess, onError);
+        }
+    }
+
+    const createSchedule = (formData, onSuccess, onError) => {
+        scheduleService.createData({
+            data: formData,
+            onSuccess: (newData) => {
+                onSuccess();
+                showDataAddedNotification();
+                fetchData();
+            },
+            onError: (error) => {
+                onError(error);
+            },
+        })
+    }
+
+    const updateSchedule = (formData, onSuccess, onError) => {
+        scheduleService.updateData({
+            data: formData,
+            onSuccess: (updatedData) => {
+                onSuccess();
+                showDataUpdatedNotification();
+                fetchData();
+            },
+            onError: (error) => {
+                onError(error);
+            },
+        })
     }
 
     const deleteData = (id) => {
@@ -67,7 +103,8 @@ export function ScheduleTable() {
         ColumnActions({
             detailRows: _detailRows,
             formModal: ScheduleFormModal,
-            onUpdateFinished: onUpdateFinished,
+            onInitFormData: handleInitFormData,
+            onUpdate: handleSubmit,
             onConfirmDelete: deleteData
         })
     ]
@@ -85,7 +122,7 @@ export function ScheduleTable() {
         <Row gutter={[0, 16]}>
             <Col span={24}>
                 <Row justify="end">
-                    <ButtonAddData formModal={ScheduleFormModal} onFinish={onCreateFinished}/>
+                    <ButtonAddData formModal={ScheduleFormModal} onSubmit={handleSubmit}/>
                 </Row>
             </Col>
             <Col span={24}>

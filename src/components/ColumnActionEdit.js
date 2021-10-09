@@ -5,23 +5,20 @@ import {COLOR_ACCENT} from "../utils/colors";
 import PropTypes from "prop-types";
 
 ColumnActionEdit.propTypes = {
+    title: PropTypes.string,
     formModal: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
-    onFinish: PropTypes.func.isRequired
+    onInitFormData: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
 export function ColumnActionEdit(props) {
-    const {formModal: FormModal, data, onFinish} = props
+    const {title, formModal: FormModal, data, onInitFormData, onSubmit} = props
 
     const [visible, setVisible] = useState(false);
 
     const showModal = () => setVisible(true);
     const closeModal = () => setVisible(false);
-
-    const onUpdateFinished = () => {
-        closeModal()
-        onFinish()
-    }
 
     return (
         <>
@@ -32,10 +29,12 @@ export function ColumnActionEdit(props) {
             {visible && (
                 <FormModal
                     data={data}
-                    title="Edit Data"
+                    title={title || "Edit Data"}
                     visible={visible}
                     onCancel={closeModal}
-                    onFinish={onUpdateFinished} />
+                    onInitFormData={onInitFormData}
+                    onSubmit={onSubmit}
+                    onFinish={closeModal} />
             )}
         </>
     )

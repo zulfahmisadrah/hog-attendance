@@ -3,32 +3,29 @@ import {Button} from "antd";
 import PropTypes from "prop-types";
 
 ButtonAddData.propTypes = {
+    title: PropTypes.string,
     formModal: PropTypes.func.isRequired,
-    onFinish: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired
 }
 
 export function ButtonAddData(props) {
-    const {formModal: FormModal, onFinish} = props;
+    const {title, formModal: FormModal, onSubmit} = props;
 
     const [visible, setVisible] = useState(false);
 
     const showModal = () => setVisible(true);
     const closeModal = () => setVisible(false);
 
-    const onCreateFinished = () => {
-        closeModal();
-        onFinish();
-    }
-
     return (
         <>
             <Button type="primary" onClick={showModal}>Tambah Data</Button>
             {visible && (
                 <FormModal
-                    title="Tambah Data"
+                    title={title || "Tambah Data"}
                     visible={visible}
                     onCancel={closeModal}
-                    onFinish={onCreateFinished} />
+                    onSubmit={onSubmit}
+                    onFinish={closeModal} />
             )}
         </>
     )
