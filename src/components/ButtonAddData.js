@@ -1,5 +1,11 @@
 import React, {useState} from "react";
 import {Button} from "antd";
+import PropTypes from "prop-types";
+
+ButtonAddData.propTypes = {
+    formModal: PropTypes.func.isRequired,
+    onFinish: PropTypes.func.isRequired
+}
 
 export function ButtonAddData(props) {
     const {formModal: FormModal, onFinish} = props;
@@ -10,8 +16,8 @@ export function ButtonAddData(props) {
     const closeModal = () => setVisible(false);
 
     const onCreateFinished = () => {
-        closeModal()
-        onFinish()
+        closeModal();
+        onFinish();
     }
 
     return (

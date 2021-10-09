@@ -13,5 +13,6 @@ export {ColumnNumber} from "./ColumnNumber";
 export {ColumnCreatedAt} from "./ColumnCreatedAt";
 export {ColumnActions} from "./ColumnActions";
 export {ColumnActionsWithResetPassword} from "./ColumnActionsWithResetPassword";
+export {ButtonAddData} from "./ButtonAddData";
 
 
