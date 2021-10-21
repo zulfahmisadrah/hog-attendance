@@ -7,23 +7,27 @@ export const registerPath = `${rootPath}register`
 export const teacherBottomNavPath = {
     home: `${rootPath}home`,
     meetings: `${rootPath}meetings`,
-    attendances: `${rootPath}attendances`,
+    history: `${rootPath}history`,
     profile: `${rootPath}profile`,
 }
 
 export const noAppbarPath = {
-    takePresence: `${teacherBottomNavPath.meetings}/:meetingId/takePresence`
+    meetingAttendances: `${teacherBottomNavPath.meetings}/:meeting_id/attendances`,
 }
 
 export const teacherPath = {
     ...teacherBottomNavPath,
+    meetingDetails: `${teacherBottomNavPath.meetings}/:meeting_id/details`,
+    meetingEditAttendances: `${teacherBottomNavPath.meetings}/:meeting_id/attendances/edit`,
     ...noAppbarPath
 }
 
 export const teacherPathTitle = {
     [teacherPath.home]: "Home",
     [teacherPath.meetings]: "Pertemuan",
-    [teacherPath.attendances]: "Riwayat",
+    [teacherPath.meetingDetails]: "Rincian Pertemuan",
+    [teacherPath.meetingEditAttendances]: "Edit Presensi",
+    [teacherPath.history]: "Riwayat",
     [teacherPath.profile]: "Profil",
 }
 
