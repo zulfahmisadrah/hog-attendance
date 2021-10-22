@@ -16,7 +16,7 @@ export function ColumnActionResetPassword(props) {
 
     return (
         <Tooltip placement="left" title="Reset Password">
-            <Button icon={<UnlockOutlined/>} onClick={() => {
+            <Button size="small" icon={<UnlockOutlined/>} onClick={() => {
                 Modal.confirm({
                     icon: <ExclamationCircleOutlined/>,
                     title: 'Reset Password',

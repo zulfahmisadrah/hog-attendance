@@ -6,7 +6,7 @@ import {ColumnActionDelete} from "./ColumnActionDelete";
 import {ColumnActionResetPassword} from "./ColumnActionResetPassword";
 
 
-export const ColumnActionsWithResetPassword = ({detailRows, formModal, onInitFormData, onUpdate, onConfirmDelete}) => ({
+export const ColumnActionsWithResetPassword = ({detailRows, formModal, onUpdate, onConfirmDelete}) => ({
     key: 'action',
     title: 'Action',
     isDummyField: true,
@@ -16,7 +16,7 @@ export const ColumnActionsWithResetPassword = ({detailRows, formModal, onInitFor
     render: (_, record) => (
         <Space wrap>
             <ColumnActionDetails data={record} detailRows={detailRows} />
-            <ColumnActionEdit formModal={formModal} data={record} onInitFormData={onInitFormData} onSubmit={onUpdate} />
+            <ColumnActionEdit formModal={formModal} data={record} onSubmit={onUpdate} />
             <ColumnActionDelete data={record} onConfirm={onConfirmDelete} />
             <ColumnActionResetPassword data={record} />
         </Space>

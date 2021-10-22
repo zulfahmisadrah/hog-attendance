@@ -8,12 +8,11 @@ ColumnActionEdit.propTypes = {
     title: PropTypes.string,
     formModal: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
-    onInitFormData: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
 }
 
 export function ColumnActionEdit(props) {
-    const {title, formModal: FormModal, data, onInitFormData, onSubmit} = props
+    const {title, formModal: FormModal, data, onSubmit} = props
 
     const [visible, setVisible] = useState(false);
 
@@ -32,7 +31,6 @@ export function ColumnActionEdit(props) {
                     title={title || "Edit Data"}
                     visible={visible}
                     onCancel={closeModal}
-                    onInitFormData={onInitFormData}
                     onSubmit={onSubmit}
                     onFinish={closeModal} />
             )}

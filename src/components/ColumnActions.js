@@ -5,7 +5,7 @@ import {ColumnActionEdit} from "./ColumnActionEdit";
 import {ColumnActionDelete} from "./ColumnActionDelete";
 
 
-export const ColumnActions = ({detailRows, formModal, onInitFormData, onUpdate, onConfirmDelete}) => ({
+export const ColumnActions = ({detailRows, formModal, onUpdate, onConfirmDelete}) => ({
     key: 'action',
     title: 'Action',
     isDummyField: true,
@@ -15,7 +15,7 @@ export const ColumnActions = ({detailRows, formModal, onInitFormData, onUpdate, 
     render: (_, record) => (
         <Space wrap>
             <ColumnActionDetails data={record} detailRows={detailRows} />
-            <ColumnActionEdit formModal={formModal} data={record} onInitFormData={onInitFormData} onSubmit={onUpdate} />
+            <ColumnActionEdit formModal={formModal} data={record} onSubmit={onUpdate} />
             <ColumnActionDelete data={record} onConfirm={onConfirmDelete} />
         </Space>
     )
