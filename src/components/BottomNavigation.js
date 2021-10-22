@@ -14,6 +14,7 @@ import {
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
 import {teacherPath} from "../path";
+import {COLOR_BOTTOM_NAV_ACTIVE, COLOR_BOTTOM_NAV_INACTIVE} from "../utils/colors";
 
 const StyledFooter = styled(Layout.Footer)`
   position: fixed;
@@ -45,8 +46,8 @@ function BottomNavigation(props) {
             url: teacherPath.meetings
         },
         {
-            title: "Absensi",
-            url: teacherPath.attendances
+            title: "Riwayat",
+            url: teacherPath.history
         },
         {
             title: "Profil",
@@ -57,7 +58,7 @@ function BottomNavigation(props) {
     const generateBottomNavMenu = () => (
         listMenu.map(menu => {
             const isActive = menu.url === currentPath
-            const color = isActive ? '#662038' : '#4D4D4D'
+            const color = isActive ? COLOR_BOTTOM_NAV_ACTIVE : COLOR_BOTTOM_NAV_INACTIVE
 
             const iconStyle = {
                 fontSize: 22,
@@ -71,7 +72,7 @@ function BottomNavigation(props) {
                     <HomeOutlined style={iconStyle}/>,
                 [teacherPath.meetings]: isActive ? <CalendarFilled style={iconStyle}/> :
                     <CalendarOutlined style={iconStyle}/>,
-                [teacherPath.attendances]: isActive ? <CheckSquareFilled style={iconStyle}/> :
+                [teacherPath.history]: isActive ? <CheckSquareFilled style={iconStyle}/> :
                     <CheckSquareOutlined style={iconStyle}/>,
                 [teacherPath.profile]: isActive ? <ProfileFilled style={iconStyle}/> :
                     <ProfileOutlined style={iconStyle}/>,
