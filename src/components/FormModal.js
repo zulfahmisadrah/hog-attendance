@@ -4,9 +4,10 @@ import PropTypes from "prop-types";
 import {showErrorModal} from "../utils/Commons";
 
 FormModal.propTypes = {
-    form: PropTypes.object,
     data: PropTypes.object,
+    onInitFormData: PropTypes.func,
     onSubmit: PropTypes.func.isRequired,
+    onFinish: PropTypes.func,
 }
 
 export function FormModal(props) {
@@ -17,8 +18,8 @@ export function FormModal(props) {
     const [form] = Form.useForm();
 
     const setInitialFieldsValue = (data) => {
-        const formData = {...data};
-        onInitFormData(formData);
+        let formData = {...data};
+        if (onInitFormData instanceof Function) formData = onInitFormData(formData);
         form.setFieldsValue(formData);
     }
 
@@ -40,7 +41,7 @@ export function FormModal(props) {
     const handleSubmit = () => {
         setConfirmLoading(true);
         form.validateFields().then((values) => {
-            onSubmit(values, onSuccess, onError);
+            onSubmit(values, onSuccess, onError, data);
         }).catch((info) => {
             console.log('Validate Failed:', info);
             setConfirmLoading(false);
@@ -49,13 +50,13 @@ export function FormModal(props) {
 
     return (
         <Modal
-            {...modalProps}
             onOk={handleSubmit}
             confirmLoading={confirmLoading}
             okText="Simpan"
             cancelText="Batal"
             width={640}
-            bodyStyle={{height: '500px', overflowY: 'auto'}}
+            bodyStyle={{maxHeight: '500px', overflowY: 'auto'}}
+            {...modalProps}
         >
             <Form
                 layout='vertical'
