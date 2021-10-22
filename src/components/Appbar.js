@@ -1,11 +1,11 @@
 import React from 'react';
 
-import {Layout, Typography, Row} from "antd";
+import {Layout, Typography, Row, Button} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
-import {getImage} from "../assets/images";
 import styled from 'styled-components';
-import {teacherBottomNavPath, teacherPathTitle} from "../path";
-import Notifications from "./Notifications";
+import {teacherBottomNavPath, teacherPath, teacherPathTitle} from "../path";
+import {APP_NAME} from "../utils/Constants";
+import {matchPath} from "react-router-dom";
 
 const StyledHeader = styled(Layout.Header)`
   position: fixed;
@@ -61,37 +61,54 @@ const StyledHeader = styled(Layout.Header)`
     font-size: 24px;
     color: #ffffff;
   }
+
 `
 
 function Appbar(props) {
-    const {currentPath, onBackPressed} = props;
+    const {currentPath, onBackPressed, isBackOnly} = props;
 
     const isBottomNavPath = Object.values(teacherBottomNavPath).indexOf(currentPath) !== -1
-    const isHomePath = teacherBottomNavPath.home === currentPath
+    const isHomePath = teacherBottomNavPath.home === currentPath;
+
+    const curerentRoute = Object.values(teacherPath).find(values => {
+        const match = matchPath(currentPath, values)
+        return match?.isExact
+    })
 
     return (
-        <StyledHeader theme="dark" style={{padding: "0 8px"}}>
-            {isBottomNavPath ?
-                (
-                    <div className="icon-container">
-                        {isHomePath ?
-                            <Typography.Text>SISTEM PRESENSI</Typography.Text> :
-                            <Typography.Text>{teacherPathTitle[currentPath]}</Typography.Text>
-                        }
+        <>
+            {isBackOnly ? (
+                    <div style={{position: "absolute", padding: 16, zIndex: 99}}>
+                        <Button
+                            type="primary"
+                            icon={<ArrowLeftOutlined/>}
+                            onClick={onBackPressed}
+                            style={{opacity: 0.7}}
+                        >
+                            Kembali
+                        </Button>
                     </div>
-                )
-                :
-                (
-                    <Row align="middle">
-                        <ArrowLeftOutlined className="back-icon" onClick={onBackPressed}/>
-                        <Typography.Text>{teacherPathTitle[currentPath]}</Typography.Text>
-                    </Row>
-                )
+                ) :
+                <StyledHeader theme="dark" style={{padding: "0 8px"}}>
+                    {isBottomNavPath ? (
+                        <div className="icon-container">
+                            {isHomePath ?
+                                <Typography.Text>{APP_NAME}</Typography.Text> :
+                                <Typography.Text>{teacherPathTitle[currentPath]}</Typography.Text>
+                            }
+                        </div>
+                    ) : (
+                        <Row align="middle">
+                            <ArrowLeftOutlined className="back-icon" onClick={onBackPressed}/>
+                            <Typography.Text>{teacherPathTitle[curerentRoute]}</Typography.Text>
+                        </Row>
+                    )}
+                    <div className="rightContainer">
+                        {/*<Notifications/>*/}
+                    </div>
+                </StyledHeader>
             }
-            <div className="rightContainer">
-                <Notifications/>
-            </div>
-        </StyledHeader>
+        </>
     );
 }
 

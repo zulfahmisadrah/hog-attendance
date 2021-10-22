@@ -5,6 +5,7 @@ import {pathGroupFirstMenu, pathGroupName, pathSuperAdmin} from "../path";
 import getNavigation from "../navigation";
 import styled from 'styled-components';
 import {useSelector} from "react-redux";
+import {APP_NAME} from "../utils/Constants";
 
 const StyledLayout = styled(Layout.Sider)`
   overflow-y: auto;
@@ -119,7 +120,7 @@ function Sidebar(props) {
             collapsible
             collapsed={collapsed}
             theme="dark">
-            <h3 style={collapsed ? {display: "none"} : {color: "white", textAlign: "center", fontWeight: "bold", margin: 16}}>SISTEM PRESENSI</h3>
+            <h3 style={collapsed ? {display: "none"} : {color: "white", textAlign: "center", fontWeight: "bold", margin: 16}}>{APP_NAME}</h3>
             <Menu theme="dark" mode="inline" defaultSelectedKeys={[active]}>
                 {navLink(getNavigation())}
             </Menu>
