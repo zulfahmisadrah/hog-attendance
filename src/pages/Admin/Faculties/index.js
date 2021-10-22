@@ -1,0 +1,1 @@
+export {Faculties} from "./Faculties";

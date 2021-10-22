@@ -5,14 +5,12 @@ export const BASE_DATASET_URL = `${BASE_API_URL}assets/dataset/`;
 export const BASE_API_AUTH_URL = `${BASE_URL}api/auth/`;
 export const APP_NAME = "NEO ATTENDANCE";
 
-export const listLetters = ['a', 'b', 'c', 'd', 'e'];
 export const dateFormat = "YYYY-MM-DD";
 export const timeFormat = "HH:mm:ss";
 export const dateTimeFormat = "YYYY-MM-DD HH:mm:ss Z";
-export const scheduleFormat = "DD/MM/YYYY HH:mm Z";
-export const dateTextFormat = "dddd, DD MMMM YYYY";
+export const dateTextFormat = "dddd, DD MMM YYYY";
 export const timeTextFormat = "HH:mm";
-export const dateTimeTextFormat = "dddd, DD MMMM YYYY HH:mm";
+export const dateTimeTextFormat = "dddd, DD MMM YYYY HH:mm";
 export const dateTimeISOFormat = "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
 export const dateTimeIdFormat = "YYYYMMDD_HHmmss";
 
@@ -33,7 +31,7 @@ export const meetingStatus = {
 
 export const attendanceStatus = {
     attend: "Hadir",
-    absent: "Tanpa Keterangan",
+    absent: "Absen",
     sick: "Sakit",
     permitted: "Izin"
 }
@@ -57,12 +55,18 @@ export const CourseType = {
     PILIHAN: "Pilihan"
 }
 
+export const SemesterType = {
+    GANJIL: "Ganjil",
+    GENAP: "Genap"
+}
+
 export const DataType = {
     TEXT: "text",
     DATETIME: "datetime",
     DATE: "date",
     TIME: "time",
-    IMAGE: "image"
+    IMAGE: "image",
+    CUSTOM: "custom"
 }
 
 export const DayOfWeek = {
@@ -72,7 +76,23 @@ export const DayOfWeek = {
     4: "Kamis",
     5: "Jumat",
     6: "Sabtu",
-    7: "Minggu"
+    7: "Ahad"
+}
+
+export const DayOfWeekInteger = {
+    "Senin": 1,
+    "Selasa": 2,
+    "Rabu": 3,
+    "Kamis": 4,
+    "Jumat": 5,
+    "Sabtu": 6,
+    "Ahad": 7
+}
+
+export const MeetingStatus = {
+    Terjadwal:"Terjadwal",
+    Berlangsung: "Berlangsung",
+    Selesai: "Selesai"
 }
 
 export const userProgram = ["Executive", "Medical", "Prestige", "Karantina", "Program Khusus Kedokteran", "Kedinasan STAN", "Kedinasan CAT Umum", "Lainnya"]

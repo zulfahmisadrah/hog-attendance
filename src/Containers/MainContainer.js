@@ -3,7 +3,7 @@ import {Appbar, BottomNavigation} from "../components";
 import {BackTop, Button, Layout} from "antd";
 import {getRoutes} from "../Routes";
 import {ArrowUpOutlined} from "@ant-design/icons";
-import {useHistory, useLocation} from "react-router-dom";
+import {matchPath, useHistory, useLocation} from "react-router-dom";
 import {teacherBottomNavPath, noAppbarPath, teacherPath} from "../path";
 import {useDispatch} from "react-redux";
 
@@ -13,7 +13,11 @@ function MainContainer() {
     const location = useLocation();
     const currentPath = location.pathname
     const isteacherBottomNavPath = Object.values(teacherBottomNavPath).indexOf(currentPath) !== -1
-    const isNoAppbarPath = Object.values(noAppbarPath).indexOf(currentPath) !== -1
+    const curerentRoute = Object.values(noAppbarPath).find(values => {
+        const match = matchPath(currentPath, values)
+        return match?.isExact
+    })
+    const isNoAppbarPath = curerentRoute?.length > 0
 
     useEffect(() => {
     }, [location, currentPath])
@@ -28,8 +32,8 @@ function MainContainer() {
             minHeight: '100vh',
             fontFamily: `'Open Sans', sans-serif`
         }}>
-            {!isNoAppbarPath? <Appbar currentPath={currentPath} onBackPressed={onBackPressed}/> : null}
-            <Layout style={{margin: isteacherBottomNavPath ? '55px 0' : '55px 0 16px 0'}}>
+            <Appbar currentPath={currentPath} onBackPressed={onBackPressed} isBackOnly={isNoAppbarPath}/>
+            <Layout style={{margin: isteacherBottomNavPath ? '55px 0' : isNoAppbarPath ? 0 : '55px 0 16px 0'}}>
                 {getRoutes()}
             </Layout>
             {isteacherBottomNavPath ? <BottomNavigation currentPath={currentPath}/> : null }

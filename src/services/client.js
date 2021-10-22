@@ -1,12 +1,23 @@
 import axios from 'axios';
 import {BASE_API_AUTH_URL} from "../utils/Constants";
 
+const BASE_API_USERS = "users/";
+const BASE_API_LECTURERS = "lecturers/";
+const BASE_API_DATASETS = "datasets/";
+
 export const setAuthToken = (token) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
 
 export const authLogin = (formData) => {
-    return axios.post(BASE_API_AUTH_URL + "login", formData)
+    const params = new URLSearchParams();
+    params.append('username', formData.username);
+    params.append('password', formData.password);
+    return axios.post(BASE_API_AUTH_URL + "login", params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
 }
 
 export const fetchUserData = () => {
@@ -49,11 +60,11 @@ export const getUser = (userId) => {
 }
 
 export const postSuperAdmin = (user) => {
-    return axios.post("users/createSuperAdmin", user)
+    return axios.post("users/create_superuser", user)
 }
 
 export const postAdmin = (user) => {
-    return axios.post("users/createAdmin", user)
+    return axios.post("users/create_admin", user)
 }
 
 export const postChangePassword = (payload) => {
@@ -72,8 +83,8 @@ export const deleteUser = (userId) => {
     return axios.delete(`users/${userId}`)
 }
 
-export const getTeachers = () => {
-    return axios.get("teachers")
+export const getLecturers = () => {
+    return axios.get("lecturers")
 }
 
 export const getTeacher = (teacherId) => {
@@ -138,4 +149,12 @@ export const putAttendance = (attendance) => {
 
 export const deleteAttendance = (attendanceId) => {
     return axios.delete(`attendances/${attendanceId}`)
+}
+
+export const postDatasetCapture = (data) => {
+    return axios.post("datasets/capture", data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
 }

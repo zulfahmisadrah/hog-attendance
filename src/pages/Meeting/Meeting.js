@@ -26,7 +26,7 @@ const StyledTabs = styled(Tabs)`
   }
 `
 
-function Meeting() {
+export function Meeting() {
 
     return (
         <StyledTabs defaultActiveKey="1" centered>
@@ -36,11 +36,6 @@ function Meeting() {
             <Tabs.TabPane tab="Terjadwal" key="2">
                 <MeetingList type="scheduled"/>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="Selesai" key="3">
-                <MeetingList type="finished"/>
-            </Tabs.TabPane>
         </StyledTabs>
     )
 }
-
-export default Meeting;

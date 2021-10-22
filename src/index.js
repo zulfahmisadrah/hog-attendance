@@ -45,7 +45,7 @@ if (token) {
             const payload = {
                 id: user.id,
                 name: user.name,
-                email: user.email,
+                username: user.username,
                 role: userRole
             }
             store.dispatch({type: "SET_LOGIN", payload: payload})

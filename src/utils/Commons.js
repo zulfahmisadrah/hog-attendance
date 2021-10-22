@@ -5,11 +5,11 @@ import {
     CourseType,
     listEducation,
     listRole,
-    listTopic
+    listTopic, attendanceStatus, DayOfWeek, SemesterType
 } from "./Constants";
 import * as moment from "moment";
 import 'moment/locale/id'
-import {Modal, notification} from "antd";
+import {Modal, notification, message} from "antd";
 import {listProdi} from "./UniversityDataConstants";
 
 export const getListOptionsUniversityMajor = (university, category) => {
@@ -54,6 +54,24 @@ export const listCourseTypeOptions = Object.values(CourseType).map(value => ({
     })
 )
 
+export const attendanceStatusOptions = Object.values(attendanceStatus).map(value => ({
+        label: value,
+        value: value
+    })
+)
+
+export const semesterTypeOptions = Object.values(SemesterType).map(value => ({
+        label: value,
+        value: value
+    })
+)
+
+export const dayOfWeekOptions = Object.keys(DayOfWeek).map(key => ({
+        label: DayOfWeek[key],
+        value: key
+    })
+)
+
 export const changeUndefinedToNull = (data) => {
     for (let key in data) {
         data[key] = data[key] ?? null
@@ -76,7 +94,7 @@ export const getRoleName = (role) => {
     return listRole[role]
 }
 
-export const searchData = (listData, keyword, filterKeys = ["tag"]) => {
+export const searchData2 = (listData, keyword, filterKeys = ["tag"]) => {
     return listData.filter(item => {
         let found = false
         for (let index = 0; index < filterKeys.length; index++) {
@@ -91,6 +109,42 @@ export const searchData = (listData, keyword, filterKeys = ["tag"]) => {
                 }
             } else {
                 found = true
+            }
+        }
+        return found
+    });
+}
+
+export function searchData(listData, keyword, isExactMatch = false, filterKeys) {
+    return listData.filter(item => {
+        let found = false;
+        for (let index = 0; index < filterKeys.length; index++) {
+            const key = filterKeys[index];
+            if (keyword !== undefined && keyword !== "") {
+                keyword = keyword.toLowerCase();
+                let data = item;
+                if (Array.isArray(key)) {
+                    key.forEach(subKey => {
+                        if (subKey.includes('[]')) data = data.map(value => value[subKey.substr(2)]);
+                        else data = data[subKey];
+                    })
+                } else {
+                    data = data[key];
+                }
+                if (data) {
+                    if (Array.isArray(data)) {
+                        const isFoundKeyword = isExactMatch ?
+                            data.filter(element => element === keyword) :
+                            data.filter(element => element.toLowerCase().includes(keyword));
+                        if (isFoundKeyword.length > 0) return found = true;
+                    } else {
+                        if (typeof data === "number") data = data.toString();
+                        const isFoundKeyword = isExactMatch ? data === keyword : data.toLowerCase().includes(keyword);
+                        if (isFoundKeyword) return found = true;
+                    }
+                }
+            } else {
+                found = true;
             }
         }
         return found
@@ -119,7 +173,7 @@ export const exportCSV = (content, fileName) => {
     const encodedUri = encodeURI(content);
     const link = document.createElement("a");
     link.href = 'data:text/csv;charset=utf-8,' + encodedUri;
-    link.download =fileName + ".csv";
+    link.download = fileName + ".csv";
     link.target = '_blank';
     document.body.appendChild(link); // Required for FF
 
@@ -132,15 +186,19 @@ export const getDateTimeFromString = (string, format = dateTimeFormat) => moment
 export const formatMomentToString = (dateTime, format = dateTimeFormat) => dateTime.format(format)
 export const formatDateTime = (strDate, format = dateTimeTextFormat, dateFormat = dateTimeFormat) => {
     if (strDate) {
-        const formatedStrDateTime = moment(strDate, dateFormat).locale('id').format(format);
+        let formatedStrDateTime = moment(strDate, dateFormat).locale('id').format(format);
         const splitDateTime = strDate.split(" ")
-        const timeZone = splitDateTime[splitDateTime.length - 1]
-        let strTimeZone = "WITA"
-        if (timeZone === "+07:00") strTimeZone = "WIB"
-        else if (timeZone === "+09:00") strTimeZone = "WIT"
-        return formatedStrDateTime + " " + strTimeZone
+        if (splitDateTime.length > 1) {
+            const timeZone = splitDateTime[splitDateTime.length - 1];
+            let strTimeZone = "WITA"
+            if (timeZone === "+07:00") strTimeZone = "WIB"
+            else if (timeZone === "+09:00") strTimeZone = "WIT"
+            formatedStrDateTime = formatedStrDateTime + " " + strTimeZone
+        }
+        return formatedStrDateTime
     }
 }
+export const getDayFromMoment = (moment) => moment.locale('id').format("dddd");
 
 export const durationTimeToText = (timeInSecond) => {
     const hours = Math.floor(timeInSecond / 3600)
@@ -162,13 +220,13 @@ export const sortStringDateTime = (a, b, ascending = true) => {
 
 export const removeStringHTMLTags = (str) => {
     str = str?.toString();
-    return str && str.replace( /(<([^>]+)>)/ig, '');
+    return str && str.replace(/(<([^>]+)>)/ig, '');
 }
 
 export const toTitleCase = (str) => {
     return str.replace(
         /\w\S*/g,
-        function(txt) {
+        function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     );
@@ -184,7 +242,7 @@ export const isObjectEqual = (obj1, obj2) => {
 
     for (let key of obj1Keys) {
         if (obj1[key] !== obj2[key]) {
-            return  false
+            return false
         }
     }
 
@@ -246,4 +304,12 @@ export const showEmailSentNotification = (description = 'Email berhasil terkirim
     showSuccessNotification({
         description: description,
     })
+}
+
+export const showSuccessMessage = (content = 'Sukses', duration = 2) => {
+    message.success(content, duration)
+}
+
+export const showDataUpdatedMessage = (content = 'Data berhasil diperbarui.') => {
+    showSuccessMessage(content)
 }

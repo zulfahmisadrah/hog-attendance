@@ -1,7 +1,7 @@
 import {
     deleteMeeting,
     getMeetings,
-    getTeachers,
+    getLecturers,
     getUsers,
     postTeacher,
     postUser,
@@ -17,7 +17,7 @@ import {
     postAdmin,
     postAttendance,
     getMyAttendances,
-    postChangePassword,
+    postChangePassword, postDatasetCapture,
 } from "./client";
 import {getCurrentDateTime, getDateTimeFromString, getMoment} from "../utils/Commons";
 import {dateTimeFormat, dateTimeIdFormat, dateTimeISOFormat} from "../utils/Constants";
@@ -33,7 +33,7 @@ export const getUserData = (callback) => {
 export const fetchUsers = (callback) => {
     getUsers().then(res => {
         const listData = res.data.map(data => {
-            data.role = data.role.id
+            data.role = data.roles[0].id
             return data
         })
         callback(listData)
@@ -82,9 +82,9 @@ export const updateUserPassword = ({payload, onSuccess, onError}) => {
     })
 }
 
-export const fetchTeachers = (callback) => {
-    getTeachers().then(res => {
-        console.log("fetchUsers", res.data)
+export const fetchLecturers = (callback) => {
+    getLecturers().then(res => {
+        console.log("fetchLecturers", res.data)
         const listData = res.data
         callback(listData)
     }).catch(e => {
@@ -114,19 +114,21 @@ export const fetchMyActiveMeetings = (callback) => {
     getMyMeetings().then(res => {
         const data = res.data
         const listData = []
-        getMyAttendances().then(response => {
+        // getMyAttendances().then(response => {
             const currentDate = getMoment()
             data.forEach((value) => {
-                const attendances = response.data
-                const attendanceExist = attendances.find(attendance => attendance.meeting.id === value.id)
+                // const history = response.data
+                // const attendanceExist = history.find(attendance => attendance.meeting.id === value.id)
 
-                const isISOFormat = value.schedule.includes('T')
-                const schedule = getDateTimeFromString(value.schedule, isISOFormat ? dateTimeISOFormat : dateTimeFormat)
+                const isISOFormat = value.date.includes('T')
+                const schedule = getDateTimeFromString(value.date, isISOFormat ? dateTimeISOFormat : dateTimeFormat)
                 const isActive = currentDate.diff(schedule) > -43200000 // waktu sekarang - jadwal > -12 jam (12 jam menuju jadwal)
-                if (isActive && !attendanceExist) listData.push(value)
+                // if (isActive && !attendanceExist) listData.push(value)
+                if (isActive) listData.push(value)
+                // listData.push(value)
             })
             callback(listData)
-        })
+        // })
     }).catch(e => {
         console.log("fetchMyActiveMeetings", e)
     })
@@ -138,8 +140,8 @@ export const fetchMyScheduledMeetings = (callback) => {
         const listData = []
         const currentDate = getMoment()
         data.forEach((value) => {
-            const isISOFormat = value.schedule.includes('T')
-            const schedule = getDateTimeFromString(value.schedule, isISOFormat ? dateTimeISOFormat : dateTimeFormat)
+            const isISOFormat = value.date.includes('T')
+            const schedule = getDateTimeFromString(value.date, isISOFormat ? dateTimeISOFormat : dateTimeFormat)
             const isActive = currentDate.diff(schedule) > -43200000 // waktu sekarang - jadwal > -12 jam
             if (!isActive)
                 listData.push(value);
@@ -155,9 +157,12 @@ export const fetchMyFinishedMeetings = (callback) => {
         const data = res.data
         const listData = []
         getMyAttendances().then(response => {
-            data.forEach((value) => {
-                const attendances = response.data
+        const currentDate = getMoment()
+        data.forEach((value) => {
+                const attendances = value
                 const attendanceExist = attendances.find(attendance => attendance.meeting.id === value.id)
+            const schedule = getDateTimeFromString(value.date, dateTimeFormat)
+            const isFinish = currentDate.diff(schedule) > -43200000
                 if (attendanceExist) listData.push(value)
             })
             callback(listData)
@@ -265,4 +270,14 @@ export const uploadFileToStorage = (
             });
         }
     );
+}
+
+export const datasetCapture = (data, callback) => {
+    postDatasetCapture(data).then(res => {
+        // console.log(`datasetCapture = `, res.data)
+        // const file_path = res.data.file_path
+        callback(res.data)
+    }).catch(e => {
+        console.log("datasetCapture", e)
+    })
 }

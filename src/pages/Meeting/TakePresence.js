@@ -1,7 +1,13 @@
-import React, {useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
-import {useParams} from "react-router";
-import Webcam from "react-webcam";
+import {useParams} from "react-router-dom";
+import {WebcamCapture} from "../../components";
+import {Button, Col, Row, Space} from "antd";
+import {AttendanceService} from "../../services/services/AttendanceService";
+import {DatasetService, MeetingService} from "../../services/services";
+import {showDataUpdatedMessage} from "../../utils/Commons";
+import {attendanceStatus} from "../../utils/Constants";
+import {ButtonShowDrawer} from "./components/ButtonShowDrawer";
 
 const StyledDiv = styled.div`
   .fullscreen-center {
@@ -12,10 +18,10 @@ const StyledDiv = styled.div`
     right: 0;
     text-align: center;
     z-index: 9;
-    width: 640px;
-    height: 480px;
+    //max-width: 640px;
+    height: 100%;
   }
-  
+
   .full {
     margin: 0;
     padding: 0;
@@ -24,67 +30,103 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: black;
+  }
+
+  .buttons-container {
+    position: absolute;
+    z-index: 99;
+    left: 0;
+    bottom: 0;
+    padding: 16px;
   }
 
 `
 
 function TakePresence() {
-    let {meetingId} = useParams()
+    let {meeting_id} = useParams()
 
     const webcamRef = useRef(null)
     const canvasRef = useRef(null)
+    const [meeting, setMeeting] = useState(null);
+    const [attendances, setAttendances] = useState([]);
 
-    const detect = () => {
-        if (typeof webcamRef.current !== "undefined" && webcamRef.current !== null && webcamRef.current.video.readyState === 4) {
-            const video = webcamRef.current.video
-            const videoWidth = webcamRef.current.video.videoWidth
-            const videoHeight = webcamRef.current.video.videoHeight
+    const totalAttend = attendances.filter(attendance => attendance?.status === attendanceStatus.attend).length
 
-            webcamRef.current.video.width = videoWidth
-            webcamRef.current.video.heigth = videoHeight
+    const attendanceService = new AttendanceService();
+    const datasetService = new DatasetService();
+    const meetingService = new MeetingService();
 
-            canvasRef.current.width = videoWidth
-            canvasRef.current.height = videoHeight
-        }
+    const fetchMeetingDetails = (meeting_id) => {
+        meetingService.getData({
+            id: meeting_id,
+            onSuccess: (meeting) => {
+                setMeeting(meeting)
+            }
+        })
     }
 
-    const videoConstraints = {
-        facingMode: {exact: "environment"}
-    };
-
-    const mtcnnForwardParams = {
-        // number of scaled versions of the input image passed through the CNN
-        // of the first stage, lower numbers will result in lower inference time,
-        // but will also be less accurate
-        maxNumScales: 10,
-        // scale factor used to calculate the scale steps of the image
-        // pyramid used in stage 1
-        scaleFactor: 0.709,
-        // the score threshold values used to filter the bounding
-        // boxes of stage 1, 2 and 3
-        scoreThresholds: [0.6, 0.7, 0.7],
-        // mininum face size to expect, the higher the faster processing will be,
-        // but smaller faces won't be detected
-        minFaceSize: 20
+    const fetchMeetingAttendances = (meeting_id) => {
+        meetingService.getListAttendances({
+            id: meeting_id,
+            onSuccess: (attendances) => {
+                setAttendances(attendances)
+            }
+        })
     }
 
-    const init = async () => {
+    useEffect(() => {
+        fetchMeetingDetails(meeting_id)
+        fetchMeetingAttendances(meeting_id)
+    }, [meeting_id]);
 
-
-    }
-
-
-
+    const recognize = useCallback(
+        () => {
+            const course_id = meeting?.course?.id
+            const imageSrc = webcamRef.current.getScreenshot();
+            const data = new FormData()
+            data.append('file', imageSrc)
+            data.append('course_id', course_id)
+            datasetService.recognizeUser({
+                data: data,
+                onSuccess: (res) => {
+                    console.log(`response = `, res)
+                    const studentAttendance = attendances.find(attendance => attendance.student.user.username === res.result[0])
+                    const updatedAttendance = {
+                        id: studentAttendance.id,
+                        status: attendanceStatus.attend
+                    }
+                    attendanceService.updateData({
+                        data: updatedAttendance,
+                        onSuccess: () => {
+                            fetchMeetingAttendances(meeting_id);
+                            showDataUpdatedMessage();
+                        }
+                    })
+                }
+            })
+        },
+        [meeting, webcamRef, attendances]
+    )
 
 
     return (
         <StyledDiv>
-            <Webcam
-                audio={false}
-                ref={webcamRef}
-                className="fullscreen-center"
-            />
-            <canvas id="overlay" ref={canvasRef} className="fullscreen-center"/>
+            <div className="full">
+                <WebcamCapture ref={webcamRef} className="fullscreen-center"/>
+                <canvas id="overlay" ref={canvasRef} className="fullscreen-center"/>
+                <div className="buttons-container" style={{opacity: 0.7}}>
+                    <Row>
+                        <Col xs={24} md={4}>
+                            <Space direction="vertical">
+
+                                <Button className="w-100" type="primary" size="large" onClick={recognize}>Scan</Button>
+                                <ButtonShowDrawer>Total Hadir : {totalAttend}/{attendances.length}</ButtonShowDrawer>
+                            </Space>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         </StyledDiv>
     )
 }

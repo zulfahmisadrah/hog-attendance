@@ -7,10 +7,9 @@ import LockOutlined from "@ant-design/icons/lib/icons/LockOutlined";
 import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
 import {showErrorModal} from "../utils/Commons";
 import {getToken, removeAuth, storeAuth} from "../services/auth"
-import { authLogin, fetchUserData, setAuthToken } from '../services/client';
-import { useDispatch } from 'react-redux';
-
-const { Text} = Typography;
+import {authLogin, fetchUserData, setAuthToken} from '../services/client';
+import {useDispatch} from 'react-redux';
+import {APP_NAME} from "../utils/Constants";
 
 const styles = {
     backgroundColor: '#f8f8f8'
@@ -26,14 +25,14 @@ const StyledRow = styled(Row)`
     .logo{
         width: 70%;
         align-self: center;
-    },
+    }
     .input{
         padding: .7em;
         border-radius: 4px;
-    },
+    }
     .ant-form-item{
         margin-bottom: 16px;
-    },
+    }
     .ant-divider{
         margin: 0 0;
     }
@@ -42,7 +41,7 @@ const StyledRow = styled(Row)`
         height: auto;
         padding: .7em;
         border-radius: 5px;
-    },
+    }
     .alert{
         margin-bottom: 5px;
     }
@@ -74,13 +73,13 @@ function Login() {
             setAuthToken(token)
             fetchUserData().then(userData => {
                 const user = userData.data
-                if (user.emailVerified) {
-                    const userRole = user.role.id
+                if (user.is_active) {
+                    const userRole = user.roles[0].id
                     const payload = {
                         id: user.id,
                         name: user.name,
-                        email: user.email,
-                        role: user.role.id
+                        username: user.username,
+                        role: userRole
                     }
                     dispatch({type: "SET_LOGIN", payload: payload})
                     setIsLoading(false)
@@ -88,7 +87,12 @@ function Login() {
                     history.push(destination)
                 } else {
                     removeAuth()
-                    setMessages({emailNotVerified: (<div>Anda belum melakukan verifikasi email. Silakan cek email Anda.<br/><br/>Atau<Button type="link" size="small">Klik disini</Button>untuk mengirim ulang email verifikasi.</div>)})
+                    setMessages({
+                        emailNotVerified: (
+                            <div>Anda belum melakukan verifikasi email. Silakan cek email Anda.<br/><br/>Atau<Button
+                                type="link" size="small">Klik disini</Button>untuk mengirim ulang email verifikasi.
+                            </div>)
+                    })
                     setIsLoading(false)
                 }
             })
@@ -98,7 +102,11 @@ function Login() {
                 setIsLoading(false)
             })
         }).catch(e => {
-            showErrorModal(e.message)
+            setMessages({
+                error: e.response?.data?.detail
+            })
+
+            // showErrorModal(e.message)
             console.log(e.response)
             setIsLoading(false)
         })
@@ -115,7 +123,7 @@ function Login() {
                 <Col>
                     <StyledCard>
                         <div className="card-header">
-                            <h2>Sistem Presensi</h2>
+                            <h2>{APP_NAME}</h2>
                         </div>
                         <Divider/>
                         <div>

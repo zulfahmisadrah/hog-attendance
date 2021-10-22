@@ -1,2 +1,3 @@
-export {default as ExamFormModal} from "./UserFormModal";
+export {UserFormModal} from "./UserFormModal";
+export {UserTable} from "./UserTable";
 

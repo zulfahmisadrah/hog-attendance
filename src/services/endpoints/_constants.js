@@ -1,0 +1,12 @@
+export const BASE_API_ROLES = "roles/";
+export const BASE_API_USERS = "users/";
+export const BASE_API_STUDENTS = "students/";
+export const BASE_API_LECTURERS = "lecturers/";
+export const BASE_API_FACULTIES = "faculties/";
+export const BASE_API_DEPARTMENTS = "departments/";
+export const BASE_API_DATASETS = "datasets/";
+export const BASE_API_SEMESTERS = "semesters/";
+export const BASE_API_SCHEDULES = "schedules/";
+export const BASE_API_COURSES = "courses/";
+export const BASE_API_MEETINGS = "meetings/";
+export const BASE_API_ATTENDANCES = "attendances/";

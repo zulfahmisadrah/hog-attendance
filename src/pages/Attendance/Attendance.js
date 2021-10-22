@@ -1,12 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Card, Col, List, Row, Space, Tag, Typography, Modal, Skeleton, Menu, Dropdown} from "antd";
 import styled from "styled-components";
-import {formatDateTime, getCurrentDateTime, showErrorModal, showSuccessNotification} from "../../utils/Commons";
+import {
+    formatDateTime,
+    getCurrentDateTime, getDateTimeFromString,
+    getMoment,
+    showErrorModal,
+    showSuccessNotification
+} from "../../utils/Commons";
 import {createAttendance, fetchMyActiveMeetings, fetchMyScheduledMeetings} from "../../services";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {attendanceStatus} from "../../utils/Constants";
+import {attendanceStatus, dateFormat, dateTextFormat, timeFormat, timeTextFormat} from "../../utils/Constants";
 import {fetchMyAttendances} from "../../services";
+import {MeetingService} from "../../services/services";
+import MeetingList from "../Meeting/components/MeetingList";
+import {AttendanceService} from "../../services/services/AttendanceService";
+import {AttendanceTag} from "../../components";
 
 const StyledList = styled(List)`
   padding: 16px;
@@ -16,10 +26,10 @@ const StyledList = styled(List)`
   }
 
   .ant-tag {
-    font-size: 12px;
+    //font-size: 12px;
     padding: 0 2px;
-    margin-right: 3px;
-    margin-top: 2px;
+    //margin-right: 3px;
+    //margin-top: 2px;
   }
 
   .ant-card {
@@ -35,18 +45,22 @@ const listTitle = {
 }
 
 function Attendances() {
+    const userRole = useSelector(state => state.auth.user.role);
 
     const [data, setData] = useState([{}, {}, {}])
     const [loading, setLoading] = useState(false);
 
+    const attendanceService = new AttendanceService();
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        userRole === 4 && fetchData();
+    }, []);
 
     const fetchData = () => {
         setLoading(true)
-        fetchMyAttendances(onDataFetched);
+        attendanceService.getMyAttendances({
+            onSuccess: onDataFetched
+        });
     }
 
     const onDataFetched = (listData) => {
@@ -74,70 +88,49 @@ function Attendances() {
         return details
     }
 
-    const showDetailsModal = (item) => {
-        Modal.info({
-            title: 'Rincian data',
-            okText: 'Tutup',
-            content: (
-                <>
-                    {generateDetails(item)}
-                </>
-            )
-        })
-    }
-
-    const getTagColor = (status) => {
-        let color
-        switch (status) {
-            case attendanceStatus.attend:
-                color = "green"
-                break;
-            case attendanceStatus.permitted:
-                color = "blue"
-                break;
-            case attendanceStatus.sick:
-                color = "orange"
-                break;
-            case attendanceStatus.absent:
-                color = "red"
-                break;
-            default:
-                break;
-        }
-        return <Tag color={color}>{status}</Tag>
+    const generateMeetingDescription = (meeting) => {
+        const strDate = formatDateTime(meeting?.date, dateTextFormat, dateFormat)
+        const strStartTime = formatDateTime(meeting?.schedule?.start_time, timeTextFormat, timeFormat)
+        const strEndTime = formatDateTime(meeting?.schedule?.end_time, timeTextFormat, timeFormat)
+        return `${strDate} ${strStartTime}-${strEndTime}`
     }
 
     return (
         <>
-            <StyledList
-                itemLayout="vertical"
-                pagination={{pageSize: 10,}}
-                grid={{gutter: [8, 0], xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 4}}
-                dataSource={data}
-                renderItem={item => (
-                    <List.Item key={item.id}>
-                        <Card>
-                            <Skeleton loading={loading} active>
-                                <Row style={{marginBottom: 8}}>
-                                    {getTagColor(item.status)}
-                                </Row>
-                                <Typography.Title level={5}>{item.meeting?.name} {item.meeting?.number}</Typography.Title>
-                                <Typography.Text type="secondary">
-                                    {`${formatDateTime(item.checkInTime)}`}
-                                </Typography.Text><br/>
-                                <Typography.Text type="secondary">
-                                    {item.notes}
-                                </Typography.Text>
-                                <Row justify="end" style={{marginTop: 8}}>
-                                    <Space>
-                                        <Button type="secondary" onClick={() => showDetailsModal(item)}>Rincian</Button>
+            {userRole === 3 ? (
+                <MeetingList type="finished" />
+            ) : (
+                <StyledList
+                    itemLayout="vertical"
+                    pagination={{pageSize: 10,}}
+                    grid={{gutter: [8, 0], xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 4}}
+                    dataSource={data}
+                    renderItem={attendance => (
+                        <List.Item key={attendance.id}>
+                            <Card>
+                                <Skeleton loading={loading} active>
+                                    <Space direction="vertical">
+                                        <Row gutter={[0, 4]}>
+                                            <Col span={24}>
+                                                <Typography.Text>Pertemuan {attendance?.meeting?.number}</Typography.Text>
+                                            </Col>
+                                            <Col span={24}>
+                                                <Typography.Text strong style={{fontSize: 16}}>{attendance?.meeting?.course?.name}</Typography.Text>
+                                            </Col>
+                                            <Col span={24}>
+                                                <Typography.Text>{generateMeetingDescription(attendance?.meeting)}</Typography.Text>
+                                            </Col>
+                                            <Col span={24}>
+                                                <Typography.Text strong>Status : <AttendanceTag data={attendance.status} /></Typography.Text>
+                                            </Col>
+                                        </Row>
                                     </Space>
-                                </Row>
-                            </Skeleton>
-                        </Card>
-                    </List.Item>
-                )}
-            />
+                                </Skeleton>
+                            </Card>
+                        </List.Item>
+                    )}
+                />
+            )}
         </>
     )
 }

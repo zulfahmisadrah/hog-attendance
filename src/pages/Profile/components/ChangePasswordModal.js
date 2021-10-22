@@ -4,38 +4,57 @@ import {showErrorModal,} from "../../../utils/Commons";
 import {useSelector} from "react-redux";
 import {updateUserPassword} from "../../../services";
 import {authLogin} from "../../../services/client";
+import {UserService} from "../../../services/services/UserService";
 
 function ChangePasswordModal(props) {
     const {title, visible, onSubmit, onCancel} = props;
 
     const [form] = Form.useForm();
-    const userEmail = useSelector(state => state.auth.user.email);
+    const username = useSelector(state => state.auth.user.username);
 
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const userService = new UserService();
 
     const handleOk = () => {
         setConfirmLoading(true);
         form.validateFields().then((values) => {
-            authLogin({email: userEmail, password: values.currentPassword}).then(res => {
-                updateUserPassword({
-                    payload: values,
-                    onSuccess: () => {
-                        onSubmit(values)
-                        setConfirmLoading(false)
-                        form.resetFields();
-                    },
-                    onError: (error) => {
-                        showErrorModal(error)
-                        setConfirmLoading(false)
-                    }
-                })
-            }).catch(e => {
-                if (e.response.status === 401) showErrorModal("Password tidak sesuai")
-                else {
-                    console.log(e)
+            const data = {
+                current_password: values.current_password,
+                new_password: values.new_password
+            }
+            userService.updateMyPassword({
+                data: data,
+                onSuccess: (updatedData) => {
+                    console.log(updatedData)
+                    onSubmit(updatedData)
+                    setConfirmLoading(false)
+                    form.resetFields();
+                },
+                onError: (error) => {
+                    showErrorModal(error)
+                    setConfirmLoading(false)
                 }
-                setConfirmLoading(false);
             })
+            // authLogin({username: username, password: values.currentPassword}).then(res => {
+            //     updateUserPassword({
+            //         payload: values,
+            //         onSuccess: () => {
+            //             onSubmit(values)
+            //             setConfirmLoading(false)
+            //             form.resetFields();
+            //         },
+            //         onError: (error) => {
+            //             showErrorModal(error)
+            //             setConfirmLoading(false)
+            //         }
+            //     })
+            // }).catch(e => {
+            //     if (e.response.status === 401) showErrorModal("Password tidak sesuai")
+            //     else {
+            //         console.log(e)
+            //     }
+            //     setConfirmLoading(false);
+            // })
         }).catch((info) => {
             console.log('Validate Failed:', info);
             setConfirmLoading(false);
@@ -63,7 +82,7 @@ function ChangePasswordModal(props) {
                 form={form}
             >
                 <Form.Item
-                    name="currentPassword"
+                    name="current_password"
                     label="Password saat ini"
                     rules={[
                         {
@@ -75,7 +94,7 @@ function ChangePasswordModal(props) {
                     <Input.Password className="input" placeholder="Current Password"/>
                 </Form.Item>
                 <Form.Item
-                    name="password"
+                    name="new_password"
                     label="Password baru"
                     rules={[
                         {
@@ -91,9 +110,9 @@ function ChangePasswordModal(props) {
                     <Input.Password className="input" placeholder="New Password"/>
                 </Form.Item>
                 <Form.Item
-                    name="confirmPassword"
+                    name="confirm_password"
                     label="Konfirmasi Password baru"
-                    dependencies={['password']}
+                    dependencies={['new_password']}
                     hasFeedback
                     rules={[
                         {
@@ -102,7 +121,7 @@ function ChangePasswordModal(props) {
                         },
                         ({getFieldValue}) => ({
                             validator(_, value) {
-                                if (!value || getFieldValue('password') === value) {
+                                if (!value || getFieldValue('new_password') === value) {
                                     return Promise.resolve();
                                 }
                                 return Promise.reject('Password tidak sesuai')

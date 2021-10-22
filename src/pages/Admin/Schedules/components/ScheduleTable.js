@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Col, Row, Table} from "antd";
-import PropTypes from "prop-types";
 import {
     formatMomentToString,
-    getDateTimeFromString,
     showDataAddedNotification,
     showDataDeletedNotification,
     showDataUpdatedNotification,
@@ -15,10 +13,6 @@ import {ScheduleService} from "../../../../services/services";
 import {ScheduleFormModal} from "./ScheduleFormModal";
 import {timeFormat} from "../../../../utils/Constants";
 
-ScheduleTable.propTypes = {
-    isSelectDataMode: PropTypes.bool,
-    onDataSelected: PropTypes.func
-}
 
 export function ScheduleTable() {
 
@@ -31,9 +25,9 @@ export function ScheduleTable() {
     const fetchData = () => {
         scheduleService.getListData({
             onSuccess: (data) => {
-                setData(data)
-                setFilteredData(data)
-                setLoading(false)
+                setData(data);
+                setFilteredData(data);
+                setLoading(false);
             }
         })
     }
@@ -41,12 +35,6 @@ export function ScheduleTable() {
     useEffect(() => {
         fetchData();
     }, []);
-
-    const handleInitFormData = (formData) => {
-        formData.day_of_week = formData.day_of_week.toString();
-        formData.start_time = getDateTimeFromString(formData.start_time, timeFormat);
-        formData.end_time = getDateTimeFromString(formData.end_time, timeFormat);
-    }
 
     const handleSubmit = (values, onSuccess, onError) => {
         values.day_of_week = parseInt(values.day_of_week);
@@ -69,7 +57,7 @@ export function ScheduleTable() {
             },
             onError: (error) => {
                 onError(error);
-            },
+            }
         })
     }
 
@@ -83,7 +71,7 @@ export function ScheduleTable() {
             },
             onError: (error) => {
                 onError(error);
-            },
+            }
         })
     }
 
@@ -91,8 +79,8 @@ export function ScheduleTable() {
         scheduleService.deleteData({
             id: id,
             onSuccess: () => {
-                showDataDeletedNotification()
-                fetchData()
+                showDataDeletedNotification();
+                fetchData();
             }
         })
     }
@@ -103,7 +91,6 @@ export function ScheduleTable() {
         ColumnActions({
             detailRows: _detailRows,
             formModal: ScheduleFormModal,
-            onInitFormData: handleInitFormData,
             onUpdate: handleSubmit,
             onConfirmDelete: deleteData
         })

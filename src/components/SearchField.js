@@ -4,11 +4,12 @@ import PropTypes from "prop-types";
 
 SearchField.propTypes = {
     placeholder: PropTypes.string,
+    width: PropTypes.number,
     onSearch: PropTypes.func.isRequired
 }
 
 export function SearchField(props) {
-    const {placeholder, onSearch} = props;
+    const {placeholder, width, onSearch} = props;
 
     return (
         <Input.Search
@@ -16,6 +17,6 @@ export function SearchField(props) {
             allowClear
             enterButton
             onSearch={onSearch}
-            style={{width: 200}}/>
+            style={{width: width || 200}}/>
     )
 }

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Modal, Form, Input, Row, Col, Select, Button, Upload} from 'antd';
+import {Modal, Form, Input, Row, Col, Select, Button, Upload, InputNumber} from 'antd';
 import {STORAGE_PREFIX_IMAGE} from "../../../utils/Constants";
 import {
     handleInputPhoneNumber,
@@ -10,14 +10,20 @@ import {
 } from "../../../utils/Commons";
 import {UploadOutlined} from "@ant-design/icons";
 import {updateTeacher, updateUser, uploadFileToStorage} from "../../../services";
+import {UserService} from "../../../services/services/UserService";
+import {useSelector} from "react-redux";
 
 function ProfileFormModal(props) {
     const {data, title, visible, onSubmit, onCancel} = props;
+
+    const role = useSelector(state => state.auth.user.role);
 
     const [fileList, setFileList] = useState([]);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
     const [form] = Form.useForm();
+
+    const userService = new UserService();
 
     useEffect(() => {
         setInitialFieldsValue(data, form)
@@ -27,9 +33,9 @@ function ProfileFormModal(props) {
         if (data) {
             if (Object.keys(data).length !== 0) {
                 const formData = {...data}
-                const fileList = [{url: formData.photo, thumbUrl: formData.photo, status: 'done'}]
+                const fileList = [{url: formData.avatar, thumbUrl: formData.avatar, status: 'done'}]
                 setFileList(fileList)
-                formData.fileList = formData.photo ? fileList : []
+                formData.fileList = formData.avatar ? fileList : []
                 form.setFieldsValue(formData);
             }
         }
@@ -38,31 +44,31 @@ function ProfileFormModal(props) {
     const handleOk = () => {
         setConfirmLoading(true);
         form.validateFields().then((values) => {
-            values.phoneNumber = values.phoneNumber ? handleInputPhoneNumber(values.phoneNumber) : values.phoneNumber
+            values.phone_number = values.phone_number ? handleInputPhoneNumber(values.phone_number) : values.phone_number
             if (values.fileList) {
                 const file = values.fileList[0]?.originFileObj
                 if (data) {
-                    const photoModified = values.fileList[0]?.thumbUrl !== data.photo
-                    const teacherDataModified = isObjectEqual(values.teacher, data.teacher)
-                    if (!teacherDataModified) {
-                        updateTeacherData(values.teacher)
-                    }
+                    const photoModified = values.fileList[0]?.thumbUrl !== data.avatar
+                    // const teacherDataModified = isObjectEqual(values.lecturer, data.lecturer)
+                    // if (!teacherDataModified) {
+                    //     updateTeacherData(values.lecturer)
+                    // }
                     if (photoModified) {
                         if (file) {
                             uploadFileToStorage({
                                 file: file,
                                 fileNamePrefix: [STORAGE_PREFIX_IMAGE, data.name].join('_'),
                                 onSuccess: (photoUrl) => {
-                                    values.photo = photoUrl
+                                    values.avatar = photoUrl
                                     updateUserFromValues(values)
                                 }
                             });
                         } else {
-                            values.photo = null
+                            values.avatar = null
                             updateUserFromValues(values)
                         }
                     } else {
-                        values.photo = data.photo;
+                        values.avatar = data.avatar;
                         updateUserFromValues(values);
                     }
                 }
@@ -71,28 +77,16 @@ function ProfileFormModal(props) {
             console.log('Validate Failed:', info);
             setConfirmLoading(false);
         });
-    };
+    }
 
     const updateUserFromValues = (values) => {
-        console.log("values", values);
-        updateUser({
-            user: values,
+        userService.updateMyData({
+            data: values,
             onSuccess: (updatedData) => {
                 onSubmit(updatedData)
                 setConfirmLoading(false)
                 form.resetFields();
             },
-            onError: (error) => {
-                showErrorModal(error)
-                setConfirmLoading(false)
-            },
-        })
-    }
-
-    const updateTeacherData = (teacher) => {
-        updateTeacher({
-            teacher: teacher,
-            onSuccess: () => {},
             onError: (error) => {
                 showErrorModal(error)
                 setConfirmLoading(false)
@@ -124,7 +118,7 @@ function ProfileFormModal(props) {
                 let message = "";
 
                 if (data) {
-                    const isModified = file.url !== data.photo;
+                    const isModified = file.url !== data.avatar;
                     if (!isModified) {
                         return Promise.resolve()
                     }
@@ -178,9 +172,6 @@ function ProfileFormModal(props) {
                                 <Input/>
                             </Form.Item> : null
                         }
-                        <Form.Item label="Email" name="email" hidden>
-                            <Input placeholder="Email"/>
-                        </Form.Item>
                         <Form.Item label="Nama" name="name" required
                                    rules={[
                                        {
@@ -190,9 +181,41 @@ function ProfileFormModal(props) {
                                    ]}>
                             <Input placeholder="Name"/>
                         </Form.Item>
-                        <Form.Item label="No. HP" name="phoneNumber">
-                            <Input addonBefore="62" style={{width: '100%'}}/>
+                        <Form.Item label="Email" name="email"
+                                   rules={[
+                                       {
+                                           type: 'email',
+                                           message: 'Email tidak valid',
+                                       }
+                                   ]}
+                        >
+                            <Input placeholder="Email"/>
                         </Form.Item>
+                        <Form.Item label="No. HP" name="phone_number">
+                            <Input placeholder="ex.6281234567890" style={{width: '100%'}}/>
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} lg={{span: 11, offset: 2}}>
+                        {role === 3 ? (
+                            <>
+                                <Form.Item label="NIP" name={["lecturer", "nip"]}>
+                                    <Input placeholder="NIP"/>
+                                </Form.Item>
+                                <Form.Item label="Pendidikan Terakhir" name={["lecturer", "last_education"]}>
+                                    <Select options={listEducationOptions} placeholder="Pendidikan Terkahir"/>
+                                </Form.Item>
+                            </>
+                        ) : (
+                            <Form.Item
+                                label="Angkatan"
+                                name={["student", "year"]}
+                                rules={[
+                                    {required: true, type: "number", min: 0},
+                                ]}
+                            >
+                                <InputNumber placeholder="ex. 2021"/>
+                            </Form.Item>
+                        )}
                         <Form.Item
                             name="fileList"
                             label="Foto"
@@ -216,26 +239,6 @@ function ProfileFormModal(props) {
                             >
                                 <Button icon={<UploadOutlined/>}>Upload</Button>
                             </Upload>
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} lg={{span: 11, offset: 2}}>
-                        <Form.Item label="Bidang" name={["teacher", "field"]} required
-                                   rules={[
-                                       {
-                                           required: true,
-                                           message: "Bidang tidak boleh kosong"
-                                       }
-                                   ]}>
-                            <Select options={listSubjectOptions} placeholder="Bidang"/>
-                        </Form.Item>
-                        <Form.Item label="Pendidikan Terakhir" name={["teacher", "lastEducation"]} required
-                                   rules={[
-                                       {
-                                           required: true,
-                                           message: "Pendidikan Terakhir tidak boleh kosong"
-                                       }
-                                   ]}>
-                            <Select options={listEducationOptions} placeholder="Pendidikan Terkahir"/>
                         </Form.Item>
                     </Col>
                 </Row>

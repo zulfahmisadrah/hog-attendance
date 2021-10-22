@@ -16,9 +16,20 @@ import {
 } from "../../../services";
 import {useSelector} from "react-redux";
 import PropTypes from 'prop-types';
-import {meetingStatus} from "../../../utils/Constants";
+import {
+    dateFormat,
+    dateTextFormat,
+    MeetingStatus,
+    meetingStatus,
+    timeFormat,
+    timeTextFormat
+} from "../../../utils/Constants";
 import {useHistory} from "react-router-dom";
 import {teacherPath} from "../../../path";
+import {CourseService, LecturerService, MeetingService, StudentService} from "../../../services/services";
+import {AttendanceTag} from "../../../components";
+import {CalendarOutlined, ClockCircleOutlined} from "@ant-design/icons";
+import {COLOR_PRIMARY} from "../../../utils/colors";
 
 const StyledList = styled(List)`
   padding: 16px;
@@ -56,11 +67,14 @@ function MeetingList(props) {
     const history = useHistory()
 
     const userId = useSelector(state => state.auth.user.id);
+    const userRole = useSelector(state => state.auth.user.role);
 
     const [data, setData] = useState([{}, {}, {}])
     const [loading, setLoading] = useState(false);
+    const [attendances, setAttendances] = useState([]);
 
-    const accessDisabled = type !== meetingStatus.active
+    const checkIsDisabled = (meeting) => meeting?.status !== MeetingStatus.Berlangsung;
+    const meetingService = new MeetingService();
 
     useEffect(() => {
         fetchData()
@@ -70,23 +84,34 @@ function MeetingList(props) {
         setLoading(true)
         switch (type) {
             case meetingStatus.active:
-                fetchMyActiveMeetings(onDataFetched);
+                meetingService.getListTodayMeeting({
+                    onSuccess: onDataFetched
+                })
+                // fetchMyActiveMeetings(onDataFetched);
                 break;
             case meetingStatus.scheduled:
-                fetchMyScheduledMeetings(onDataFetched);
+                meetingService.getListScheduledMeeting({
+                    onSuccess: onDataFetched
+                })
+                // fetchMyScheduledMeetings(onDataFetched);
                 break;
             case meetingStatus.finished:
-                fetchMyFinishedMeetings(onDataFetched);
+                meetingService.getListFinishedMeeting({
+                    onSuccess: onDataFetched
+                })
+                // fetchMyFinishedMeetings(onDataFetched);
                 break;
             default:
-                fetchMyActiveMeetings(onDataFetched)
+                meetingService.getListTodayMeeting({
+                    onSuccess: onDataFetched
+                })
         }
     }
 
     const onDataFetched = (listData) => {
         if (limit === 1) {
             if (listData.length > 0) {
-                const sortedListData = listData.sort((a, b) => b.dateCreated.localeCompare(a.dateCreated));
+                const sortedListData = listData.sort((a, b) => b.created_at.localeCompare(a.created_at));
                 setData([sortedListData[0]])
             } else {
                 setData(listData)
@@ -97,41 +122,55 @@ function MeetingList(props) {
         setLoading(false)
     }
 
-    const generateDetails = (record) => {
-        let details = [];
-        Object.keys(listTitle).forEach(key => {
-            const value = record[key]
-            if (value) {
-                details.push(
-                    <Row key={key} style={{marginBottom: 6}}>
-                        <Col xs={{span: 24}} lg={{span: 10}}>
-                            <Typography.Text strong>{listTitle[key]}</Typography.Text>
-                        </Col>
-                        <Col xs={{span: 24}} lg={{span: 14}}>
-                            <Typography.Text>{key === "schedule" ? formatDateTime(value) : value}</Typography.Text><br/>
-                        </Col>
-                    </Row>
-                )
+    const fetchMeetingAttendances = (meeting_id) => {
+        meetingService.getListAttendances({
+            id: meeting_id,
+            onSuccess: (attendances) => {
+                setAttendances(attendances)
             }
         })
-        return details
+    }
+
+    // const generateDetails = (record) => {
+    //     let details = [];
+    //     Object.keys(listTitle).forEach(key => {
+    //         const value = record[key]
+    //         if (value) {
+    //             details.push(
+    //                 <Row key={key} style={{marginBottom: 6}}>
+    //                     <Col xs={{span: 24}} lg={{span: 10}}>
+    //                         <Typography.Text strong>{listTitle[key]}</Typography.Text>
+    //                     </Col>
+    //                     <Col xs={{span: 24}} lg={{span: 14}}>
+    //                         <Typography.Text>{key === "schedule" ? formatDateTime(value) : value}</Typography.Text><br/>
+    //                     </Col>
+    //                 </Row>
+    //             )
+    //         }
+    //     })
+    //     return details
+    // }
+
+    const handleClickMeeting = (meeting) => {
+        history.push(`${teacherPath.meetings}/${meeting.id}/details`)
     }
 
     const showDetailsModal = (item) => {
-        Modal.info({
-            title: 'Rincian data',
-            okText: 'Tutup',
-            content: (
-                <>
-                    {generateDetails(item)}
-                </>
-            )
-        })
+        // Modal.info({
+        //     title: 'Rincian data',
+        //     okText: 'Tutup',
+        //     content: (
+        //         <>
+        //             {generateDetails(item)}
+        //         </>
+        //     )
+        // })
     }
 
     function getLocation(meeting) {
         history.push(`${teacherPath.meetings}/${meeting.id}/takePresence`)
     }
+
     // function getLocation(meeting) {
     //     const options = {
     //         enableHighAccuracy: true,
@@ -203,6 +242,26 @@ function MeetingList(props) {
         })
     }
 
+    const iconStyle = {color: COLOR_PRIMARY}
+
+    const generateMeetingDescription = (meeting) => {
+        const strDate = formatDateTime(meeting.date, dateTextFormat, dateFormat)
+        const strStartTime = formatDateTime(meeting.start_time || meeting.schedule?.start_time, timeTextFormat, timeFormat)
+        const strEndTime = formatDateTime(meeting.end_time || meeting.schedule?.end_time, timeTextFormat, timeFormat)
+        return (
+            <Space>
+                <Typography.Text><CalendarOutlined style={iconStyle}/> {strDate}</Typography.Text>
+                <Typography.Text><ClockCircleOutlined style={iconStyle}/> {strStartTime}-{strEndTime}</Typography.Text>
+            </Space>
+        )
+        // `${strDate} ${strStartTime}-${strEndTime}`
+    }
+
+    const handleTakeAttendance = (e, meeting) => {
+        e.stopPropagation();
+        history.push(`${teacherPath.meetings}/${meeting.id}/attendances`)
+    }
+
     return (
         <>
             <StyledList
@@ -210,21 +269,42 @@ function MeetingList(props) {
                 pagination={{pageSize: 10, hideOnSinglePage: true}}
                 grid={{gutter: [8, 0], xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 4}}
                 dataSource={data}
-                renderItem={item => (
-                    <List.Item key={item.id}>
-                        <Card>
+                renderItem={meeting => (
+                    <List.Item key={meeting.id}>
+                        <Card onClick={() => handleClickMeeting(meeting)} hoverable>
                             <Skeleton loading={loading} active>
-                                <Typography.Title level={5}>{item.name} {item.number}</Typography.Title>
-                                <Typography.Text
-                                    type="secondary">{`${formatDateTime(item.schedule)} | ${item.duration} Menit`}</Typography.Text>
-                                <Row justify="end" style={{marginTop: 8}}>
-                                    <Space>
-                                        <Button type="secondary" onClick={() => showDetailsModal(item)}>Rincian</Button>
-                                        <Button type="primary"
-                                                disabled={accessDisabled || getMoment().diff(getDateTimeFromString(item.schedule)) < -900000}
-                                                onClick={() => getLocation(item)}>Hadir</Button>
-                                    </Space>
-                                </Row>
+                                <Space direction="vertical">
+                                    <Row gutter={[0, 4]}>
+                                        <Col span={24}>
+                                            <Typography.Text>Pertemuan {meeting.number}</Typography.Text>
+                                        </Col>
+                                        <Col span={24}>
+                                            <Typography.Text strong
+                                                             style={{fontSize: 16}}>{meeting.course?.name}</Typography.Text>
+                                        </Col>
+                                        <Col span={24}>
+                                            {generateMeetingDescription(meeting)}
+                                        </Col>
+                                    </Row>
+                                </Space>
+
+                                {/*<Button type="secondary" onClick={() => showDetailsModal(meeting)}>Rincian</Button>*/}
+                                {/*<Button onClick={() => handleClickMeeting(meeting)}>Rincian</Button>*/}
+                                {/*{userRole === 4 && (<AttendanceTag data={attendances.status} />*/}
+
+                                {/*)}*/}
+                                {userRole === 3 && meeting.status !== MeetingStatus.Selesai && (
+                                    <Row justify="end" style={{marginTop: 8}}>
+                                        <Space>
+                                            <Button type="primary"
+                                                    disabled={checkIsDisabled(meeting)}
+                                                    onClick={(e) => handleTakeAttendance(e, meeting)}>
+                                                Ambil Presensi
+                                            </Button>
+                                        </Space>
+                                    </Row>
+                                )}
+
                             </Skeleton>
                         </Card>
                     </List.Item>

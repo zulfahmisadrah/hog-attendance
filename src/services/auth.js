@@ -1,4 +1,6 @@
+function login(username, password) {
 
+}
 
 const storeAuth = (auth) => {
     localStorage.auth = JSON.stringify(auth);

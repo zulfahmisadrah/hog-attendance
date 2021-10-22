@@ -6,6 +6,7 @@ import {ProfileFormModal, ChangePasswordModal} from "./components";
 import {showDataUpdatedNotification} from "../../utils/Commons";
 import {removeAuth} from "../../services/auth"
 import { getUserData } from '../../services';
+import {UserService} from "../../services/services/UserService";
 const initialVisible = {password: false, edit: false}
 
 function Profile() {
@@ -19,17 +20,22 @@ function Profile() {
     const [visible, setVisible] = useState(initialVisible);
     const [loading, setLoading] = useState(false);
 
+    const userService = new UserService();
+
     useEffect(() => {
         fetchData()
     }, [])
 
     const fetchData = () => {
         setLoading(true)
-        getUserData(user => {
-            setData(user)
-            generateUserData(user)
+        userService.getData({
+            id: userId,
+            onSuccess: (user) => {
+                setData(user)
+                generateUserData(user)
+            }
         })
-    };
+    }
 
     const handleLogout = () => {
         removeAuth();
@@ -56,23 +62,22 @@ function Profile() {
     }
 
     const listTitleTeacher = {
-        field: "Bidang",
-        lastEducation: "Pendidikan Terakhir"
+        nip: "NIP",
+        last_education: "Pendidikan Terakhir"
     }
 
     const listTitleStudent = {
-        program: "Program",
-        category: "Kelompok Ujian",
-        school: "Asal Sekolah",
+        year: "Angkatan",
     }
 
     const listTitle = {
-        phoneNumber: "No. HP",
-        ... role === 3 ? listTitleTeacher : listTitleStudent
+        email: "Email",
+        phone_number: "No. HP",
+        ...role === 3 ? listTitleTeacher : listTitleStudent
     }
 
     const generateUserData = (user) => {
-        const userRoleName = role === 3 ? "teacher" : "student"
+        const userRoleName = role === 3 ? "lecturer" : "student"
         const listDataKeys = role === 3 ? Object.keys(listTitleTeacher) : Object.keys(listTitleStudent)
         const userData = Object.keys(listTitle).map(key => ({
                 title: listTitle[key],
@@ -93,7 +98,7 @@ function Profile() {
                         </Col>
                         <Col flex="auto">
                             <Typography.Text strong>{data.name}</Typography.Text><br/>
-                            <Typography.Text>{data.email}</Typography.Text><br/>
+                            <Typography.Text>{data.username}</Typography.Text><br/>
                         </Col>
                     </Row>
                     <Row justify="space-between" align="middle" style={{marginTop: 16}}>
@@ -105,7 +110,7 @@ function Profile() {
             </Card>
             <Card style={{margin: 16}}>
                 <List
-                    footer={!data.email ? <Skeleton.Button active/> :
+                    footer={!data.username ? <Skeleton.Button active/> :
                         <Button size="large" type="secondary" icon={<LogoutOutlined/>}
                                 onClick={handleLogout}>Logout</Button>
                     }

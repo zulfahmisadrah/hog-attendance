@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Dashboard(){
+export function Dashboard(){
 
 
     return (
@@ -8,5 +8,3 @@ function Dashboard(){
     );
 
 }
-
-export default Dashboard;

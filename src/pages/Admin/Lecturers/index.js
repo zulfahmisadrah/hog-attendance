@@ -1,0 +1,2 @@
+export {Lecturers} from "./Lecturers";
+

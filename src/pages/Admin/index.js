@@ -1,6 +1,13 @@
-export {default as Dashboard} from "./Dashboard";
-export {default as Attendances} from "./Attendance";
-export {default as Meetings} from "./Meeting";
-export {default as Teachers} from "./Teacher";
-export {default as Users} from "./User";
-
+export {Dashboard} from "./Dashboard";
+export {Attendances} from "./Attendances";
+export {Meetings} from "./Meetings";
+export {Courses} from "./Courses";
+export {Datasets} from "./Datasets";
+export {Semesters} from "./Semesters";
+export {Schedules} from "./Schedules";
+export {Faculties} from "./Faculties";
+export {Departments} from "./Departments";
+export {Lecturers} from "./Lecturers";
+export {Students} from "./Students";
+export {Users} from "./User";
+export {Roles} from "./Roles";
