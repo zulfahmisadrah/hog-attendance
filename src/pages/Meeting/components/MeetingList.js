@@ -20,7 +20,7 @@ import {
     dateFormat,
     dateTextFormat,
     MeetingStatus,
-    meetingStatus,
+    MeetingListType,
     timeFormat,
     timeTextFormat
 } from "../../../utils/Constants";
@@ -83,19 +83,19 @@ function MeetingList(props) {
     const fetchData = () => {
         setLoading(true)
         switch (type) {
-            case meetingStatus.active:
+            case MeetingListType.ACTIVE:
                 meetingService.getListTodayMeeting({
                     onSuccess: onDataFetched
                 })
                 // fetchMyActiveMeetings(onDataFetched);
                 break;
-            case meetingStatus.scheduled:
+            case MeetingListType.SCHEDULED:
                 meetingService.getListScheduledMeeting({
                     onSuccess: onDataFetched
                 })
                 // fetchMyScheduledMeetings(onDataFetched);
                 break;
-            case meetingStatus.finished:
+            case MeetingListType.FINISHED:
                 meetingService.getListFinishedMeeting({
                     onSuccess: onDataFetched
                 })

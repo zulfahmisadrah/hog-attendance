@@ -23,10 +23,10 @@ export const emailStatus = {
     unverified: "Unverified"
 }
 
-export const meetingStatus = {
-    active: "active",
-    scheduled: "scheduled",
-    finished: "finished"
+export const MeetingListType = {
+    ACTIVE: "active",
+    SCHEDULED: "scheduled",
+    FINISHED: "finished"
 }
 
 export const attendanceStatus = {
