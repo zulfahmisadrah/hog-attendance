@@ -21,7 +21,6 @@ import {
 } from "./client";
 import {getCurrentDateTime, getDateTimeFromString, getMoment} from "../utils/Commons";
 import {dateTimeFormat, dateTimeIdFormat, dateTimeISOFormat} from "../utils/Constants";
-import {avatarRef} from "./storageRef";
 
 export const getUserData = (callback) => {
     fetchUserData().then(res => {
@@ -247,7 +246,7 @@ export const removeAttendance = (attendanceId, callback) => {
 export const uploadFileToStorage = (
     {
         file,
-        ref = avatarRef,
+        ref = "",
         onSuccess,
         onError = (e) => {
             console.log("uploadFileToStorage", e)
