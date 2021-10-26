@@ -279,20 +279,15 @@ function MeetingList(props) {
                                             <Typography.Text>Pertemuan {meeting.number}</Typography.Text>
                                         </Col>
                                         <Col span={24}>
-                                            <Typography.Text strong
-                                                             style={{fontSize: 16}}>{meeting.course?.name}</Typography.Text>
+                                            <Typography.Text strong style={{fontSize: 16}}>
+                                                {meeting.course?.name}
+                                            </Typography.Text>
                                         </Col>
                                         <Col span={24}>
                                             {generateMeetingDescription(meeting)}
                                         </Col>
                                     </Row>
                                 </Space>
-
-                                {/*<Button type="secondary" onClick={() => showDetailsModal(meeting)}>Rincian</Button>*/}
-                                {/*<Button onClick={() => handleClickMeeting(meeting)}>Rincian</Button>*/}
-                                {/*{userRole === 4 && (<AttendanceTag data={attendances.status} />*/}
-
-                                {/*)}*/}
                                 {userRole === 3 && meeting.status !== MeetingStatus.Selesai && (
                                     <Row justify="end" style={{marginTop: 8}}>
                                         <Space>
@@ -304,7 +299,6 @@ function MeetingList(props) {
                                         </Space>
                                     </Row>
                                 )}
-
                             </Skeleton>
                         </Card>
                     </List.Item>
