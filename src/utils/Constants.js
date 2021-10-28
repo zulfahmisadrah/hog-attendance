@@ -15,13 +15,7 @@ export const dateTimeISOFormat = "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
 export const dateTimeIdFormat = "YYYYMMDD_HHmmss";
 
 export const DB_USERS = "users";
-export const STORAGE_AVATAR = "avatar";
 export const STORAGE_PREFIX_IMAGE = "IMG";
-
-export const emailStatus = {
-    verified: "Verified",
-    unverified: "Unverified"
-}
 
 export const MeetingListType = {
     ACTIVE: "active",
