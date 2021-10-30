@@ -1,15 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {Modal, Form, Input, Row, Col, Select, Button, Upload, InputNumber} from 'antd';
-import {STORAGE_PREFIX_IMAGE} from "../../../utils/Constants";
+import {BASE_AVATAR_URL} from "../../../utils/Constants";
 import {
     handleInputPhoneNumber,
     showErrorModal,
-    listSubjectOptions,
     listEducationOptions,
-    isObjectEqual
 } from "../../../utils/Commons";
 import {UploadOutlined} from "@ant-design/icons";
-import {updateTeacher, updateUser, uploadFileToStorage} from "../../../services";
 import {UserService} from "../../../services/services/UserService";
 import {useSelector} from "react-redux";
 
@@ -41,35 +38,32 @@ function ProfileFormModal(props) {
         }
     }
 
-    const handleOk = () => {
+    const handleOk = (values) => {
         setConfirmLoading(true);
         form.validateFields().then((values) => {
-            values.phone_number = values.phone_number ? handleInputPhoneNumber(values.phone_number) : values.phone_number
+            values.phone_number = values.phone_number ? handleInputPhoneNumber(values.phone_number) : values.phone_number;
             if (values.fileList) {
-                const file = values.fileList[0]?.originFileObj
+                const file = values.fileList[0]?.originFileObj;
+                const avatarFormData = new FormData();
+                avatarFormData.append('username', values.username);
+                avatarFormData.append('avatar', file);
                 if (data) {
-                    const photoModified = values.fileList[0]?.thumbUrl !== data.avatar
-                    // const teacherDataModified = isObjectEqual(values.lecturer, data.lecturer)
-                    // if (!teacherDataModified) {
-                    //     updateTeacherData(values.lecturer)
-                    // }
-                    if (photoModified) {
+                    const avatarUrl = BASE_AVATAR_URL + origin.avatar;
+                    const avatarModified = values.fileList[0]?.thumbUrl !== avatarUrl;
+                    delete values.fileList;
+                    if (avatarModified) {
                         if (file) {
-                            uploadFileToStorage({
-                                file: file,
-                                fileNamePrefix: [STORAGE_PREFIX_IMAGE, data.name].join('_'),
-                                onSuccess: (photoUrl) => {
-                                    values.avatar = photoUrl
-                                    updateUserFromValues(values)
+                            userService.uploadUserAvatar({
+                                data: avatarFormData,
+                                onSuccess: (filePath) => {
+                                    values.avatar = filePath;
+                                    updateUser(values);
                                 }
                             });
                         } else {
-                            values.avatar = null
-                            updateUserFromValues(values)
+                            values.avatar = null;
+                            updateUser(values);
                         }
-                    } else {
-                        values.avatar = data.avatar;
-                        updateUserFromValues(values);
                     }
                 }
             }
@@ -79,7 +73,7 @@ function ProfileFormModal(props) {
         });
     }
 
-    const updateUserFromValues = (values) => {
+    const updateUser = (values) => {
         userService.updateMyData({
             data: values,
             onSuccess: (updatedData) => {
