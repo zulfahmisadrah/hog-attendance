@@ -5,7 +5,9 @@ import {
     CourseType,
     listEducation,
     listRole,
-    listTopic, attendanceStatus, DayOfWeek, SemesterType
+    attendanceStatus,
+    DayOfWeek,
+    SemesterType
 } from "./Constants";
 import * as moment from "moment";
 import 'moment/locale/id'
@@ -38,12 +40,6 @@ export const getUniversityMajors = (university, category) => {
 
 export const listEducationOptions = Object.keys(listEducation).map(key => ({
         label: listEducation[key],
-        value: key
-    })
-)
-
-export const listSubjectOptions = Object.keys(listTopic).map(key => ({
-        label: key,
         value: key
     })
 )
