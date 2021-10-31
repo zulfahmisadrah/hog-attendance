@@ -4,7 +4,7 @@ import {BackTop, Button, Layout} from "antd";
 import {getRoutes} from "../Routes";
 import {ArrowUpOutlined} from "@ant-design/icons";
 import {matchPath, useHistory, useLocation} from "react-router-dom";
-import {teacherBottomNavPath, noAppbarPath, teacherPath} from "../path";
+import {bottomNavPath, noAppbarPath, teacherPath} from "../path";
 import {useDispatch} from "react-redux";
 
 function MainContainer() {
@@ -12,7 +12,7 @@ function MainContainer() {
     const history = useHistory();
     const location = useLocation();
     const currentPath = location.pathname
-    const isteacherBottomNavPath = Object.values(teacherBottomNavPath).indexOf(currentPath) !== -1
+    const isteacherBottomNavPath = Object.values(bottomNavPath).indexOf(currentPath) !== -1
     const curerentRoute = Object.values(noAppbarPath).find(values => {
         const match = matchPath(currentPath, values)
         return match?.isExact

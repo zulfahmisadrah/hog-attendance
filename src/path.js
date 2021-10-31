@@ -4,7 +4,7 @@ export const imagePath = `${rootPath}../images/`
 export const loginPath = `${rootPath}login`
 export const registerPath = `${rootPath}register`
 
-export const teacherBottomNavPath = {
+export const bottomNavPath = {
     home: `${rootPath}home`,
     meetings: `${rootPath}meetings`,
     history: `${rootPath}history`,
@@ -12,13 +12,13 @@ export const teacherBottomNavPath = {
 }
 
 export const noAppbarPath = {
-    meetingAttendances: `${teacherBottomNavPath.meetings}/:meeting_id/attendances`,
+    meetingAttendances: `${bottomNavPath.meetings}/:meeting_id/attendances`,
 }
 
 export const teacherPath = {
-    ...teacherBottomNavPath,
-    meetingDetails: `${teacherBottomNavPath.meetings}/:meeting_id/details`,
-    meetingEditAttendances: `${teacherBottomNavPath.meetings}/:meeting_id/attendances/edit`,
+    ...bottomNavPath,
+    meetingDetails: `${bottomNavPath.meetings}/:meeting_id/details`,
+    meetingEditAttendances: `${bottomNavPath.meetings}/:meeting_id/attendances/edit`,
     ...noAppbarPath
 }
 

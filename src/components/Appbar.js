@@ -3,7 +3,7 @@ import React from 'react';
 import {Layout, Typography, Row, Button} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import styled from 'styled-components';
-import {teacherBottomNavPath, teacherPath, teacherPathTitle} from "../path";
+import {bottomNavPath, teacherPath, teacherPathTitle} from "../path";
 import {APP_NAME} from "../utils/Constants";
 import {matchPath} from "react-router-dom";
 
@@ -67,8 +67,8 @@ const StyledHeader = styled(Layout.Header)`
 function Appbar(props) {
     const {currentPath, onBackPressed, isBackOnly} = props;
 
-    const isBottomNavPath = Object.values(teacherBottomNavPath).indexOf(currentPath) !== -1
-    const isHomePath = teacherBottomNavPath.home === currentPath;
+    const isBottomNavPath = Object.values(bottomNavPath).indexOf(currentPath) !== -1
+    const isHomePath = bottomNavPath.home === currentPath;
 
     const curerentRoute = Object.values(teacherPath).find(values => {
         const match = matchPath(currentPath, values)

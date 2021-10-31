@@ -4,7 +4,7 @@ import {Layout, Badge, Typography, List, Dropdown, Menu} from "antd";
 import {ArrowLeftOutlined, BellFilled} from "@ant-design/icons";
 import {getImage} from "../assets/images";
 import styled from 'styled-components';
-import {teacherBottomNavPath, userPath, userPathTitle} from "../path";
+import {bottomNavPath, userPath, userPathTitle} from "../path";
 import {removeStringHTMLTags, showInfoModal} from "../utils/Commons";
 import htmr from "htmr";
 
@@ -66,8 +66,8 @@ const StyledHeader = styled(Layout.Header)`
 function Notifications(props) {
     const {currentPath, onBackPressed} = props;
 
-    const isBottomNavPath = Object.values(teacherBottomNavPath).indexOf(currentPath) !== -1
-    const isHomePath = teacherBottomNavPath.home === currentPath
+    const isBottomNavPath = Object.values(bottomNavPath).indexOf(currentPath) !== -1
+    const isHomePath = bottomNavPath.home === currentPath
     const _data = [
         {
             id: "1",

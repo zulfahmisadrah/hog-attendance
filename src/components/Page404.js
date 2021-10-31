@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Result} from "antd";
 import {useHistory} from "react-router-dom";
-import {teacherBottomNavPath} from "../path";
+import {bottomNavPath} from "../path";
 
 function Page404() {
     const history = useHistory()
@@ -11,7 +11,7 @@ function Page404() {
             status="404"
             title="Fitur Belum Tersedia"
             subTitle="Fitur ini masih dalam tahap pengembangan."
-            extra={<Button type="primary" onClick={() => history.replace(teacherBottomNavPath.home)}>Halaman Utama</Button>}
+            extra={<Button type="primary" onClick={() => history.replace(bottomNavPath.home)}>Halaman Utama</Button>}
         />
     )
 }
