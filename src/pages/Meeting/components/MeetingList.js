@@ -25,7 +25,7 @@ import {
     timeTextFormat
 } from "../../../utils/Constants";
 import {useHistory} from "react-router-dom";
-import {teacherPath} from "../../../path";
+import {userPath} from "../../../path";
 import {CourseService, LecturerService, MeetingService, StudentService} from "../../../services/services";
 import {AttendanceTag} from "../../../components";
 import {CalendarOutlined, ClockCircleOutlined} from "@ant-design/icons";
@@ -152,7 +152,7 @@ function MeetingList(props) {
     // }
 
     const handleClickMeeting = (meeting) => {
-        history.push(`${teacherPath.meetings}/${meeting.id}/details`)
+        history.push(`${userPath.meetings}/${meeting.id}/details`)
     }
 
     const showDetailsModal = (item) => {
@@ -168,7 +168,7 @@ function MeetingList(props) {
     }
 
     function getLocation(meeting) {
-        history.push(`${teacherPath.meetings}/${meeting.id}/takePresence`)
+        history.push(`${userPath.meetings}/${meeting.id}/takePresence`)
     }
 
     // function getLocation(meeting) {
@@ -259,7 +259,7 @@ function MeetingList(props) {
 
     const handleTakeAttendance = (e, meeting) => {
         e.stopPropagation();
-        history.push(`${teacherPath.meetings}/${meeting.id}/attendances`)
+        history.push(`${userPath.meetings}/${meeting.id}/attendances`)
     }
 
     return (

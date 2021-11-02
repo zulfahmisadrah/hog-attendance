@@ -1,6 +1,6 @@
 import React from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
-import {rootPath, adminPath, adminRootPath, teacherPath} from "./path";
+import {rootPath, adminPath, adminRootPath, userPath} from "./path";
 import {
     Dashboard,
     Users,
@@ -42,14 +42,14 @@ export const getAdminRoutes = () => (
 
 export const getRoutes = () => (
     <Switch>
-        <Route path={teacherPath.home} component={Home}/>
-        <Route exact path={teacherPath.meetings} component={Meeting}/>
-        <Route path={teacherPath.meetingDetails} component={MeetingDetails}/>
-        <Route path={teacherPath.meetingEditAttendances} component={MeetingAttendances}/>
-        <Route path={teacherPath.meetingAttendances} component={TakePresence}/>
-        <Route path={teacherPath.history} component={Attendance}/>
-        <Route path={teacherPath.profile} component={Profile}/>
-        <Redirect from={rootPath} to={teacherPath.home}/>
+        <Route path={userPath.home} component={Home}/>
+        <Route exact path={userPath.meetings} component={Meeting}/>
+        <Route path={userPath.meetingDetails} component={MeetingDetails}/>
+        <Route path={userPath.meetingEditAttendances} component={MeetingAttendances}/>
+        <Route path={userPath.meetingAttendances} component={TakePresence}/>
+        <Route path={userPath.history} component={Attendance}/>
+        <Route path={userPath.profile} component={Profile}/>
+        <Redirect from={rootPath} to={userPath.home}/>
     </Switch>
 )
 

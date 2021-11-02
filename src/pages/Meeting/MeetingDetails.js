@@ -11,7 +11,7 @@ import {
     timeTextFormat
 } from "../../utils/Constants";
 import {useParams, useHistory} from "react-router-dom";
-import {teacherPath} from "../../path";
+import {userPath} from "../../path";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {CameraFilled} from "@ant-design/icons";
 import {ButtonEditSchedule} from "./components/ButtonEditSchedule";
@@ -93,11 +93,11 @@ export function MeetingDetails() {
     }
 
     const handleTakeAttendance = () => {
-        history.push(`${teacherPath.meetings}/${meeting.id}/attendances`)
+        history.push(`${userPath.meetings}/${meeting.id}/attendances`)
     }
 
     const handleManualAttendance = () => {
-        history.push(`${teacherPath.meetings}/${meeting.id}/attendances/edit`)
+        history.push(`${userPath.meetings}/${meeting.id}/attendances/edit`)
     }
 
     const updateMeeting = (data, onSuccess, onError) => {

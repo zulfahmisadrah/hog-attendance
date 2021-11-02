@@ -3,7 +3,7 @@ import React from 'react';
 import {Layout, Typography, Row, Button} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import styled from 'styled-components';
-import {bottomNavPath, teacherPath, teacherPathTitle} from "../path";
+import {bottomNavPath, userPath, teacherPathTitle} from "../path";
 import {APP_NAME} from "../utils/Constants";
 import {matchPath} from "react-router-dom";
 
@@ -70,7 +70,7 @@ function Appbar(props) {
     const isBottomNavPath = Object.values(bottomNavPath).indexOf(currentPath) !== -1
     const isHomePath = bottomNavPath.home === currentPath;
 
-    const curerentRoute = Object.values(teacherPath).find(values => {
+    const curerentRoute = Object.values(userPath).find(values => {
         const match = matchPath(currentPath, values)
         return match?.isExact
     })

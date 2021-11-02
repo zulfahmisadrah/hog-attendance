@@ -15,7 +15,7 @@ export const noAppbarPath = {
     meetingAttendances: `${bottomNavPath.meetings}/:meeting_id/attendances`,
 }
 
-export const teacherPath = {
+export const userPath = {
     ...bottomNavPath,
     meetingDetails: `${bottomNavPath.meetings}/:meeting_id/details`,
     meetingEditAttendances: `${bottomNavPath.meetings}/:meeting_id/attendances/edit`,
@@ -23,12 +23,12 @@ export const teacherPath = {
 }
 
 export const teacherPathTitle = {
-    [teacherPath.home]: "Home",
-    [teacherPath.meetings]: "Pertemuan",
-    [teacherPath.meetingDetails]: "Rincian Pertemuan",
-    [teacherPath.meetingEditAttendances]: "Edit Presensi",
-    [teacherPath.history]: "Riwayat",
-    [teacherPath.profile]: "Profil",
+    [userPath.home]: "Home",
+    [userPath.meetings]: "Pertemuan",
+    [userPath.meetingDetails]: "Rincian Pertemuan",
+    [userPath.meetingEditAttendances]: "Edit Presensi",
+    [userPath.history]: "Riwayat",
+    [userPath.profile]: "Profil",
 }
 
 export const adminPath = {

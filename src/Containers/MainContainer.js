@@ -4,7 +4,7 @@ import {BackTop, Button, Layout} from "antd";
 import {getRoutes} from "../Routes";
 import {ArrowUpOutlined} from "@ant-design/icons";
 import {matchPath, useHistory, useLocation} from "react-router-dom";
-import {bottomNavPath, noAppbarPath, teacherPath} from "../path";
+import {bottomNavPath, noAppbarPath, userPath} from "../path";
 import {useDispatch} from "react-redux";
 
 function MainContainer() {

@@ -13,7 +13,7 @@ import {
 } from "@ant-design/icons";
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
-import {teacherPath} from "../path";
+import {userPath} from "../path";
 import {COLOR_BOTTOM_NAV_ACTIVE, COLOR_BOTTOM_NAV_INACTIVE} from "../utils/colors";
 
 const StyledFooter = styled(Layout.Footer)`
@@ -39,19 +39,19 @@ function BottomNavigation(props) {
     const listMenu = [
         {
             title: "Home",
-            url: teacherPath.home
+            url: userPath.home
         },
         {
             title: "Pertemuan",
-            url: teacherPath.meetings
+            url: userPath.meetings
         },
         {
             title: "Riwayat",
-            url: teacherPath.history
+            url: userPath.history
         },
         {
             title: "Profil",
-            url: teacherPath.profile
+            url: userPath.profile
         },
     ]
 
@@ -68,13 +68,13 @@ function BottomNavigation(props) {
             }
 
             const listMenuIcon = {
-                [teacherPath.home]: isActive ? <HomeFilled style={iconStyle}/> :
+                [userPath.home]: isActive ? <HomeFilled style={iconStyle}/> :
                     <HomeOutlined style={iconStyle}/>,
-                [teacherPath.meetings]: isActive ? <CalendarFilled style={iconStyle}/> :
+                [userPath.meetings]: isActive ? <CalendarFilled style={iconStyle}/> :
                     <CalendarOutlined style={iconStyle}/>,
-                [teacherPath.history]: isActive ? <CheckSquareFilled style={iconStyle}/> :
+                [userPath.history]: isActive ? <CheckSquareFilled style={iconStyle}/> :
                     <CheckSquareOutlined style={iconStyle}/>,
-                [teacherPath.profile]: isActive ? <ProfileFilled style={iconStyle}/> :
+                [userPath.profile]: isActive ? <ProfileFilled style={iconStyle}/> :
                     <ProfileOutlined style={iconStyle}/>,
             }
 
