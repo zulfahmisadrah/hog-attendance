@@ -1,15 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {Button, Col, DatePicker, Form, Modal, Popconfirm, Row, Select, Space, TimePicker, Typography} from "antd";
+import React from "react";
+import {Col, DatePicker, Form, Row, TimePicker} from "antd";
 import PropTypes from "prop-types";
-import {dateFormat, DayOfWeek, DayOfWeekInteger, timeFormat, timeTextFormat} from "../../../utils/Constants";
+import {dateFormat, DayOfWeekInteger, timeFormat, timeTextFormat} from "../../../utils/Constants";
 import {FormModal} from "../../../components";
 import {
     formatMomentToString,
     getDateTimeFromString,
     getDayFromMoment,
-    showDataUpdatedNotification
 } from "../../../utils/Commons";
-import {MeetingService} from "../../../services/services";
 
 EditScheduleModal.propTypes = {
     data: PropTypes.object.isRequired,
@@ -19,8 +17,6 @@ EditScheduleModal.propTypes = {
 
 export function EditScheduleModal(props) {
     const {visible, onCancel, data, onSubmit, onFinish} = props;
-
-    const meetingService = new MeetingService();
 
     const handleInitFormData = (formData) => {
         formData.date = getDateTimeFromString(formData.date, dateFormat);
@@ -39,16 +35,6 @@ export function EditScheduleModal(props) {
             ...values
         }
         onSubmit(updatedData, onSuccess, onError);
-        // meetingService.updateData({
-        //     data: updatedData,
-        //     onSuccess: () => {
-        //         onSuccess();
-        //         showDataUpdatedNotification();
-        //     },
-        //     onError: (e) => {
-        //         onError(e);
-        //     }
-        // })
     }
 
     return (
