@@ -181,7 +181,7 @@ export function Datasets(props) {
 
     return (
         <Row gutter={[16, 16]}>
-            <Col xs={24} md={12}>
+            <Col xs={{span: 24, order: 1}} md={{span: 12, order: 2}}>
                 <StyledDiv>
                     <div className="card-container">
                         <Tabs type="card">
@@ -260,7 +260,7 @@ export function Datasets(props) {
                     </div>
                 </StyledDiv>
             </Col>
-            <Col xs={24} md={12}>
+            <Col xs={{span: 24, order: 2}} md={{span: 12, order: 1}}>
                 <Card title="Daftar Dataset">
                     <DatasetTable/>
                 </Card>
