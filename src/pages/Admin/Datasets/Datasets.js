@@ -7,6 +7,7 @@ import {StudentService, CourseService, DatasetService} from "../../../services/s
 import styled from "styled-components";
 import {DatasetTable} from "./components";
 import {ButtonUploadDatasets} from "./components/ButtonUploadDatasets";
+import {showDataAddedNotification} from "../../../utils/Commons";
 
 const StyledDiv = styled.div`
   .card-container p {
@@ -69,6 +70,7 @@ export function Datasets(props) {
     const [studentsOptionData, setStudentsOptionData] = useState([]);
     const [coursesOptions, setCoursesOptions] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [loading, setLoading] = useState(false);
     const webcamRef = useRef(null);
     const [form] = Form.useForm();
 
@@ -99,6 +101,18 @@ export function Datasets(props) {
 
     const initListCourses = () => {
         courseService.getListCoursesOptions((listCoursesOptions) => setCoursesOptions(listCoursesOptions))
+    }
+
+    const detectFromRawDataset = () => {
+        setLoading(true);
+        const username = selectedData;
+        const data = new FormData()
+        data.append('username', username);
+        datasetService.createFromRawDataset(data, (file_path) => {
+            console.log(`response = `, file_path)
+            setLoading(false);
+            showDataAddedNotification();
+        })
     }
 
     const snapshot = useCallback(
@@ -210,6 +224,12 @@ export function Datasets(props) {
                                                     </Col>
                                                     <Col span={12}>
                                                         <ButtonUploadDatasets data={selectedData}/>
+                                                    </Col>
+                                                    <Col span={12}>
+                                                        <Button className="w-100" size="large"
+                                                                onClick={detectFromRawDataset} loading={loading}>
+                                                            Buat dari Raw Dataset
+                                                        </Button>
                                                     </Col>
                                                 </Row>
                                             </>

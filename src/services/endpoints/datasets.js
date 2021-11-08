@@ -13,6 +13,10 @@ class DatasetRequest extends APIRequest {
         return axios.get(this.baseUrl + username)
     }
 
+    createFromRawDataset = (data) => {
+        return axios.post(this.baseUrl + "detect_from_raw", data)
+    }
+
     createDataset = (data) => {
         return axios.post(this.baseUrl + "capture", data, {
             headers: {

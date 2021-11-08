@@ -16,6 +16,14 @@ export class DatasetService extends APIService {
         })
     }
 
+    createFromRawDataset = (data, callback) => {
+        this.apiRequest.createFromRawDataset(data).then(res => {
+            callback(res.data)
+        }).catch(e => {
+            console.log("createFromRawDataset", e)
+        })
+    }
+
     datasetCapture = (data, callback) => {
         this.apiRequest.createDataset(data).then(res => {
             callback(res.data)
