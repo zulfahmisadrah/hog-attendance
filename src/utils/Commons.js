@@ -302,6 +302,10 @@ export const showEmailSentNotification = (description = 'Email berhasil terkirim
     })
 }
 
+export const showInfoMessage = (content = 'Info', duration = 2) => {
+    message.info(content, duration)
+}
+
 export const showSuccessMessage = (content = 'Sukses', duration = 2) => {
     message.success(content, duration)
 }
