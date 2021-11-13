@@ -65,7 +65,7 @@ export function EditAttendances(props) {
                 renderItem={attendance => (
                     <List.Item key={attendance.id}>
                         <Row className="w-100">
-                            <Col flex="auto">
+                            <Col flex="1">
                                 <Row>
                                     <Col span={24}>
                                         <Typography.Text strong
