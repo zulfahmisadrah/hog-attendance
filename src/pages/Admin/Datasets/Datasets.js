@@ -134,12 +134,19 @@ export function Datasets(props) {
     )
 
     const train = () => {
+        setLoading(true);
         const data = new FormData()
         data.append('course_id', selectedCourse)
         datasetService.trainDatasets({
             data: data,
             onSuccess: (filePath) => {
-                console.log(filePath)
+                console.log(filePath);
+                setLoading(false);
+                showDataAddedNotification();
+            },
+            onError: (e) => {
+                console.log(e);
+                setLoading(false);
             }
         })
     }
@@ -178,7 +185,8 @@ export function Datasets(props) {
     }
 
     const getListStudentOptions = (filteredData) => {
-        const studentsOptionData = filteredData.map(student => ({
+        const sortedData = filteredData.sort((a,b) => a?.user?.username.localeCompare(b?.user?.username));
+        const studentsOptionData = sortedData.map(student => ({
             label: `${student.user?.username} - ${student.user?.name}`,
             value: student.user?.username
         }))
