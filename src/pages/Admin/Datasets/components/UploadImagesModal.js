@@ -62,7 +62,7 @@ export function UploadImagesModal(props) {
 
     const handleSubmit = (values, onSuccess) => {
         if (values.fileList) {
-            values.fileList.forEach(file => {
+            values.fileList.forEach((file, index) => {
                 const fileData = file.originFileObj;
                 console.log(fileData)
                 const formData = new FormData();
@@ -70,8 +70,10 @@ export function UploadImagesModal(props) {
                 formData.append('file', fileData);
                 datasetService.datasetCapture(formData, (file_path) => {
                     console.log(`response = `, file_path);
-                    showDataAddedNotification();
-                    onSuccess();
+                    if (index === values.fileList.length-1) {
+                        showDataAddedNotification();
+                        onSuccess();
+                    }
                 })
             })
         }
