@@ -108,10 +108,17 @@ export function Datasets(props) {
         const username = selectedData;
         const data = new FormData()
         data.append('username', username);
-        datasetService.createFromRawDataset(data, (file_path) => {
-            console.log(`response = `, file_path)
-            setLoading(false);
-            showDataAddedNotification();
+        datasetService.createFromRawDataset({
+            data: data,
+            onSuccess: (filePath) => {
+                console.log(filePath);
+                setLoading(false);
+                showDataAddedNotification();
+            },
+            onError: (e) => {
+                console.log(e);
+                setLoading(false);
+            }
         })
     }
 
