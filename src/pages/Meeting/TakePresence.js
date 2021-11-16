@@ -2,10 +2,10 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {useParams} from "react-router-dom";
 import {WebcamCapture} from "../../components";
-import {Button, Col, Row, Space} from "antd";
+import {Button, Col, Row, Space, Typography} from "antd";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {DatasetService, MeetingService} from "../../services/services";
-import {showDataUpdatedMessage} from "../../utils/Commons";
+import {showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
 import {attendanceStatus} from "../../utils/Constants";
 import {ButtonShowDrawer} from "./components/ButtonShowDrawer";
 
@@ -90,17 +90,37 @@ function TakePresence() {
             datasetService.recognizeUser({
                 data: data,
                 onSuccess: (res) => {
-                    console.log(`response = `, res)
-                    const studentAttendance = attendances.find(attendance => attendance.student.user.username === res.result[0])
-                    const updatedAttendance = {
-                        id: studentAttendance.id,
-                        status: attendanceStatus.attend
-                    }
-                    attendanceService.updateData({
-                        data: updatedAttendance,
-                        onSuccess: () => {
-                            fetchMeetingAttendances(meeting_id);
-                            showDataUpdatedMessage();
+                    console.log(`response = `, res);
+                    res.result.forEach(username => {
+                        const studentAttendance = attendances.find(attendance => attendance.student.user.username === username)
+                        // console.log(`studentAttendance = `, studentAttendance);
+                        if (studentAttendance) {
+                            if (studentAttendance?.status === attendanceStatus.attend) {
+                                showInfoMessage(
+                                    <>
+                                        <Typography.Text strong>{studentAttendance.student.user.name}</Typography.Text>
+                                        <Typography.Text> telah {attendanceStatus.attend}</Typography.Text>
+                                    </>,
+                                    3
+                                );
+                            } else {
+                                const updatedAttendance = {
+                                    id: studentAttendance?.id,
+                                    status: attendanceStatus.attend
+                                }
+                                attendanceService.updateData({
+                                    data: updatedAttendance,
+                                    onSuccess: () => {
+                                        fetchMeetingAttendances(meeting_id);
+                                        showDataUpdatedMessage(
+                                            <>
+                                                <Typography.Text strong>{studentAttendance.student.user.name}</Typography.Text>
+                                                <Typography.Text> {attendanceStatus.attend}</Typography.Text>
+                                            </>
+                                        );
+                                    }
+                                })
+                            }
                         }
                     })
                 }
@@ -119,7 +139,6 @@ function TakePresence() {
                     <Row>
                         <Col xs={24} md={4}>
                             <Space direction="vertical">
-
                                 <Button className="w-100" type="primary" size="large" onClick={recognize}>Scan</Button>
                                 <ButtonShowDrawer>Total Hadir : {totalAttend}/{attendances.length}</ButtonShowDrawer>
                             </Space>
