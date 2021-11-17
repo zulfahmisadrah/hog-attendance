@@ -229,7 +229,7 @@ export function Datasets(props) {
                                         {selectedData && (
                                             <>
                                                 <Typography.Text>Total Data: {totalDatasets}</Typography.Text>
-                                                <WebcamCapture ref={webcamRef}/>
+                                                <WebcamCapture ref={webcamRef} className="w-100"/>
                                                 <Row gutter={16}>
                                                     <Col span={12}>
                                                         <Button className="w-100" type="primary" size="large"
@@ -254,7 +254,7 @@ export function Datasets(props) {
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Model" key="2">
                                 <Row gutter={16}>
-                                    <Col span={12}>
+                                    <Col span={24}>
                                         <Form.Item label="Mata Kuliah" name="course" required
                                                    rules={[{required: true}]}>
                                             <Select
@@ -265,8 +265,9 @@ export function Datasets(props) {
                                                 filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
                                             />
                                         </Form.Item>
-                                        <Button className="w-100" type="primary" size="large" onClick={train}>Buat
-                                            Model</Button>
+                                        <Button className="w-100" type="primary" size="large" onClick={train} loading={loading}>
+                                            Buat Model
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Tabs.TabPane>
