@@ -16,11 +16,13 @@ import {AttendanceService} from "../../services/services/AttendanceService";
 import {CameraFilled} from "@ant-design/icons";
 import {ButtonEditSchedule} from "./components/ButtonEditSchedule";
 import {AttendanceTag} from "../../components";
+import {useSelector} from "react-redux";
 
 
 export function MeetingDetails() {
     let {meeting_id} = useParams();
     const history = useHistory();
+    const userRole = useSelector(state => state.auth.user.role);
 
     const [meeting, setMeeting] = useState(null);
     const [lecturers, setLecturers] = useState([]);
@@ -155,7 +157,7 @@ export function MeetingDetails() {
                                         </Col>
                                     </Row>
                                 </Col>
-                                {meeting?.status !== MeetingStatus.Selesai && (
+                                {userRole === 3 && meeting?.status !== MeetingStatus.Selesai && (
                                     <Col>
                                         <ButtonEditSchedule data={meeting} onSubmit={updateMeeting}/>
                                     </Col>
@@ -180,7 +182,7 @@ export function MeetingDetails() {
                                 </Col>
                             </Row>
                         </Col>
-                        {meeting?.status === MeetingStatus.Berlangsung && (
+                        {userRole === 3 && meeting?.status === MeetingStatus.Berlangsung && (
                             <Col span={24}>
                                 <Row gutter={16} justify="end">
                                     <Col xs={12} lg={4}>
