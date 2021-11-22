@@ -102,7 +102,7 @@ function Attendances() {
             ) : (
                 <StyledList
                     itemLayout="vertical"
-                    pagination={{pageSize: 10,}}
+                    pagination={{pageSize: 10, hideOnSinglePage: true}}
                     grid={{gutter: [8, 0], xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 4}}
                     dataSource={data}
                     renderItem={attendance => (
