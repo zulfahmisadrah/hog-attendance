@@ -1,33 +1,29 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, List, Row, Space, Typography, Modal, Skeleton} from "antd";
+import {Button, Card, Col, List, Row, Skeleton, Space, Typography} from "antd";
 import styled from "styled-components";
 import {
     formatDateTime,
-    getCurrentDateTime, getDateTimeFromString,
+    getCurrentDateTime,
+    getDateTimeFromString,
     getMoment,
     showErrorModal,
     showSuccessNotification
 } from "../../../utils/Commons";
-import {
-    createAttendance,
-    fetchMyActiveMeetings,
-    fetchMyFinishedMeetings,
-    fetchMyScheduledMeetings
-} from "../../../services";
+import {createAttendance} from "../../../services";
 import {useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 import {
+    attendanceStatus,
     dateFormat,
     dateTextFormat,
-    MeetingStatus,
     MeetingListType,
+    MeetingStatus,
     timeFormat,
     timeTextFormat
 } from "../../../utils/Constants";
 import {useHistory} from "react-router-dom";
 import {userPath} from "../../../path";
-import {CourseService, LecturerService, MeetingService, StudentService} from "../../../services/services";
-import {AttendanceTag} from "../../../components";
+import {MeetingService} from "../../../services/services";
 import {CalendarOutlined, ClockCircleOutlined} from "@ant-design/icons";
 import {COLOR_PRIMARY} from "../../../utils/colors";
 
@@ -109,17 +105,34 @@ function MeetingList(props) {
     }
 
     const onDataFetched = (listData) => {
-        if (limit === 1) {
-            if (listData.length > 0) {
-                const sortedListData = listData.sort((a, b) => b.created_at.localeCompare(a.created_at));
-                setData([sortedListData[0]])
-            } else {
-                setData(listData)
-            }
-        } else {
+        listData.forEach(meeting => {
+            meetingService.getListAttendances({
+                id: meeting.id,
+                onSuccess: (attendances) => {
+                    meeting.totalAttend = attendances.filter(attendance => attendance?.status === attendanceStatus.attend).length
+                    meeting.totalStudents = attendances.length
+                    if (limit === 1) {
+                        if (listData.length > 0) {
+                            const sortedListData = listData.sort((a, b) => b.created_at.localeCompare(a.created_at));
+                            setData([sortedListData[0]])
+                        } else {
+                            setData(listData)
+                        }
+                    } else {
+                        setData(listData);
+                    }
+                    setLoading(false);
+                },
+                onError: (e) => {
+                    console.log(e);
+                    setLoading(false);
+                }
+            })
+        })
+        if (listData.length === 0) {
             setData(listData);
+            setLoading(false);
         }
-        setLoading(false)
     }
 
     const fetchMeetingAttendances = (meeting_id) => {
@@ -297,6 +310,13 @@ function MeetingList(props) {
                                                 Ambil Presensi
                                             </Button>
                                         </Space>
+                                    </Row>
+                                )}
+                                {userRole === 3 && meeting.status === MeetingStatus.Selesai && (
+                                    <Row style={{marginTop: 8}}>
+                                        <Typography.Text strong>
+                                            Total hadir: {meeting.totalAttend}/{meeting.totalStudents}
+                                        </Typography.Text>
                                     </Row>
                                 )}
                             </Skeleton>
