@@ -9,9 +9,10 @@ import {
 import {UploadOutlined} from "@ant-design/icons";
 import {UserService} from "../../../services/services/UserService";
 import {useSelector} from "react-redux";
+import {FormModal} from "../../../components";
 
 function ProfileFormModal(props) {
-    const {data, title, visible, onSubmit, onCancel} = props;
+    const {title, visible, onCancel, data, onSubmit, onFinish} = props;
 
     const role = useSelector(state => state.auth.user.role);
 
@@ -22,20 +23,20 @@ function ProfileFormModal(props) {
 
     const userService = new UserService();
 
-    useEffect(() => {
-        setInitialFieldsValue(data, form)
-    }, [data, form]);
-
-    const setInitialFieldsValue = (data, form) => {
-        if (data) {
-            if (Object.keys(data).length !== 0) {
-                const formData = {...data}
-                const fileList = [{url: formData.avatar, thumbUrl: formData.avatar, status: 'done'}]
-                setFileList(fileList)
-                formData.fileList = formData.avatar ? fileList : []
-                form.setFieldsValue(formData);
-            }
+    const handleInitFormData = (formData) => {
+        if (formData.avatar) {
+            const avatarUrl = BASE_AVATAR_URL + formData.avatar;
+            const fileList = [{url: avatarUrl, thumbUrl: avatarUrl, status: 'done'}];
+            setFileList(fileList);
+            formData.fileList = fileList;
+        } else {
+            formData.fileList = [];
         }
+        const avatarUrl = BASE_AVATAR_URL + formData.avatar;
+        const fileList = [{url: avatarUrl, thumbUrl: avatarUrl, status: 'done'}];
+        setFileList(fileList);
+        formData.fileList = avatarUrl ? fileList : [];
+        return formData;
     }
 
     const handleOk = (values) => {
@@ -139,105 +140,94 @@ function ProfileFormModal(props) {
     }
 
     return (
-        <Modal
+        <FormModal
             title={title}
             visible={visible}
-            onOk={handleOk}
-            okText="Simpan"
-            cancelText="Batal"
-            confirmLoading={confirmLoading}
             onCancel={handleCancel}
-            width={640}
-            bodyStyle={{height: '500px', overflowY: 'auto'}}
+            data={data}
+            onInitFormData={handleInitFormData}
+            onSubmit={onSubmit}
+            onFinish={onFinish}
         >
-            <Form
-                layout='vertical'
-                form={form}
-            >
-                <Row>
-                    <Col xs={24} lg={11}>
-                        {data ?
-                            <Form.Item name="id" hidden required>
-                                <Input/>
-                            </Form.Item> : null
-                        }
-                        {data?.teacher ?
-                            <Form.Item name={["teacher", "id"]} hidden required>
-                                <Input/>
-                            </Form.Item> : null
-                        }
-                        <Form.Item label="Nama" name="name" required
-                                   rules={[
-                                       {
-                                           required: true,
-                                           message: 'Field ini harus terisi',
-                                       },
-                                   ]}>
-                            <Input placeholder="Name"/>
-                        </Form.Item>
-                        <Form.Item label="Email" name="email"
-                                   rules={[
-                                       {
-                                           type: 'email',
-                                           message: 'Email tidak valid',
-                                       }
-                                   ]}
-                        >
-                            <Input placeholder="Email"/>
-                        </Form.Item>
-                        <Form.Item label="No. HP" name="phone_number">
-                            <Input placeholder="ex.6281234567890" style={{width: '100%'}}/>
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} lg={{span: 11, offset: 2}}>
-                        {role === 3 ? (
-                            <>
-                                <Form.Item label="NIP" name={["lecturer", "nip"]}>
-                                    <Input placeholder="NIP"/>
-                                </Form.Item>
-                                <Form.Item label="Pendidikan Terakhir" name={["lecturer", "last_education"]}>
-                                    <Select options={listEducationOptions} placeholder="Pendidikan Terkahir"/>
-                                </Form.Item>
-                            </>
-                        ) : (
-                            <Form.Item
-                                label="Angkatan"
-                                name={["student", "year"]}
-                                rules={[
-                                    {required: true, type: "number", min: 0},
-                                ]}
-                            >
-                                <InputNumber placeholder="ex. 2021"/>
+            <Row gutter={32}>
+                <Col xs={24} md={12}>
+                    {data?.teacher ?
+                        <Form.Item name={["teacher", "id"]} hidden required>
+                            <Input/>
+                        </Form.Item> : null
+                    }
+                    {data?.student ?
+                        <Form.Item name={["student", "id"]} hidden required>
+                            <Input/>
+                        </Form.Item> : null
+                    }
+                    <Form.Item label="Nama" name="name" required
+                               rules={[
+                                   {
+                                       required: true,
+                                       message: 'Field ini harus terisi',
+                                   },
+                               ]}>
+                        <Input placeholder="Name"/>
+                    </Form.Item>
+                    <Form.Item label="Email" name="email"
+                               rules={[
+                                   {
+                                       type: 'email',
+                                       message: 'Email tidak valid',
+                                   }
+                               ]}
+                    >
+                        <Input placeholder="Email"/>
+                    </Form.Item>
+                    <Form.Item label="No. HP" name="phone_number">
+                        <Input placeholder="ex.6281234567890" style={{width: '100%'}}/>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} lg={{span: 11, offset: 2}}>
+                    {role === 3 ? (
+                        <>
+                            <Form.Item label="NIP" name={["lecturer", "nip"]}>
+                                <Input placeholder="NIP"/>
                             </Form.Item>
-                        )}
+                            <Form.Item label="Pendidikan Terakhir" name={["lecturer", "last_education"]}>
+                                <Select options={listEducationOptions} placeholder="Pendidikan Terkahir"/>
+                            </Form.Item>
+                        </>
+                    ) : (
                         <Form.Item
-                            name="fileList"
-                            label="Foto"
-                            valuePropName="fileList"
-                            getValueFromEvent={normFile}
-                            extra="Max. 2 MB"
+                            label="Angkatan"
+                            name={["student", "year"]}
                             rules={[
-                                {
-                                    validator: imageValidator
-                                },
+                                {required: true, type: "number", min: 0},
                             ]}
                         >
-                            <Upload
-                                name="avatar"
-                                className="avatar-uploader"
-                                beforeUpload={beforeUpload}
-                                onRemove={onRemove}
-                                listType="picture"
-                                maxCount={1}
-                                fileList={fileList}
-                            >
-                                <Button icon={<UploadOutlined/>}>Upload</Button>
-                            </Upload>
+                            <InputNumber placeholder="ex. 2021"/>
                         </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Modal>
+                    )}
+                    <Form.Item
+                        name="fileList"
+                        label="Foto"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        extra="Max. 2 MB"
+                        rules={[{validator: imageValidator}]}
+                    >
+                        <Upload
+                            name="avatar"
+                            className="avatar-uploader"
+                            beforeUpload={beforeUpload}
+                            onRemove={onRemove}
+                            listType="picture"
+                            maxCount={1}
+                            fileList={fileList}
+                        >
+                            <Button icon={<UploadOutlined/>}>Upload</Button>
+                        </Upload>
+                    </Form.Item>
+                </Col>
+            </Row>
+        </FormModal>
     )
 }
 
