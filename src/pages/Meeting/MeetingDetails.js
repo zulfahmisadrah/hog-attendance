@@ -50,7 +50,8 @@ export function MeetingDetails() {
         setLoading(true);
         meetingService.getListAttendances({
             id: meeting_id,
-            onSuccess: (attendances) => {
+            onSuccess: (listData) => {
+                const attendances = listData.sort((a ,b) => a.student?.user?.username?.localeCompare(b.student?.user?.username));
                 setAttendances(attendances);
                 setLoading(false);
             }

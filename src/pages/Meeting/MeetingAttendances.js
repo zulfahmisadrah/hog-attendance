@@ -33,8 +33,9 @@ export function MeetingAttendances() {
     const fetchMeetingAttendances = (meeting_id) => {
         meetingService.getListAttendances({
             id: meeting_id,
-            onSuccess: (attendances) => {
-                setAttendances(attendances)
+            onSuccess: (listData) => {
+                const attendances = listData.sort((a ,b) => a.student?.user?.username?.localeCompare(b.student?.user?.username));
+                setAttendances(attendances);
             }
         })
     }
