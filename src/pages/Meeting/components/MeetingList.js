@@ -65,19 +65,18 @@ function MeetingList(props) {
     const userId = useSelector(state => state.auth.user.id);
     const userRole = useSelector(state => state.auth.user.role);
 
-    const [data, setData] = useState([{}, {}, {}])
+    const [data, setData] = useState([])
     const [loading, setLoading] = useState(false);
-    const [attendances, setAttendances] = useState([]);
 
     const checkIsDisabled = (meeting) => meeting?.status !== MeetingStatus.Berlangsung;
     const meetingService = new MeetingService();
 
     useEffect(() => {
-        fetchData()
+        if (data.length === 0) fetchData();
     }, [])
 
     const fetchData = () => {
-        setLoading(true)
+        setLoading(true);
         switch (type) {
             case MeetingListType.ACTIVE:
                 meetingService.getListTodayMeeting({
@@ -105,43 +104,17 @@ function MeetingList(props) {
     }
 
     const onDataFetched = (listData) => {
-        listData.forEach(meeting => {
-            meetingService.getListAttendances({
-                id: meeting.id,
-                onSuccess: (attendances) => {
-                    meeting.totalAttend = attendances.filter(attendance => attendance?.status === attendanceStatus.attend).length
-                    meeting.totalStudents = attendances.length
-                    if (limit === 1) {
-                        if (listData.length > 0) {
-                            const sortedListData = listData.sort((a, b) => b.created_at.localeCompare(a.created_at));
-                            setData([sortedListData[0]])
-                        } else {
-                            setData(listData)
-                        }
-                    } else {
-                        setData(listData);
-                    }
-                    setLoading(false);
-                },
-                onError: (e) => {
-                    console.log(e);
-                    setLoading(false);
-                }
-            })
-        })
-        if (listData.length === 0) {
-            setData(listData);
-            setLoading(false);
-        }
-    }
-
-    const fetchMeetingAttendances = (meeting_id) => {
-        meetingService.getListAttendances({
-            id: meeting_id,
-            onSuccess: (attendances) => {
-                setAttendances(attendances)
+        if (limit === 1) {
+            if (listData.length > 0) {
+                const sortedListData = listData.sort((a, b) => b.created_at.localeCompare(a.created_at));
+                setData([sortedListData[0]])
+            } else {
+                setData(listData)
             }
-        })
+        } else {
+            setData(listData);
+        }
+        setLoading(false);
     }
 
     // const generateDetails = (record) => {
@@ -315,7 +288,9 @@ function MeetingList(props) {
                                 {userRole === 3 && meeting.status === MeetingStatus.Selesai && (
                                     <Row style={{marginTop: 8}}>
                                         <Typography.Text strong>
-                                            Total hadir: {meeting.totalAttend}/{meeting.totalStudents}
+                                            Total hadir : {meeting.attendances?.filter(attendance => attendance?.status === attendanceStatus.attend).length}
+                                            /
+                                            {meeting.attendances?.length}
                                         </Typography.Text>
                                     </Row>
                                 )}
