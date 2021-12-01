@@ -22,5 +22,6 @@ export {SearchField} from "./SearchField";
 export {FormModal} from "./FormModal";
 export {AttendanceTag} from "./AttendanceTag";
 export {ButtonFormModal} from "./ButtonFormModal";
+export {ButtonShowModal} from "./ButtonShowModal";
 
 
