@@ -91,8 +91,8 @@ function TakePresence() {
                 data: data,
                 onSuccess: (res) => {
                     console.log(`response = `, res);
-                    res.result.forEach(username => {
-                        const studentAttendance = attendances.find(attendance => attendance.student.user.username === username)
+                    res.result.forEach(user => {
+                        const studentAttendance = attendances.find(attendance => attendance.student.user.username === user.username)
                         // console.log(`studentAttendance = `, studentAttendance);
                         if (studentAttendance) {
                             if (studentAttendance?.status === attendanceStatus.attend) {
