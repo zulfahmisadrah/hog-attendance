@@ -35,7 +35,7 @@ export function ButtonShowStudents(props) {
         })
     }
 
-    const updateStudents = (selectedOptions) => {
+    const updateStudents = (selectedOptions, callback) => {
         const listStudentsId = selectedOptions.map(option => option.value)
         const data = {students: listStudentsId}
         courseService.addCourseStudents({
@@ -44,6 +44,7 @@ export function ButtonShowStudents(props) {
             onSuccess: (listData) => {
                 setData(listData);
                 showDataUpdatedNotification();
+                callback();
             }
         })
     }
