@@ -4,10 +4,11 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {CourseService, DatasetService} from "../../../../services/services";
 import {ButtonUploadDatasets} from "./ButtonUploadDatasets";
 import {UploadImagesModal} from "./UploadImagesModal";
+import {BASE_AVATAR_URL, BASE_RESULT_URL} from "../../../../utils/Constants";
 
 export function Recognize() {
     const [coursesOptions, setCoursesOptions] = useState([]);
-    const [message, setMessage] = useState(null);
+    const [result, setResult] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [loading, setLoading] = useState(false);
     const [toggleWebcam, setToggleWebcam] = useState(false);
@@ -75,7 +76,7 @@ export function Recognize() {
                     data: data,
                     onSuccess: (response) => {
                         console.log(`response = `, response);
-                        setMessage(response.result);
+                        setResult(response);
                         onSuccess();
                     },
                     onError: e => {
@@ -148,14 +149,40 @@ export function Recognize() {
                 </Row>
             </Col>
             {
-                message && (
-                    <Space direction="vertical">
-                        <Typography.Text>{message.length} wajah terdeteksi</Typography.Text>
-                        <Typography.Text strong>Hasil Pengenalan Wajah:</Typography.Text>
-                        {message.map(user => (
-                            <Typography.Text>{user.name}</Typography.Text>
-                        ))}
-                    </Space>
+                result && (
+                    <Row gutter={[16, 8]} style={{marginTop: 16}}>
+                        <Col span={24}>
+                            <Typography.Text strong>Hasil Pengenalan Wajah:</Typography.Text>
+                        </Col>
+                        <Col span={12}>
+                            <Space direction="vertical">
+                                {result.predictions?.map(user => (
+                                    <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                                ))}
+                            </Space>
+                        </Col>
+                        <Col span={12}>
+                            <Space direction="vertical">
+                                <Typography.Text>Wajah terdeteksi: {result.total_detection}</Typography.Text>
+                                <Typography.Text>Waktu proses: {result.detection_time + result.recognition_time} detik</Typography.Text>
+                                {/*<Typography.Text>Waktu pengenalan: {result.recognition_time} detik</Typography.Text>*/}
+                            </Space>
+                        </Col>
+                        <Col span={24}>
+                            <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
+                        </Col>
+                    </Row>
+
+                    // <Space direction="vertical">
+                    //     <Typography.Text>Wajah terdeteksi: {result.total_detection}</Typography.Text>
+                    //     <Typography.Text>Waktu proses: {result.detection_time + result.recognition_time} detik</Typography.Text>
+                    //     {/*<Typography.Text>Waktu pengenalan: {result.recognition_time} detik</Typography.Text>*/}
+                    //     <Typography.Text strong>Hasil Pengenalan Wajah:</Typography.Text>
+                    //     {result.predictions?.map(user => (
+                    //         <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                    //     ))}
+                    //     <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
+                    // </Space>
                 )
             }
             <Col span={24}>

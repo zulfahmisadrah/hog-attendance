@@ -2,11 +2,11 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {useParams} from "react-router-dom";
 import {WebcamCapture} from "../../components";
-import {Button, Col, Row, Space, Typography} from "antd";
+import {Button, Col, Modal, Row, Space, Typography} from "antd";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {DatasetService, MeetingService} from "../../services/services";
 import {showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
-import {attendanceStatus} from "../../utils/Constants";
+import {attendanceStatus, BASE_RESULT_URL} from "../../utils/Constants";
 import {ButtonShowDrawer} from "./components/ButtonShowDrawer";
 
 const StyledDiv = styled.div`
@@ -49,6 +49,7 @@ function TakePresence() {
     const webcamRef = useRef(null)
     const canvasRef = useRef(null)
     const [meeting, setMeeting] = useState(null);
+    const [result, setResult] = useState(null);
     const [attendances, setAttendances] = useState([]);
 
     const totalAttend = attendances.filter(attendance => attendance?.status === attendanceStatus.attend).length
@@ -91,7 +92,8 @@ function TakePresence() {
                 data: data,
                 onSuccess: (res) => {
                     console.log(`response = `, res);
-                    res.result.forEach(user => {
+                    setResult(res);
+                    res.predictions.forEach(user => {
                         const studentAttendance = attendances.find(attendance => attendance.student.user.username === user.username)
                         // console.log(`studentAttendance = `, studentAttendance);
                         if (studentAttendance) {
@@ -129,6 +131,20 @@ function TakePresence() {
         [meeting, webcamRef, attendances]
     )
 
+    const showLastResult = () => {
+        if (result) {
+            return Modal.info({
+                title: "Hasil Pengenalan Wajah",
+                okText: 'Tutup',
+                style: { top: 10 },
+                content: (
+                    <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
+                )
+            })
+
+        }
+    }
+
 
     return (
         <StyledDiv>
@@ -140,6 +156,7 @@ function TakePresence() {
                         <Col xs={24} md={4}>
                             <Space direction="vertical">
                                 <Button className="w-100" type="primary" size="large" onClick={recognize}>Scan</Button>
+                                <Button className="w-100" onClick={showLastResult}>Hasil Scan</Button>
                                 <ButtonShowDrawer>Total Hadir : {totalAttend}/{attendances.length}</ButtonShowDrawer>
                             </Space>
                         </Col>

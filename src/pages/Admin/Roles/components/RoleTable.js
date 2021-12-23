@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, Row, Space, Table, Typography} from "antd";
+import {Button, Input, Modal, Row, Space, Table, Typography} from "antd";
 import PropTypes from "prop-types";
 import {
     searchData, showDataAddedNotification,
@@ -11,6 +11,7 @@ import {ColumnNumber, ColumnCreatedAt, ColumnActions} from "../../../../componen
 import {_detailRows} from "./_detailRows";
 import {RoleFormModal} from "./RoleFormModal";
 import {RoleService} from "../../../../services/services";
+import {ExclamationCircleOutlined} from "@ant-design/icons";
 
 RoleTable.propTypes = {
     isSelectDataMode: PropTypes.bool,
@@ -47,28 +48,10 @@ export function RoleTable(props) {
         fetchData();
     }, []);
 
-
-    const onUpdateFinished = () => {
-        setVisible(prevState => ({...prevState, edit: false}))
-        showDataUpdatedNotification()
-        fetchData()
-    }
-
-    const deleteData = (id) => {
-        departmentService.deleteData({
-            id: id,
-            onSuccess: () => {
-                showDataDeletedNotification()
-                fetchData()
-            }
-        })
-    }
-
     const columns = [
         ...isSelectDataMode ? [] : [ColumnNumber],
         ..._columns,
         ColumnCreatedAt,
-        ...isSelectDataMode ? [] : [ColumnActions(_detailRows, onUpdateFinished, deleteData)]
     ]
 
     const onCreateFinished = () => {
@@ -97,8 +80,7 @@ export function RoleTable(props) {
 
     const onSearch = keyword => {
         if (keyword !== "") {
-            const dataUser = data.map(value => ({...value, ...value.user}))
-            const results = searchData(dataUser, keyword, ["name", "email"])
+            const results = searchData(data, keyword, false, ["code", "name"])
             setFilteredData(results);
         } else {
             setFilteredData(data);
@@ -132,10 +114,6 @@ export function RoleTable(props) {
                 <Space>
                     <Input.Search placeholder="Cari..." allowClear enterButton onSearch={onSearch}
                                   style={{width: 200}}/>
-                    {
-                        isSelectDataMode ? null :
-                            <Button type="primary" onClick={() => showModal('create')}>Tambah Data</Button>
-                    }
                 </Space>
                 {visible.create && (
                     <RoleFormModal title="Tambah Data" visible={visible.create} onSubmit={onCreateFinished}

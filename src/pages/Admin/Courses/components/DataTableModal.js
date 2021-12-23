@@ -25,7 +25,8 @@ export function DataTableModal(props) {
     const hasSelected = selectedRowKeys.length > 0;
 
     const handleAddData = () => {
-        onSubmit(selectedOptions)
+        onSubmit(selectedOptions, () => setSelectedOptions([]));
+        // setSelectedOptions([]);
     }
 
     const handleRemoveSelected = () => {

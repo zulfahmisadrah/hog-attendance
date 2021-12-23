@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
-import {Button, Card, Col, Row, Modal, Typography, Form, Select, Tabs} from "antd";
+import {Button, Card, Col, Row, Modal, Typography, Form, Select, Tabs, Switch} from "antd";
 import PropTypes from "prop-types";
 import {WebcamCapture} from "../../../components";
 import {StudentService, CourseService, DatasetService} from "../../../services/services";
 import styled from "styled-components";
-import {DatasetTable} from "./components";
+import {DatasetTable, Recognize} from "./components";
 import {ButtonUploadDatasets} from "./components/ButtonUploadDatasets";
 import {showDataAddedNotification} from "../../../utils/Commons";
 
@@ -71,6 +71,7 @@ export function Datasets(props) {
     const [coursesOptions, setCoursesOptions] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [toggleWebcam, setToggleWebcam] = useState(false);
     const webcamRef = useRef(null);
     const [form] = Form.useForm();
 
@@ -200,17 +201,32 @@ export function Datasets(props) {
         setStudentsOptionData(studentsOptionData)
     }
 
-    // const showUploadModal = () => {
-    //
-    //     return (
-    //         <M
-    //     )
-    //
-    // }
+    const onToggleWebcam = (value) => {
+        setToggleWebcam(value);
+    }
+
+    const handleSubmit = (values, onSuccess) => {
+        if (values.fileList) {
+            values.fileList.forEach((file, index) => {
+                const fileData = file.originFileObj;
+                console.log(fileData)
+                const formData = new FormData();
+                formData.append('username', selectedData);
+                formData.append('file', fileData);
+                datasetService.datasetCapture(formData, (file_path) => {
+                    console.log(`response = `, file_path);
+                    if (index === values.fileList.length-1) {
+                        showDataAddedNotification();
+                        onSuccess();
+                    }
+                })
+            })
+        }
+    }
 
     return (
         <Row gutter={[16, 16]}>
-            <Col xs={{span: 24, order: 1}} md={{span: 12, order: 2}}>
+            <Col xs={{span: 24, order: 1}} lg={{span: 12, order: 2}}>
                 <StyledDiv>
                     <div className="card-container">
                         <Tabs type="card">
@@ -229,8 +245,20 @@ export function Datasets(props) {
                                         {selectedData && (
                                             <>
                                                 <Typography.Text>Total Data: {totalDatasets}</Typography.Text>
-                                                <WebcamCapture ref={webcamRef} className="w-100"/>
                                                 <Row gutter={16}>
+                                                    <Col>
+                                                        <Switch size="default" onChange={onToggleWebcam}/>
+                                                    </Col>
+                                                    <Col>
+                                                        <Typography.Text>Webcam</Typography.Text>
+                                                    </Col>
+                                                </Row>
+                                                {
+                                                    toggleWebcam && (
+                                                        <WebcamCapture ref={webcamRef} className="w-100"/>
+                                                    )
+                                                }
+                                                <Row gutter={[16, 8]} style={{marginTop: 16}}>
                                                     <Col span={12}>
                                                         <Button className="w-100" type="primary" size="large"
                                                                 onClick={snapshot}>
@@ -238,7 +266,7 @@ export function Datasets(props) {
                                                         </Button>
                                                     </Col>
                                                     <Col span={12}>
-                                                        <ButtonUploadDatasets data={selectedData}/>
+                                                        <ButtonUploadDatasets onSubmit={handleSubmit}/>
                                                     </Col>
                                                     <Col span={12}>
                                                         <Button className="w-100" size="large"
@@ -272,31 +300,13 @@ export function Datasets(props) {
                                 </Row>
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Uji" key="3">
-                                <Row gutter={16}>
-                                    <Col span={12}>
-                                        <WebcamCapture ref={webcamRef}/>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item label="Mata Kuliah" name="course" required
-                                                   rules={[{required: true}]}>
-                                            <Select
-                                                options={coursesOptions}
-                                                placeholder="Pilih Mata Kuliah"
-                                                showSearch
-                                                onChange={onCourseSelected}
-                                                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                                            />
-                                        </Form.Item>
-                                        <Button className="w-100" type="primary" size="large"
-                                                onClick={recognize}>Kenali</Button>
-                                    </Col>
-                                </Row>
+                                <Recognize />
                             </Tabs.TabPane>
                         </Tabs>
                     </div>
                 </StyledDiv>
             </Col>
-            <Col xs={{span: 24, order: 2}} md={{span: 12, order: 1}}>
+            <Col xs={{span: 24, order: 2}} lg={{span: 12, order: 1}}>
                 <Card title="Daftar Dataset">
                     <DatasetTable/>
                 </Card>
