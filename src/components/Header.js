@@ -55,7 +55,7 @@ function Header(props){
                         title={
                             <>
                                 <span style={{ color: '#999', marginRight: 4 }}>
-                                    Hi, {username}
+                                    {username}
                                 </span>
                                 <Avatar style={{ marginLeft: 8 }} src={getImage('avatar')} />
                             </>
