@@ -10,7 +10,7 @@ ButtonEditSchedule.propTypes = {
 }
 
 export function ButtonEditSchedule(props) {
-    const {data, onSubmit} = props
+    const {data, onSubmit, children} = props
 
     const [visible, setVisible] = useState(false);
 
@@ -19,7 +19,7 @@ export function ButtonEditSchedule(props) {
 
     return (
         <>
-            <Button onClick={showModal}><EditOutlined/>Ubah</Button>
+            <Button onClick={showModal}><EditOutlined/>{children}</Button>
             {visible && (
                 <EditScheduleModal
                     data={data}

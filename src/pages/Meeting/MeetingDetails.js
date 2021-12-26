@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, List, Row, Skeleton, Typography} from "antd";
+import {Button, Card, Col, Divider, List, Row, Skeleton, Space, Typography} from "antd";
 import {CourseService, MeetingService} from "../../services/services";
-import {formatDateTime, showDataUpdatedNotification} from "../../utils/Commons";
+import {formatDateTime, showDataUpdatedMessage, showDataUpdatedNotification} from "../../utils/Commons";
 import {
     attendanceStatus,
     dateFormat,
@@ -15,7 +15,7 @@ import {userPath} from "../../path";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {CameraFilled} from "@ant-design/icons";
 import {ButtonEditSchedule} from "./components/ButtonEditSchedule";
-import {AttendanceTag} from "../../components";
+import {AttendanceBadge, AttendanceTag} from "../../components";
 import {useSelector} from "react-redux";
 
 
@@ -28,6 +28,7 @@ export function MeetingDetails() {
     const [lecturers, setLecturers] = useState([]);
     const [students, setStudents] = useState([]);
     const [attendances, setAttendances] = useState([]);
+    const [myAttendance, setMyAttendance] = useState(null);
     const [loading, setLoading] = useState(null);
 
     const meetingService = new MeetingService();
@@ -51,8 +52,21 @@ export function MeetingDetails() {
         meetingService.getListAttendances({
             id: meeting_id,
             onSuccess: (listData) => {
-                const attendances = listData.sort((a ,b) => a.student?.user?.username?.localeCompare(b.student?.user?.username));
+                const attendances = listData.sort((a, b) => a.student?.user?.username?.localeCompare(b.student?.user?.username));
                 setAttendances(attendances);
+                setLoading(false);
+            }
+        })
+    }
+
+    const fetchMyMeetingAttendance = (meeting_id) => {
+        setLoading(true);
+        attendanceService.getMyMeetingAttendance({
+            meeting_id: meeting_id,
+            onSuccess: (attendance) => {
+                setMyAttendance(attendance);
+            },
+            onFinally: () => {
                 setLoading(false);
             }
         })
@@ -61,6 +75,7 @@ export function MeetingDetails() {
     useEffect(() => {
         fetchMeetingDetails(meeting_id);
         fetchMeetingAttendances(meeting_id);
+        if (userRole === 4) fetchMyMeetingAttendance(meeting_id);
     }, [meeting_id]);
 
     const getListLecturers = (meeting) => {
@@ -117,6 +132,18 @@ export function MeetingDetails() {
         })
     }
 
+    const raiseAttendanceStatus = (statusByStudent) => {
+        const updatedAttendance = {...myAttendance};
+        updatedAttendance.status_by_student = statusByStudent;
+        attendanceService.updateData({
+            data: updatedAttendance,
+            onSuccess: (updatedData) => {
+                setMyAttendance(updatedData);
+                showDataUpdatedMessage("Status kehadiran telah diajukan");
+            }
+        })
+    }
+
     return (
         <>
             <Card>
@@ -145,7 +172,7 @@ export function MeetingDetails() {
                             </Row>
                         </Col>
                         <Col span={24}>
-                            <Row justify="space-between" align="middle">
+                            <Row justify="space-between" align="middle" wrap={false}>
                                 <Col flex="auto">
                                     <Row>
                                         <Col span={24}>
@@ -160,7 +187,7 @@ export function MeetingDetails() {
                                 </Col>
                                 {userRole === 3 && meeting?.status !== MeetingStatus.Selesai && (
                                     <Col>
-                                        <ButtonEditSchedule data={meeting} onSubmit={updateMeeting}/>
+                                        <ButtonEditSchedule data={meeting} onSubmit={updateMeeting}>Ubah</ButtonEditSchedule>
                                     </Col>
                                 )}
                             </Row>
@@ -197,6 +224,58 @@ export function MeetingDetails() {
                                 </Row>
                             </Col>
                         )}
+                        {userRole === 4 && meeting?.status === MeetingStatus.Berlangsung && (
+                            <>
+                                <Col span={24}>
+                                    <Row>
+                                        <Col span={24}>
+                                            <Typography.Text type="secondary">Status Kehadiran Anda</Typography.Text>
+                                        </Col>
+                                        <Col span={24}>
+                                            <AttendanceTag data={myAttendance?.status}/>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col span={24}>
+                                    <Typography.Text style={{fontSize: 14}}>
+                                        Ajukan status kehadiran
+                                    </Typography.Text>
+                                </Col>
+                                <Col span={24}>
+                                    <Row gutter={[16, 8]} justify="end">
+                                        <Col xs={12} lg={4}>
+                                            <Button
+                                                className="w-100"
+                                                type={myAttendance?.status_by_student === attendanceStatus.sick ? "primary" : "default"}
+                                                onClick={() => raiseAttendanceStatus(attendanceStatus.sick)}>{attendanceStatus.sick}
+                                            </Button>
+                                        </Col>
+                                        <Col xs={12} lg={4}>
+                                            <Button
+                                                className="w-100"
+                                                type={myAttendance?.status_by_student === attendanceStatus.attend ? "primary" : "default"}
+                                                onClick={() => raiseAttendanceStatus(attendanceStatus.attend)}>{attendanceStatus.attend}
+                                            </Button>
+                                        </Col>
+                                        <Col xs={12} lg={4}>
+                                            <Button
+                                                className="w-100"
+                                                type={myAttendance?.status_by_student === attendanceStatus.permitted ? "primary" : "default"}
+                                                onClick={() => raiseAttendanceStatus(attendanceStatus.permitted)}>{attendanceStatus.permitted}
+                                            </Button>
+                                        </Col>
+                                        <Col xs={12} lg={4}>
+                                            <Button
+                                                className="w-100"
+                                                type={myAttendance?.status_by_student === attendanceStatus.absent ? "primary" : "default"}
+                                                onClick={() => raiseAttendanceStatus(attendanceStatus.absent)}>{attendanceStatus.absent}
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </>
+                        )}
+
                     </Row>
                 </Skeleton>
             </Card>
@@ -211,7 +290,7 @@ export function MeetingDetails() {
                     dataSource={attendances}
                     renderItem={attendance => (
                         <List.Item key={attendance.id}>
-                            <Row className="w-100">
+                            <Row className="w-100" wrap={false}>
                                 <Col flex="auto">
                                     <Row>
                                         <Col span={24}>
@@ -225,14 +304,41 @@ export function MeetingDetails() {
                                     </Row>
                                 </Col>
                                 {meeting?.status !== MeetingStatus.Terjadwal && (
-                                    <Col flex="50px">
-                                        <AttendanceTag data={attendance.status}/>
-                                    </Col>
+                                    <>
+                                        {attendance?.status_by_student !== attendance.status && (
+                                            <Col flex="10px">
+                                                <AttendanceBadge data={attendance.status_by_student} />
+                                            </Col>
+                                        )}
+                                        <Col flex="50px">
+                                            <AttendanceTag data={attendance.status}/>
+                                        </Col>
+                                    </>
                                 )}
                             </Row>
                         </List.Item>
                     )}
                 />
+            </Card>
+            <Card>
+                <Space direction="vertical">
+                    <Typography.Text strong>Status Kehadiran yang Diajukan Mahasiswa</Typography.Text>
+                    <Typography.Text>Keterangan:</Typography.Text>
+                </Space>
+                <Row gutter={[16, 8]}>
+                    <Col xs={12} lg={4}>
+                        <AttendanceBadge data={attendanceStatus.sick} text={attendanceStatus.sick}/>
+                    </Col>
+                    <Col xs={12} lg={4}>
+                        <AttendanceBadge data={attendanceStatus.attend} text={attendanceStatus.attend}/>
+                    </Col>
+                    <Col xs={12} lg={4}>
+                        <AttendanceBadge data={attendanceStatus.permitted} text={attendanceStatus.permitted}/>
+                    </Col>
+                    <Col xs={12} lg={4}>
+                        <AttendanceBadge data={attendanceStatus.absent} text={attendanceStatus.absent}/>
+                    </Col>
+                </Row>
             </Card>
         </>
     )

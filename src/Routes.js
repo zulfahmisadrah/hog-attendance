@@ -16,7 +16,7 @@ import {
     Departments,
     Roles
 } from "./pages/Admin";
-import {Home, Meeting, Attendance, Profile, TakePresence, MeetingAttendances} from "./pages";
+import {Home, Meeting, Attendance, Profile, TakePresence, EditAttendances} from "./pages";
 import AdminRoute from "./components/AdminRoute";
 import {MeetingDetails} from "./pages";
 
@@ -40,12 +40,12 @@ export const getAdminRoutes = () => (
     </Switch>
 )
 
-export const getRoutes = () => (
+export const getRoutes = (props) => (
     <Switch>
         <Route path={userPath.home} component={Home}/>
         <Route exact path={userPath.meetings} component={Meeting}/>
         <Route path={userPath.meetingDetails} component={MeetingDetails}/>
-        <Route path={userPath.meetingEditAttendances} component={MeetingAttendances}/>
+        <Route path={userPath.meetingEditAttendances} component={EditAttendances}/>
         <Route path={userPath.meetingAttendances} component={TakePresence}/>
         <Route path={userPath.history} component={Attendance}/>
         <Route path={userPath.profile} component={Profile}/>

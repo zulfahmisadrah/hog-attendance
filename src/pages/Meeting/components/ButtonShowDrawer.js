@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button} from "antd";
-import {EditAttendances} from "../EditAttendances";
+import {AttendancesDrawer} from "../AttendancesDrawer";
 
 
 export function ButtonShowDrawer(props) {
@@ -8,16 +8,16 @@ export function ButtonShowDrawer(props) {
 
     const [visible, setVisible] = useState(false);
 
-    const showModal = () => setVisible(true)
-    const closeModal = () => setVisible(false)
+    const show = () => setVisible(true)
+    const close = () => setVisible(false)
 
     return (
         <>
-            <Button onClick={showModal}>{children}</Button>
+            <Button onClick={show}>{children}</Button>
             {visible && (
-                <EditAttendances
+                <AttendancesDrawer
                     visible={visible}
-                    onClose={closeModal}
+                    onClose={close}
                 />
             )}
         </>

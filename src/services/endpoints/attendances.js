@@ -25,6 +25,7 @@ class AttendanceRequest extends APIRequest {
     })
 
     getMyAttendances = () => axios.get(this.baseUrl + "me")
+    getMyMeetingAttendance = (meeting_id) => axios.get(this.baseUrl + `${meeting_id}/me`)
 
 }
 

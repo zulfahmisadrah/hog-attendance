@@ -1,4 +1,4 @@
 export {Meeting} from "./Meeting";
 export {MeetingDetails} from "./MeetingDetails";
-export {MeetingAttendances} from "./MeetingAttendances";
+export {EditAttendances} from "./EditAttendances";
 

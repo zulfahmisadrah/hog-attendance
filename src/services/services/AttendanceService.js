@@ -19,4 +19,20 @@ export class AttendanceService extends APIService {
             }
         })
     }
+
+    getMyMeetingAttendance = ({meeting_id, onSuccess, onError, onFinally}) => {
+        this.apiRequest.getMyMeetingAttendance(meeting_id).then(res => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("getMyMeetingAttendance", e)
+            }
+        }).finally(() => {
+            if (onFinally instanceof Function){
+                onFinally()
+            }
+        })
+    }
 }
