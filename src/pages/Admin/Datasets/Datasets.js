@@ -1,13 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React from 'react';
 
-import {Button, Card, Col, Row, Modal, Typography, Form, Select, Tabs, Switch} from "antd";
+import {Card, Col, Row, Tabs} from "antd";
 import PropTypes from "prop-types";
-import {WebcamCapture} from "../../../components";
-import {StudentService, CourseService, DatasetService} from "../../../services/services";
 import styled from "styled-components";
 import {DatasetTable, GenerateDataset, Recognize, TrainModel} from "./components";
-import {ButtonUploadDatasets} from "./components/ButtonUploadDatasets";
-import {showDataAddedNotification} from "../../../utils/Commons";
 
 const StyledDiv = styled.div`
   .card-container p {
@@ -46,183 +42,12 @@ const StyledDiv = styled.div`
   }
 `
 
-const initialVisible = {create: false, edit: false}
-
 Datasets.propTypes = {
     isSelectDataMode: PropTypes.bool,
     onDataSelected: PropTypes.func
 }
 
-export function Datasets(props) {
-    const {isSelectDataMode, onDataSelected} = props
-
-    const {confirm, info} = Modal;
-
-    const [data, setData] = useState([]);
-    const [selectedData, setSelectedData] = useState(null);
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [selectedRows, setSelectedRows] = useState([]);
-    const [filteredData, setFilteredData] = useState([]);
-    const [isLoading, setIsLoading] = useState({fetch: false, filter: false, reload: false});
-    const [visible, setVisible] = useState(initialVisible);
-    const [studentsData, setStudentsData] = useState([]);
-    const [totalDatasets, setTotalDatasets] = useState(0);
-    const [studentsOptionData, setStudentsOptionData] = useState([]);
-    const [coursesOptions, setCoursesOptions] = useState([]);
-    const [selectedCourse, setSelectedCourse] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [toggleWebcam, setToggleWebcam] = useState(false);
-    const webcamRef = useRef(null);
-    const [form] = Form.useForm();
-
-    const hasSelected = selectedRowKeys.length > 0;
-    const studentService = new StudentService();
-    const courseService = new CourseService();
-    const datasetService = new DatasetService();
-
-    useEffect(() => {
-        if (data.length === 0) fetchData();
-        getListStudentOptions(filteredData);
-    }, [filteredData]);
-
-    useEffect(() => {
-        initListCourses()
-    }, [])
-
-    const fetchData = () => {
-        setIsLoading(prevState => ({...prevState, fetch: true}))
-        studentService.getListData({
-            onSuccess: (listStudents) => {
-                setData(listStudents)
-                setFilteredData(listStudents)
-                setIsLoading(prevState => ({...prevState, fetch: false}))
-            }
-        })
-    }
-
-    const initListCourses = () => {
-        courseService.getListCoursesOptions((listCoursesOptions) => setCoursesOptions(listCoursesOptions))
-    }
-
-    const detectFromRawDataset = () => {
-        setLoading(true);
-        const username = selectedData;
-        const data = new FormData()
-        data.append('username', username);
-        datasetService.createFromRawDataset({
-            data: data,
-            onSuccess: (result) => {
-                console.log(result);
-                setLoading(false);
-                showDataAddedNotification();
-            },
-            onError: (e) => {
-                console.log(e);
-                setLoading(false);
-            }
-        })
-    }
-
-    const snapshot = useCallback(
-        () => {
-            const username = form.getFieldValue("student");
-            const imageSrc = webcamRef.current.getScreenshot();
-            const data = new FormData()
-            data.append('username', username)
-            data.append('file', imageSrc)
-            datasetService.datasetCapture(data, (file_path) => {
-                console.log(`response = `, file_path)
-                datasetService.fetchListStudentDatasets(username, (datasets) => {
-                    console.log("DATASET", datasets)
-                    setTotalDatasets(datasets.length)
-                })
-            })
-        },
-        [webcamRef]
-    )
-
-    const train = () => {
-        setLoading(true);
-        const data = new FormData()
-        data.append('course_id', selectedCourse)
-        datasetService.trainDatasets({
-            data: data,
-            onSuccess: (response) => {
-                console.log(`response = `, response);
-                setLoading(false);
-                showDataAddedNotification();
-            },
-            onError: (e) => {
-                console.log(e);
-                setLoading(false);
-            }
-        })
-    }
-
-    const recognize = useCallback(
-        () => {
-            const course_id = form.getFieldValue("course")
-            const imageSrc = webcamRef.current.getScreenshot();
-            const data = new FormData()
-            data.append('file', imageSrc)
-            data.append('course_id', course_id)
-            datasetService.recognizeUser({
-                data: data,
-                onSuccess: (file_path) => {
-                    console.log(`response = `, file_path)
-                    // setName(res.data)
-                    // fetchListStudentDatasets(student_id, (datasets) => {
-                    //     console.log("DATASET", datasets)
-                    //     setTotalDatasets(datasets.data.length)
-                    // })
-                }
-            })
-        },
-        [webcamRef]
-    )
-
-    const onStudentSelected = (username) => {
-        setSelectedData(username);
-        datasetService.fetchListStudentDatasets(username, (datasets) => {
-            setTotalDatasets(datasets.length);
-        })
-    }
-
-    const onCourseSelected = (course_id) => {
-        setSelectedCourse(course_id)
-    }
-
-    const getListStudentOptions = (filteredData) => {
-        const sortedData = filteredData.sort((a,b) => a?.user?.username.localeCompare(b?.user?.username));
-        const studentsOptionData = sortedData.map(student => ({
-            label: `${student.user?.username} - ${student.user?.name}`,
-            value: student.user?.username
-        }))
-        setStudentsOptionData(studentsOptionData)
-    }
-
-    const onToggleWebcam = (value) => {
-        setToggleWebcam(value);
-    }
-
-    const handleSubmit = (values, onSuccess) => {
-        if (values.fileList) {
-            values.fileList.forEach((file, index) => {
-                const fileData = file.originFileObj;
-                console.log(fileData)
-                const formData = new FormData();
-                formData.append('username', selectedData);
-                formData.append('file', fileData);
-                datasetService.datasetCapture(formData, (file_path) => {
-                    console.log(`response = `, file_path);
-                    if (index === values.fileList.length-1) {
-                        showDataAddedNotification();
-                        onSuccess();
-                    }
-                })
-            })
-        }
-    }
+export function Datasets() {
 
     return (
         <Row gutter={[16, 16]}>
@@ -231,13 +56,13 @@ export function Datasets(props) {
                     <div className="card-container">
                         <Tabs type="card">
                             <Tabs.TabPane tab="Buat Dataset" key="1">
-                                <GenerateDataset />
+                                <GenerateDataset/>
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Latih" key="2">
-                                <TrainModel />
+                                <TrainModel/>
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Uji" key="3">
-                                <Recognize />
+                                <Recognize/>
                             </Tabs.TabPane>
                         </Tabs>
                     </div>

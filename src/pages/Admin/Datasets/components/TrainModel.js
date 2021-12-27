@@ -1,10 +1,6 @@
-import {Button, Col, Form, Row, Select, Space, Switch, Typography} from "antd";
-import {ButtonShowModal, WebcamCapture} from "../../../../components";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Button, Col, Form, Row, Select, Space, Typography} from "antd";
+import React, {useEffect, useState} from "react";
 import {CourseService, DatasetService} from "../../../../services/services";
-import {ButtonUploadDatasets} from "./ButtonUploadDatasets";
-import {UploadImagesModal} from "./UploadImagesModal";
-import {BASE_AVATAR_URL, BASE_RESULT_URL} from "../../../../utils/Constants";
 import {showDataAddedNotification} from "../../../../utils/Commons";
 
 export function TrainModel() {
@@ -12,9 +8,7 @@ export function TrainModel() {
     const [result, setResult] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [toggleWebcam, setToggleWebcam] = useState(false);
 
-    const webcamRef = useRef(null);
     const [form] = Form.useForm();
 
     const datasetService = new DatasetService();
@@ -28,73 +22,14 @@ export function TrainModel() {
         courseService.getListCoursesOptions((listCoursesOptions) => setCoursesOptions(listCoursesOptions));
     }
 
-    const onToggleWebcam = (value) => {
-        setToggleWebcam(value);
-    }
-
     const onCourseSelected = (course_id) => {
         setSelectedCourse(course_id);
     }
 
-    const recognizeFromWebcam = useCallback(
-        () => {
-            form.validateFields().then(values => {
-                console.log(values);
-            }).catch(e => {
-                console.log("Validate failed: ", e);
-            })
-            const course_id = form.getFieldValue("course")
-            const imageSrc = webcamRef.current.getScreenshot();
-            const data = new FormData()
-            data.append('file', imageSrc)
-            data.append('course_id', course_id)
-            datasetService.recognizeUser({
-                data: data,
-                onSuccess: (file_path) => {
-                    console.log(`response = `, file_path)
-                    // setName(res.data)
-                    // fetchListStudentDatasets(student_id, (datasets) => {
-                    //     console.log("DATASET", datasets)
-                    //     setTotalDatasets(datasets.data.length)
-                    // })
-                }
-            })
-        },
-        [webcamRef]
-    );
-
-    const recognize = (uploadedFiles, onSuccess, onError) => {
-        form.validateFields().then(values => {
-            console.log(values);
-            const course_id = values.course;
-            uploadedFiles.fileList.forEach(file => {
-                const imageSrc = file.originFileObj;
-                console.log(imageSrc);
-                const data = new FormData();
-                data.append('file', imageSrc);
-                data.append('course_id', course_id);
-                datasetService.recognizeUser({
-                    data: data,
-                    onSuccess: (response) => {
-                        console.log(`response = `, response);
-                        setResult(response);
-                        onSuccess();
-                    },
-                    onError: e => {
-                        console.log(e);
-                        onError();
-                    }
-                });
-            });
-        }).catch(e => {
-            console.log("Validate failed: ", e);
-        })
-    }
-
     const train = () => {
         setLoading(true);
-        const data = new FormData()
-        data.append('course_id', selectedCourse)
+        const data = new FormData();
+        data.append('course_id', selectedCourse);
         datasetService.trainDatasets({
             data: data,
             onSuccess: (response) => {
@@ -114,8 +49,7 @@ export function TrainModel() {
         <Row gutter={[16, 16]}>
             <Col span={24}>
                 <Form form={form}>
-                    <Form.Item label="Mata Kuliah" name="course" required
-                               rules={[{required: true}]}>
+                    <Form.Item label="Mata Kuliah" name="course" required rules={[{required: true}]}>
                         <Select
                             options={coursesOptions}
                             placeholder="Pilih Mata Kuliah"
