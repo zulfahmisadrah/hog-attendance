@@ -28,11 +28,15 @@ export class DatasetService extends APIService {
         })
     }
 
-    datasetCapture = (data, callback) => {
+    datasetCapture = ({data, onSuccess, onError}) => {
         this.apiRequest.createDataset(data).then(res => {
-            callback(res.data)
+            onSuccess(res.data)
         }).catch(e => {
-            console.log("datasetCapture", e)
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("datasetCapture", e)
+            }
         })
     }
 

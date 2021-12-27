@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import {WebcamCapture} from "../../../components";
 import {StudentService, CourseService, DatasetService} from "../../../services/services";
 import styled from "styled-components";
-import {DatasetTable, Recognize} from "./components";
+import {DatasetTable, GenerateDataset, Recognize, TrainModel} from "./components";
 import {ButtonUploadDatasets} from "./components/ButtonUploadDatasets";
 import {showDataAddedNotification} from "../../../utils/Commons";
 
@@ -111,8 +111,8 @@ export function Datasets(props) {
         data.append('username', username);
         datasetService.createFromRawDataset({
             data: data,
-            onSuccess: (filePath) => {
-                console.log(filePath);
+            onSuccess: (result) => {
+                console.log(result);
                 setLoading(false);
                 showDataAddedNotification();
             },
@@ -147,8 +147,8 @@ export function Datasets(props) {
         data.append('course_id', selectedCourse)
         datasetService.trainDatasets({
             data: data,
-            onSuccess: (filePath) => {
-                console.log(filePath);
+            onSuccess: (response) => {
+                console.log(`response = `, response);
                 setLoading(false);
                 showDataAddedNotification();
             },
@@ -230,74 +230,11 @@ export function Datasets(props) {
                 <StyledDiv>
                     <div className="card-container">
                         <Tabs type="card">
-                            <Tabs.TabPane tab="Dataset" key="1">
-                                <Row gutter={16}>
-                                    <Col span={24}>
-                                        <Form.Item label="Mahasiswa" name="student" required rules={[{required: true}]}>
-                                            <Select
-                                                options={studentsOptionData}
-                                                placeholder="Pilih Mahasiswa"
-                                                showSearch
-                                                onChange={onStudentSelected}
-                                                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                                            />
-                                        </Form.Item>
-                                        {selectedData && (
-                                            <>
-                                                <Typography.Text>Total Data: {totalDatasets}</Typography.Text>
-                                                <Row gutter={16}>
-                                                    <Col>
-                                                        <Switch size="default" onChange={onToggleWebcam}/>
-                                                    </Col>
-                                                    <Col>
-                                                        <Typography.Text>Webcam</Typography.Text>
-                                                    </Col>
-                                                </Row>
-                                                {
-                                                    toggleWebcam && (
-                                                        <WebcamCapture ref={webcamRef} className="w-100"/>
-                                                    )
-                                                }
-                                                <Row gutter={[16, 8]} style={{marginTop: 16}}>
-                                                    <Col span={12}>
-                                                        <Button className="w-100" type="primary" size="large"
-                                                                onClick={snapshot}>
-                                                            Ambil Foto
-                                                        </Button>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <ButtonUploadDatasets onSubmit={handleSubmit}/>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Button className="w-100" size="large"
-                                                                onClick={detectFromRawDataset} loading={loading}>
-                                                            Buat dari Raw Dataset
-                                                        </Button>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        )}
-                                    </Col>
-                                </Row>
+                            <Tabs.TabPane tab="Buat Dataset" key="1">
+                                <GenerateDataset />
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="Model" key="2">
-                                <Row gutter={16}>
-                                    <Col span={24}>
-                                        <Form.Item label="Mata Kuliah" name="course" required
-                                                   rules={[{required: true}]}>
-                                            <Select
-                                                options={coursesOptions}
-                                                placeholder="Pilih Mata Kuliah"
-                                                showSearch
-                                                onChange={onCourseSelected}
-                                                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                                            />
-                                        </Form.Item>
-                                        <Button className="w-100" type="primary" size="large" onClick={train} loading={loading}>
-                                            Buat Model
-                                        </Button>
-                                    </Col>
-                                </Row>
+                            <Tabs.TabPane tab="Latih" key="2">
+                                <TrainModel />
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Uji" key="3">
                                 <Recognize />

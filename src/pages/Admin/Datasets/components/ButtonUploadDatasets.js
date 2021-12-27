@@ -25,6 +25,7 @@ export function ButtonUploadDatasets(props) {
                     visible={visible}
                     onSubmit={onSubmit}
                     onCancel={closeModal}
+                    maxSize={3}
                 />
             )}
         </>
