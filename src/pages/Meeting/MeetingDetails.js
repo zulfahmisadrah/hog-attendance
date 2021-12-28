@@ -242,7 +242,7 @@ export function MeetingDetails() {
                                     </Typography.Text>
                                 </Col>
                                 <Col span={24}>
-                                    <Row gutter={[16, 8]} justify="end">
+                                    <Row gutter={[16, 8]}>
                                         <Col xs={12} lg={4}>
                                             <Button
                                                 className="w-100"
@@ -264,7 +264,7 @@ export function MeetingDetails() {
                                                 onClick={() => raiseAttendanceStatus(attendanceStatus.permitted)}>{attendanceStatus.permitted}
                                             </Button>
                                         </Col>
-                                        <Col xs={12} lg={4}>
+                                        <Col span={12} lg={4}>
                                             <Button
                                                 className="w-100"
                                                 type={myAttendance?.status_by_student === attendanceStatus.absent ? "primary" : "default"}
