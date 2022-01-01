@@ -10,7 +10,7 @@ ButtonShowModal.propTypes = {
 }
 
 export function ButtonShowModal(props) {
-    const {modal: Modal, data, onSubmit, buttonProps, modalProps, children} = props;
+    const {modal: Modal, data, onSubmit, modalProps, children, ...rest} = props;
 
     const [visible, setVisible] = useState(false);
 
@@ -19,7 +19,7 @@ export function ButtonShowModal(props) {
 
     return (
         <>
-            <Button onClick={showModal} {...buttonProps}>
+            <Button onClick={showModal} {...rest}>
                 {children}
             </Button>
             {visible && (

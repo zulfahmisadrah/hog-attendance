@@ -90,10 +90,6 @@ export function Recognize() {
         })
     }
 
-    const recognizeFromTestFolder = () => {
-
-    }
-
     return (
         <Row gutter={[16, 16]}>
             <Col span={24}>
@@ -119,32 +115,33 @@ export function Recognize() {
                         <Typography.Text>Webcam</Typography.Text>
                     </Col>
                 </Row>
-                {
-                    toggleWebcam && (
-                        <WebcamCapture ref={webcamRef} className="w-100"/>
-                    )
-                }
+                {toggleWebcam && (
+                    <Row gutter={16}>
+                        <Col span={24}>
+                            <WebcamCapture ref={webcamRef} className="w-100"/>
+                        </Col>
+                        <Col span={24}>
+                            <Button className="w-100" type="primary" size="large"
+                                    onClick={recognizeFromWebcam}>
+                                Ambil Foto
+                            </Button>
+                        </Col>
+                    </Row>
+                )}
             </Col>
             <Col span={24}>
                 <Row gutter={[16, 8]} style={{marginTop: 16}}>
-                    <Col span={12}>
-                        <Button className="w-100" type="primary" size="large" onClick={recognizeFromWebcam}>Kenali</Button>
-                    </Col>
-                    <Col span={12}>
+                    <Col span={24}>
                         <ButtonShowModal
                             modal={UploadImagesModal}
                             onSubmit={recognize}
-                            buttonProps={{className: "w-100", size: "large"}}
+                            className="w-100"
+                            size="large"
+                            type="primary"
                             modalProps={{maxSize: 3}}
                         >
                             Upload Gambar
                         </ButtonShowModal>
-                    </Col>
-                    <Col span={12}>
-                        <Button className="w-100" size="large"
-                                onClick={recognizeFromTestFolder} loading={loading}>
-                            Kenali dari Test Folder
-                        </Button>
                     </Col>
                 </Row>
             </Col>
