@@ -1,12 +1,9 @@
 import React, {useState} from 'react';
 import {Link as LinkRouter} from 'react-router-dom'
-import {DB_USERS, userCategory, userProgram} from "../utils/Constants";
 import {loginPath} from "../path";
 import {Alert, Button, Card, Col, Divider, Form, Input, Row, Typography, Space, Select} from "antd";
 import styled from 'styled-components';
 import {getImage} from "../assets/images";
-import {getCurrentDateTime} from "../utils/Commons";
-import {User, userConverter} from "../models";
 
 const { Text } = Typography;
 
@@ -91,22 +88,6 @@ function Register() {
         registerUser(values)
     }
 
-    const generateUserProgramSelector = () => (
-        <Select placeholder="Program">
-            {userProgram.map(value => (
-                <Select.Option key={value} value={value}>{value}</Select.Option>
-            ))}
-        </Select>
-    )
-
-    const generateUserCategorySelector = () => (
-        <Select placeholder="Kelompok Ujian">
-            {userCategory.map(value => (
-                <Select.Option key={value} value={value}>{value}</Select.Option>
-            ))}
-        </Select>
-    )
-
     return (
         <div style={styles}>
             <StyledRow>
@@ -164,34 +145,6 @@ function Register() {
                                             ]}
                                         >
                                             <Input className="input" placeholder="Email"/>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col xs={{span: 24}} lg={{span: 12}}>
-                                        <Form.Item
-                                            name="program"
-                                            label="Program"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Pilih program yang Anda ikuti',
-                                                },
-                                            ]}
-                                        >
-                                            {generateUserProgramSelector()}
-                                        </Form.Item>
-                                    </Col>
-                                    <Col xs={{span: 24}} lg={{span: 12}}>
-                                        <Form.Item
-                                            name="category"
-                                            label="Kelompok Ujian"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Pilih kelompok ujian Anda',
-                                                },
-                                            ]}
-                                        >
-                                            {generateUserCategorySelector()}
                                         </Form.Item>
                                     </Col>
                                     <Col xs={{span: 24}} lg={{span: 12}}>

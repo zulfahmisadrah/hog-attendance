@@ -1,25 +1,26 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Modal, Popconfirm, Row, Space, Typography} from "antd";
+import {Button, Col, Modal, Popconfirm, Row} from "antd";
 import PropTypes from "prop-types";
-import {BASE_DATASET_URL} from "../../../../utils/Constants";
+import {BASE_DATASET_TRAIN_URL, BASE_DATASET_VAL_URL, DatasetType} from "../../../../utils/Constants";
 import {DatasetService} from "../../../../services/services";
 import {showDataDeletedNotification} from "../../../../utils/Commons";
 
 DatasetsModal.propTypes = {
     data: PropTypes.object.isRequired,
+    datasetType: PropTypes.string.isRequired,
     visible: PropTypes.bool,
     onCancel: PropTypes.func,
 }
 
 export function DatasetsModal(props) {
-    const {data, visible, onCancel} = props
+    const {data, datasetType, visible, onCancel} = props
 
     const datasetService = new DatasetService();
 
     const [datasets, setDatasets] = useState([]);
 
     const fetchData = () => {
-        datasetService.fetchListStudentDatasets(data.user?.username, setDatasets);
+        datasetService.fetchListStudentDatasets(datasetType, data.user?.username, setDatasets);
     }
 
     useEffect(() => {
@@ -49,7 +50,11 @@ export function DatasetsModal(props) {
                 >
                     <Button type="danger" size="small">X</Button>
                 </Popconfirm>
-                <img width={60} src={BASE_DATASET_URL + data.user?.username + "/" + value} alt="dataset"/>
+                <img
+                    width={60}
+                    src={(datasetType === DatasetType.TRAINING ? BASE_DATASET_TRAIN_URL : BASE_DATASET_VAL_URL) + data.user?.username + "/" + value}
+                    alt="dataset"
+                />
             </Col>
         ))
     }

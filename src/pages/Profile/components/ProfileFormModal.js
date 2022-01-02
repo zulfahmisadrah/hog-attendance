@@ -1,13 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {Modal, Form, Input, Row, Col, Select, Button, Upload, InputNumber} from 'antd';
+import React, {useState} from 'react';
+import {Form, Input, Row, Col, Select, Button, Upload, InputNumber} from 'antd';
 import {BASE_AVATAR_URL} from "../../../utils/Constants";
-import {
-    handleInputPhoneNumber,
-    showErrorModal,
-    listEducationOptions,
-} from "../../../utils/Commons";
+import {listEducationOptions,} from "../../../utils/Commons";
 import {UploadOutlined} from "@ant-design/icons";
-import {UserService} from "../../../services/services/UserService";
 import {useSelector} from "react-redux";
 import {FormModal} from "../../../components";
 
@@ -17,11 +12,6 @@ function ProfileFormModal(props) {
     const role = useSelector(state => state.auth.user.role);
 
     const [fileList, setFileList] = useState([]);
-    const [confirmLoading, setConfirmLoading] = useState(false);
-
-    const [form] = Form.useForm();
-
-    const userService = new UserService();
 
     const handleInitFormData = (formData) => {
         if (formData.avatar) {
@@ -37,56 +27,6 @@ function ProfileFormModal(props) {
         setFileList(fileList);
         formData.fileList = avatarUrl ? fileList : [];
         return formData;
-    }
-
-    const handleOk = (values) => {
-        setConfirmLoading(true);
-        form.validateFields().then((values) => {
-            values.phone_number = values.phone_number ? handleInputPhoneNumber(values.phone_number) : values.phone_number;
-            if (values.fileList) {
-                const file = values.fileList[0]?.originFileObj;
-                const avatarFormData = new FormData();
-                avatarFormData.append('username', values.username);
-                avatarFormData.append('avatar', file);
-                if (data) {
-                    const avatarUrl = BASE_AVATAR_URL + origin.avatar;
-                    const avatarModified = values.fileList[0]?.thumbUrl !== avatarUrl;
-                    delete values.fileList;
-                    if (avatarModified) {
-                        if (file) {
-                            userService.uploadUserAvatar({
-                                data: avatarFormData,
-                                onSuccess: (filePath) => {
-                                    values.avatar = filePath;
-                                    updateUser(values);
-                                }
-                            });
-                        } else {
-                            values.avatar = null;
-                            updateUser(values);
-                        }
-                    }
-                }
-            }
-        }).catch((info) => {
-            console.log('Validate Failed:', info);
-            setConfirmLoading(false);
-        });
-    }
-
-    const updateUser = (values) => {
-        userService.updateMyData({
-            data: values,
-            onSuccess: (updatedData) => {
-                onSubmit(updatedData)
-                setConfirmLoading(false)
-                form.resetFields();
-            },
-            onError: (error) => {
-                showErrorModal(error)
-                setConfirmLoading(false)
-            },
-        })
     }
 
     const handleCancel = () => {

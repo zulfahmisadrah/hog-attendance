@@ -9,12 +9,16 @@ class DatasetRequest extends APIRequest {
         super(baseUrl);
     }
 
-    getListStudentDatasets = (username) => {
-        return axios.get(this.baseUrl + username)
+    getListStudentDatasets = (datasetType, username) => {
+        return axios.get(this.baseUrl + datasetType + "/" + username)
+    }
+
+    getStudentTotalDatasets = (username) => {
+        return axios.get(this.baseUrl + "total_datasets/" + username)
     }
 
     createFromRawDataset = (data) => {
-        return axios.post(this.baseUrl + "detect_from_raw", data)
+        return axios.post(this.baseUrl + "generate_datasets_from_raw", data)
     }
 
     createDataset = (data) => {

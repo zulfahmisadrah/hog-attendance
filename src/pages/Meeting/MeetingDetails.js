@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Divider, List, Row, Skeleton, Space, Typography} from "antd";
+import {Button, Card, Col, List, Row, Skeleton, Typography} from "antd";
 import {CourseService, MeetingService} from "../../services/services";
 import {formatDateTime, showDataUpdatedMessage, showDataUpdatedNotification} from "../../utils/Commons";
 import {
@@ -15,7 +15,7 @@ import {userPath} from "../../path";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {CameraFilled} from "@ant-design/icons";
 import {ButtonEditSchedule} from "./components/ButtonEditSchedule";
-import {AttendanceBadge, AttendanceTag} from "../../components";
+import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag} from "../../components";
 import {useSelector} from "react-redux";
 
 
@@ -185,7 +185,7 @@ export function MeetingDetails() {
                                         </Col>
                                     </Row>
                                 </Col>
-                                {userRole === 3 && meeting?.status !== MeetingStatus.Selesai && (
+                                {userRole === 3 && meeting && meeting?.status !== MeetingStatus.Selesai && (
                                     <Col>
                                         <ButtonEditSchedule data={meeting} onSubmit={updateMeeting}>Ubah</ButtonEditSchedule>
                                     </Col>
@@ -286,59 +286,68 @@ export function MeetingDetails() {
                         <Typography.Text strong>Total Hadir : {totalAttend}/{attendances.length}</Typography.Text>
                     )}
                 </Row>
-                <List
-                    dataSource={attendances}
-                    renderItem={attendance => (
-                        <List.Item key={attendance.id}>
-                            <Row className="w-100" wrap={false}>
-                                <Col flex="auto">
-                                    <Row>
-                                        <Col span={24}>
-                                            <Typography.Text strong
-                                                             style={{fontSize: 14}}>{attendance.student?.user?.name}</Typography.Text>
-                                        </Col>
-                                        <Col span={24}>
-                                            <Typography.Text
-                                                type="secondary">{attendance.student?.user?.username}</Typography.Text>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                {meeting?.status !== MeetingStatus.Terjadwal && (
-                                    <>
-                                        {attendance?.status_by_student !== attendance.status && (
-                                            <Col flex="10px">
-                                                <AttendanceBadge data={attendance.status_by_student} />
+                {attendances.length > 0 ? (
+                    <List
+                        dataSource={attendances}
+                        renderItem={attendance => (
+                            <List.Item key={attendance.id}>
+                                <Row className="w-100" wrap={false}>
+                                    <Col flex="auto">
+                                        <Row>
+                                            <Col span={24}>
+                                                <Typography.Text strong style={{fontSize: 14}}>
+                                                    {attendance.student?.user?.name}
+                                                </Typography.Text>
                                             </Col>
-                                        )}
-                                        <Col flex="50px">
-                                            <AttendanceTag data={attendance.status}/>
-                                        </Col>
-                                    </>
-                                )}
-                            </Row>
-                        </List.Item>
-                    )}
-                />
+                                            <Col span={24}>
+                                                <Typography.Text
+                                                    type="secondary">{attendance.student?.user?.username}</Typography.Text>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                    {meeting?.status !== MeetingStatus.Terjadwal && (
+                                        <>
+                                            {attendance?.status_by_student !== attendance.status && (
+                                                <Col flex="10px">
+                                                    <AttendanceBadge data={attendance.status_by_student} />
+                                                </Col>
+                                            )}
+                                            <Col flex="50px">
+                                                <AttendanceTag data={attendance.status}/>
+                                            </Col>
+                                        </>
+                                    )}
+                                </Row>
+                            </List.Item>
+                        )}
+                    />
+                ) : (
+                    <List
+                        dataSource={students}
+                        renderItem={student => (
+                            <List.Item key={student.id}>
+                                <Row className="w-100" wrap={false}>
+                                    <Col flex="auto">
+                                        <Row>
+                                            <Col span={24}>
+                                                <Typography.Text strong style={{fontSize: 14}}>
+                                                    {student?.user?.name}
+                                                </Typography.Text>
+                                            </Col>
+                                            <Col span={24}>
+                                                <Typography.Text
+                                                    type="secondary">{student?.user?.username}</Typography.Text>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            </List.Item>
+                        )}
+                    />
+                )}
             </Card>
             <Card>
-                <Space direction="vertical">
-                    <Typography.Text strong>Status Kehadiran yang Diajukan Mahasiswa</Typography.Text>
-                    <Typography.Text>Keterangan:</Typography.Text>
-                </Space>
-                <Row gutter={[16, 8]}>
-                    <Col xs={12} lg={4}>
-                        <AttendanceBadge data={attendanceStatus.sick} text={attendanceStatus.sick}/>
-                    </Col>
-                    <Col xs={12} lg={4}>
-                        <AttendanceBadge data={attendanceStatus.attend} text={attendanceStatus.attend}/>
-                    </Col>
-                    <Col xs={12} lg={4}>
-                        <AttendanceBadge data={attendanceStatus.permitted} text={attendanceStatus.permitted}/>
-                    </Col>
-                    <Col xs={12} lg={4}>
-                        <AttendanceBadge data={attendanceStatus.absent} text={attendanceStatus.absent}/>
-                    </Col>
-                </Row>
+                <AttendanceBadgesLegend/>
             </Card>
         </>
     )

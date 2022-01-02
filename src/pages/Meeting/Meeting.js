@@ -1,7 +1,6 @@
 import React from 'react';
 import {Tabs} from "antd";
 import styled from "styled-components";
-import {Page404} from "../../components";
 import MeetingList from './components/MeetingList';
 
 const StyledTabs = styled(Tabs)`

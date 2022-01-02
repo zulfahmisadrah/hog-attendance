@@ -4,7 +4,6 @@ export {default as AdminRoute} from "./AdminRoute";
 export {default as Appbar} from "./Appbar";
 export {default as BottomNavigation} from "./BottomNavigation";
 export {default as Login} from "./Login";
-export {default as Register} from "./Register";
 export {default as Header} from "./Header";
 export {default as Sidebar} from "./Sidebar";
 export {default as Page404} from "./Page404";
@@ -24,5 +23,6 @@ export {AttendanceTag} from "./AttendanceTag";
 export {AttendanceBadge} from "./AttendanceBadge";
 export {ButtonFormModal} from "./ButtonFormModal";
 export {ButtonShowModal} from "./ButtonShowModal";
+export {AttendanceBadgesLegend} from "./AttendanceBadgesLegend";
 
 

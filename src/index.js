@@ -7,8 +7,8 @@ import * as serviceWorker from './serviceWorker';
 import {Provider} from "react-redux";
 import store from "./store";
 import {BrowserRouter, Switch} from "react-router-dom";
-import {loginPath, registerPath, rootPath} from "./path";
-import {GuestRoute, Login, PrivateRoute, Register} from "./components";
+import {loginPath, rootPath} from "./path";
+import {GuestRoute, Login, PrivateRoute} from "./components";
 import {getToken} from "./services/auth";
 
 import {BASE_API_URL} from './utils/Constants';
@@ -25,7 +25,6 @@ function render() {
                 <BrowserRouter>
                     <Switch>
                         <GuestRoute exact path={loginPath} component={Login}/>
-                        <GuestRoute exact path={registerPath} component={Register}/>
                         <PrivateRoute path={rootPath} component={App}/>
                     </Switch>
                 </BrowserRouter>

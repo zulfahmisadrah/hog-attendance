@@ -1,4 +1,3 @@
-import {getRoleName} from "../../../../utils/Commons";
 import React from "react";
 import {BASE_AVATAR_URL} from "../../../../utils/Constants";
 

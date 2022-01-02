@@ -3,16 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {Avatar, Button, Card, Col, List, Row, Skeleton, Typography} from "antd";
 import {EditOutlined, LogoutOutlined, UnlockOutlined} from "@ant-design/icons";
 import {ProfileFormModal, ChangePasswordModal} from "./components";
-import {
-    handleInputPhoneNumber,
-    showDataAddedNotification,
-    showDataUpdatedNotification,
-    showErrorModal
-} from "../../utils/Commons";
+import {handleInputPhoneNumber, showDataUpdatedMessage} from "../../utils/Commons";
 import {removeAuth} from "../../services/auth"
-import { getUserData } from '../../services';
 import {UserService} from "../../services/services/UserService";
-import {ButtonFormModal} from "../../components/ButtonFormModal";
+import {ButtonFormModal} from "../../components";
 import {BASE_AVATAR_URL} from "../../utils/Constants";
 const initialVisible = {password: false, edit: false}
 
@@ -84,7 +78,7 @@ function Profile() {
             data: values,
             onSuccess: (updatedData) => {
                 onSuccess();
-                showDataUpdatedNotification("Profil berhasil diperbarui.")
+                showDataUpdatedMessage("Profil berhasil diperbarui.")
                 fetchData();
             },
             onError: (error) => {
@@ -93,15 +87,9 @@ function Profile() {
         })
     }
 
-    const onUpdateFinished = () => {
-        fetchData()
-        setVisible(prevState => ({...prevState, edit: false}))
-        showDataUpdatedNotification("Profil berhasil diperbarui.")
-    }
-
     const onChangePasswordFinished = () => {
         setVisible(prevState => ({...prevState, password: false}))
-        showDataUpdatedNotification("Password berhasil diperbarui.")
+        showDataUpdatedMessage("Password berhasil diperbarui.")
     }
 
     const showModal = (type) => {
@@ -188,8 +176,6 @@ function Profile() {
                     }}
                 />
             </Card>
-            {/*<ProfileFormModal title="Edit Profil" data={data} visible={visible.edit}*/}
-            {/*                  onSubmit={onUpdateFinished} onCancel={handleCancel}/>*/}
             <ChangePasswordModal title="Ubah Password" visible={visible.password} onSubmit={onChangePasswordFinished}
                                  onCancel={handleCancel}/>
         </div>

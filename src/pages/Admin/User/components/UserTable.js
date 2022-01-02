@@ -20,7 +20,6 @@ export function UserTable() {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [selectedRows, setSelectedRows] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const userService = new UserService();
@@ -149,8 +148,7 @@ export function UserTable() {
         })
     ]
 
-    const onSelectChange = (selectedRowKeys, selectedRows) => {
-        setSelectedRows(selectedRows);
+    const onSelectChange = (selectedRowKeys) => {
         setSelectedRowKeys(selectedRowKeys);
     }
     const rowSelection = {

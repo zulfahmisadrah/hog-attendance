@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, Modal, Row, Space, Table, Typography} from "antd";
+import {Button, Input, Row, Space, Table, Typography} from "antd";
 import PropTypes from "prop-types";
-import {
-    searchData, showDataAddedNotification,
-    showDataDeletedNotification,
-    showDataUpdatedNotification,
-} from "../../../../utils/Commons";
+import {searchData, showDataAddedNotification,} from "../../../../utils/Commons";
 import {_columns} from "./_columns";
-import {ColumnNumber, ColumnCreatedAt, ColumnActions} from "../../../../components";
-import {_detailRows} from "./_detailRows";
+import {ColumnNumber, ColumnCreatedAt} from "../../../../components";
 import {RoleFormModal} from "./RoleFormModal";
 import {RoleService} from "../../../../services/services";
-import {ExclamationCircleOutlined} from "@ant-design/icons";
 
 RoleTable.propTypes = {
     isSelectDataMode: PropTypes.bool,
@@ -25,9 +19,7 @@ export function RoleTable(props) {
 
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
-    const [selectedData, setSelectedData] = useState({});
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [selectedRows, setSelectedRows] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [visible, setVisible] = useState(initialVisible);
 
@@ -60,17 +52,12 @@ export function RoleTable(props) {
         fetchData()
     }
 
-    const showModal = (type) => {
-        setVisible(prevState => ({...prevState, [type]: true}));
-    }
-
     const handleCancel = () => {
         setVisible(initialVisible);
     }
 
     const onSelectChange = (selectedRowKeys, selectedRows) => {
         if (isSelectDataMode) onDataSelected(selectedRows)
-        setSelectedRows(selectedRows);
         setSelectedRowKeys(selectedRowKeys);
     }
     const rowSelection = {

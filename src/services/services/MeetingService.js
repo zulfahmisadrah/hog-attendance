@@ -1,7 +1,7 @@
 import APIService from "../../utils/APIService";
 import MeetingRequest from "../endpoints/meetings";
 import {getDateTimeFromString, getMoment} from "../../utils/Commons";
-import {dateTimeFormat, MeetingStatus, MeetingListType} from "../../utils/Constants";
+import {dateTimeFormat, MeetingStatus} from "../../utils/Constants";
 
 const meetingRequest = new MeetingRequest();
 

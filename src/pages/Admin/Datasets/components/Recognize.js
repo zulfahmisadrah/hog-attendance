@@ -1,4 +1,4 @@
-import {Button, Col, Form, Row, Select, Space, Switch, Typography} from "antd";
+import {Alert, Button, Col, Form, Row, Select, Space, Switch, Typography} from "antd";
 import {ButtonShowModal, WebcamCapture} from "../../../../components";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {CourseService, DatasetService} from "../../../../services/services";
@@ -38,25 +38,20 @@ export function Recognize() {
     const recognizeFromWebcam = useCallback(
         () => {
             form.validateFields().then(values => {
-                console.log(values);
+                const course_id = values.course;
+                const imageSrc = webcamRef.current.getScreenshot();
+                const data = new FormData()
+                data.append('file', imageSrc)
+                data.append('course_id', course_id)
+                datasetService.recognizeUser({
+                    data: data,
+                    onSuccess: (response) => {
+                        console.log(`response = `, response)
+                        setResult(response);
+                    }
+                })
             }).catch(e => {
                 console.log("Validate failed: ", e);
-            })
-            const course_id = form.getFieldValue("course")
-            const imageSrc = webcamRef.current.getScreenshot();
-            const data = new FormData()
-            data.append('file', imageSrc)
-            data.append('course_id', course_id)
-            datasetService.recognizeUser({
-                data: data,
-                onSuccess: (file_path) => {
-                    console.log(`response = `, file_path)
-                    // setName(res.data)
-                    // fetchListStudentDatasets(student_id, (datasets) => {
-                    //     console.log("DATASET", datasets)
-                    //     setTotalDatasets(datasets.data.length)
-                    // })
-                }
             })
         },
         [webcamRef]
@@ -91,34 +86,92 @@ export function Recognize() {
     }
 
     return (
-        <Row gutter={[16, 16]}>
-            <Col span={24}>
+        <Row gutter={[16, 8]}>
+            <Col xs={24} lg={12}>
                 <Form form={form}>
-                    <Form.Item label="Mata Kuliah" name="course" required
-                               rules={[{required: true, message: 'Mata Kuliah harus terisi'}]}>
-                        <Select
-                            options={coursesOptions}
-                            placeholder="Pilih Mata Kuliah"
-                            showSearch
-                            onChange={onCourseSelected}
-                            filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                        />
-                    </Form.Item>
+                    <Row gutter={[8, 8]}>
+                        <Col span={24}>
+                            <Form.Item label="Mata Kuliah" name="course" required
+                                       rules={[{required: true, message: 'Mata Kuliah harus terisi'}]}>
+                                <Select
+                                    options={coursesOptions}
+                                    placeholder="Pilih Mata Kuliah"
+                                    showSearch
+                                    onChange={onCourseSelected}
+                                    filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <ButtonShowModal
+                                modal={UploadImagesModal}
+                                className="w-100"
+                                size="large"
+                                type="primary"
+                                modalProps={{maxSize: 3, onSubmit: recognize}}
+                            >
+                                Upload Gambar
+                            </ButtonShowModal>
+                        </Col>
+                        {result && (
+                            <Col span={24}>
+                                <Alert className="w-100" type="success" closable onClose={() => setResult(null)}
+                                       message={<Typography.Text strong>Hasil Pengenalan Wajah:</Typography.Text>}
+                                       description={(
+                                           <Row gutter={[16, 8]} style={{marginTop: 16}}>
+                                               <Col span={24}>
+                                                   <Space direction="vertical">
+                                                       <Typography.Text>
+                                                           Waktu Komputasi: {result.computation_time} detik
+                                                       </Typography.Text>
+                                                       <Typography.Text>
+                                                           Wajah Terdeteksi: {result.total_detection}
+                                                       </Typography.Text>
+                                                       {/*<Typography.Text>*/}
+                                                       {/*    Waktu Pengenalan: {result.recognition_time} detik*/}
+                                                       {/*</Typography.Text>*/}
+                                                       {/*<Typography.Text>*/}
+                                                       {/*    Waktu Pendeteksian: {result.detection_time} detik*/}
+                                                       {/*</Typography.Text>*/}
+                                                   </Space>
+                                               </Col>
+                                               {result.predictions.length > 0 && (
+                                                   <Col span={24}>
+                                                       <Space direction="vertical">
+                                                           <Typography.Text>Daftar Mahasiswa:</Typography.Text>
+                                                           {result.predictions?.map(user => (
+                                                               <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                                                           ))}
+                                                       </Space>
+                                                   </Col>
+                                               )}
+                                               <Col span={24}>
+                                                   <a href={BASE_RESULT_URL + result.image_name} target="_blank">
+                                                       <img className="w-100" src={BASE_RESULT_URL + result.image_name}
+                                                            alt="result"/>
+                                                   </a>
+                                               </Col>
+                                           </Row>
+                                       )}
+                                />
+                            </Col>
+                        )}
+                    </Row>
                 </Form>
             </Col>
-            <Col span={24}>
+            <Col xs={24} lg={12}>
                 <Row gutter={16}>
                     <Col>
-                        <Switch size="default" onChange={onToggleWebcam}/>
+                        <Switch defaultChecked={toggleWebcam} size="default" onChange={onToggleWebcam}/>
                     </Col>
                     <Col>
                         <Typography.Text>Webcam</Typography.Text>
                     </Col>
                 </Row>
                 {toggleWebcam && (
-                    <Row gutter={16}>
+                    <Row>
                         <Col span={24}>
-                            <WebcamCapture ref={webcamRef} className="w-100"/>
+                            <WebcamCapture ref={webcamRef} className="w-100" style={{marginTop: 8}}/>
                         </Col>
                         <Col span={24}>
                             <Button className="w-100" type="primary" size="large"
@@ -128,61 +181,6 @@ export function Recognize() {
                         </Col>
                     </Row>
                 )}
-            </Col>
-            <Col span={24}>
-                <Row gutter={[16, 8]} style={{marginTop: 16}}>
-                    <Col span={24}>
-                        <ButtonShowModal
-                            modal={UploadImagesModal}
-                            onSubmit={recognize}
-                            className="w-100"
-                            size="large"
-                            type="primary"
-                            modalProps={{maxSize: 3}}
-                        >
-                            Upload Gambar
-                        </ButtonShowModal>
-                    </Col>
-                </Row>
-            </Col>
-            {
-                result && (
-                    <Row gutter={[16, 8]} style={{marginTop: 16}}>
-                        <Col span={24}>
-                            <Typography.Text strong>Hasil Pengenalan Wajah:</Typography.Text>
-                        </Col>
-                        <Col span={12}>
-                            <Space direction="vertical">
-                                {result.predictions?.map(user => (
-                                    <Typography.Text>{user.username} - {user.name}</Typography.Text>
-                                ))}
-                            </Space>
-                        </Col>
-                        <Col span={12}>
-                            <Space direction="vertical">
-                                <Typography.Text>Wajah terdeteksi: {result.total_detection}</Typography.Text>
-                                <Typography.Text>Waktu proses: {result.detection_time + result.recognition_time} detik</Typography.Text>
-                                {/*<Typography.Text>Waktu pengenalan: {result.recognition_time} detik</Typography.Text>*/}
-                            </Space>
-                        </Col>
-                        <Col span={24}>
-                            <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
-                        </Col>
-                    </Row>
-
-                    // <Space direction="vertical">
-                    //     <Typography.Text>Wajah terdeteksi: {result.total_detection}</Typography.Text>
-                    //     <Typography.Text>Waktu proses: {result.detection_time + result.recognition_time} detik</Typography.Text>
-                    //     {/*<Typography.Text>Waktu pengenalan: {result.recognition_time} detik</Typography.Text>*/}
-                    //     <Typography.Text strong>Hasil Pengenalan Wajah:</Typography.Text>
-                    //     {result.predictions?.map(user => (
-                    //         <Typography.Text>{user.username} - {user.name}</Typography.Text>
-                    //     ))}
-                    //     <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
-                    // </Space>
-                )
-            }
-            <Col span={24}>
             </Col>
         </Row>
     )

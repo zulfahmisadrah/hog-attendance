@@ -1,19 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, List, Row, Space, Tag, Typography, Modal, Skeleton, Menu, Dropdown} from "antd";
+import {Card, Col, List, Row, Space, Typography, Skeleton} from "antd";
 import styled from "styled-components";
-import {
-    formatDateTime,
-    getCurrentDateTime, getDateTimeFromString,
-    getMoment,
-    showErrorModal,
-    showSuccessNotification
-} from "../../utils/Commons";
-import {createAttendance, fetchMyActiveMeetings, fetchMyScheduledMeetings} from "../../services";
-import {useHistory} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {attendanceStatus, dateFormat, dateTextFormat, timeFormat, timeTextFormat} from "../../utils/Constants";
-import {fetchMyAttendances} from "../../services";
-import {MeetingService} from "../../services/services";
+import {formatDateTime,} from "../../utils/Commons";
+import {useSelector} from "react-redux";
+import {dateFormat, dateTextFormat, timeFormat, timeTextFormat} from "../../utils/Constants";
 import MeetingList from "../Meeting/components/MeetingList";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {AttendanceTag} from "../../components";
@@ -37,13 +27,6 @@ const StyledList = styled(List)`
   }
 `
 
-const listTitle = {
-    name: "Nama Pertemuan",
-    number: "Pertemuan ke-",
-    schedule: "Jadwal",
-    duration: "Durasi",
-}
-
 function Attendances() {
     const userRole = useSelector(state => state.auth.user.role);
 
@@ -66,26 +49,6 @@ function Attendances() {
     const onDataFetched = (listData) => {
         setData(listData)
         setLoading(false)
-    }
-
-    const generateDetails = (record) => {
-        let details = [];
-        Object.keys(listTitle).forEach(key => {
-            const value = record[key]
-            if (value) {
-                details.push(
-                    <Row key={key} style={{marginBottom: 6}}>
-                        <Col xs={{span: 24}} lg={{span: 10}}>
-                            <Typography.Text strong>{listTitle[key]}</Typography.Text>
-                        </Col>
-                        <Col xs={{span: 24}} lg={{span: 14}}>
-                            <Typography.Text>{key === "schedule" ? formatDateTime(value) : value}</Typography.Text><br/>
-                        </Col>
-                    </Row>
-                )
-            }
-        })
-        return details
     }
 
     const generateMeetingDescription = (meeting) => {

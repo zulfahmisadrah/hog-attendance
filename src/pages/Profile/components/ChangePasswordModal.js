@@ -1,16 +1,12 @@
 import React, {useState} from 'react';
 import {Modal, Form, Input,} from 'antd';
 import {showErrorModal,} from "../../../utils/Commons";
-import {useSelector} from "react-redux";
-import {updateUserPassword} from "../../../services";
-import {authLogin} from "../../../services/client";
 import {UserService} from "../../../services/services/UserService";
 
 function ChangePasswordModal(props) {
     const {title, visible, onSubmit, onCancel} = props;
 
     const [form] = Form.useForm();
-    const username = useSelector(state => state.auth.user.username);
 
     const [confirmLoading, setConfirmLoading] = useState(false);
     const userService = new UserService();

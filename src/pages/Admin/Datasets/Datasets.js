@@ -3,7 +3,7 @@ import React from 'react';
 import {Card, Col, Row, Tabs} from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import {DatasetTable, GenerateDataset, Recognize, TrainModel} from "./components";
+import {DatasetTable, GenerateDataset, Recognize, TrainModel, RawDataset} from "./components";
 
 const StyledDiv = styled.div`
   .card-container p {
@@ -51,24 +51,27 @@ export function Datasets() {
 
     return (
         <Row gutter={[16, 16]}>
-            <Col xs={{span: 24, order: 1}} lg={{span: 12, order: 2}}>
+            <Col span={24}>
                 <StyledDiv>
                     <div className="card-container">
                         <Tabs type="card">
+                            <Tabs.TabPane tab="Raw Dataset" key="0">
+                                <RawDataset/>
+                            </Tabs.TabPane>
                             <Tabs.TabPane tab="Buat Dataset" key="1">
                                 <GenerateDataset/>
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="Latih" key="2">
+                            <Tabs.TabPane tab="Latih Model" key="2">
                                 <TrainModel/>
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="Uji" key="3">
+                            <Tabs.TabPane tab="Uji Model" key="3">
                                 <Recognize/>
                             </Tabs.TabPane>
                         </Tabs>
                     </div>
                 </StyledDiv>
             </Col>
-            <Col xs={{span: 24, order: 2}} lg={{span: 12, order: 1}}>
+            <Col span={24}>
                 <Card title="Daftar Dataset">
                     <DatasetTable/>
                 </Card>

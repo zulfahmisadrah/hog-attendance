@@ -8,16 +8,20 @@ ButtonUploadDatasets.propTypes = {
 }
 
 export function ButtonUploadDatasets(props) {
-    const {onSubmit, children, ...rest} = props
+    const {onShowModal, onSubmit, children, ...rest} = props
 
     const [visible, setVisible] = useState(false);
 
     const showModal = () => setVisible(true)
     const closeModal = () => setVisible(false)
 
+    const handleClick = () => {
+        onShowModal(showModal);
+    }
+
     return (
         <>
-            <Button onClick={showModal} {...rest}>{children}</Button>
+            <Button onClick={handleClick} {...rest}>{children}</Button>
             {visible && (
                 <UploadImagesModal
                     visible={visible}

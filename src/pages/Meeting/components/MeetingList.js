@@ -1,15 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Card, Col, List, Row, Skeleton, Space, Typography} from "antd";
 import styled from "styled-components";
-import {
-    formatDateTime,
-    getCurrentDateTime,
-    getDateTimeFromString,
-    getMoment,
-    showErrorModal,
-    showSuccessNotification
-} from "../../../utils/Commons";
-import {createAttendance} from "../../../services";
+import {formatDateTime,} from "../../../utils/Commons";
 import {useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 import {
@@ -46,13 +38,6 @@ const StyledList = styled(List)`
   }
 `
 
-const listTitle = {
-    name: "Nama Pertemuan",
-    number: "Pertemuan ke-",
-    schedule: "Jadwal",
-    duration: "Durasi",
-}
-
 MeetingList.propTypes = {
     type: PropTypes.oneOf(["active", "scheduled", "finished"]),
     limit: PropTypes.number
@@ -62,7 +47,6 @@ function MeetingList(props) {
     const {type, limit} = props
     const history = useHistory()
 
-    const userId = useSelector(state => state.auth.user.id);
     const userRole = useSelector(state => state.auth.user.role);
 
     const [data, setData] = useState([])
@@ -82,19 +66,16 @@ function MeetingList(props) {
                 meetingService.getListTodayMeeting({
                     onSuccess: onDataFetched
                 })
-                // fetchMyActiveMeetings(onDataFetched);
                 break;
             case MeetingListType.SCHEDULED:
                 meetingService.getListScheduledMeeting({
                     onSuccess: onDataFetched
                 })
-                // fetchMyScheduledMeetings(onDataFetched);
                 break;
             case MeetingListType.FINISHED:
                 meetingService.getListFinishedMeeting({
                     onSuccess: onDataFetched
                 })
-                // fetchMyFinishedMeetings(onDataFetched);
                 break;
             default:
                 meetingService.getListTodayMeeting({
@@ -117,115 +98,8 @@ function MeetingList(props) {
         setLoading(false);
     }
 
-    // const generateDetails = (record) => {
-    //     let details = [];
-    //     Object.keys(listTitle).forEach(key => {
-    //         const value = record[key]
-    //         if (value) {
-    //             details.push(
-    //                 <Row key={key} style={{marginBottom: 6}}>
-    //                     <Col xs={{span: 24}} lg={{span: 10}}>
-    //                         <Typography.Text strong>{listTitle[key]}</Typography.Text>
-    //                     </Col>
-    //                     <Col xs={{span: 24}} lg={{span: 14}}>
-    //                         <Typography.Text>{key === "schedule" ? formatDateTime(value) : value}</Typography.Text><br/>
-    //                     </Col>
-    //                 </Row>
-    //             )
-    //         }
-    //     })
-    //     return details
-    // }
-
     const handleClickMeeting = (meeting) => {
         history.push(`${userPath.meetings}/${meeting.id}/details`)
-    }
-
-    const showDetailsModal = (item) => {
-        // Modal.info({
-        //     title: 'Rincian data',
-        //     okText: 'Tutup',
-        //     content: (
-        //         <>
-        //             {generateDetails(item)}
-        //         </>
-        //     )
-        // })
-    }
-
-    function getLocation(meeting) {
-        history.push(`${userPath.meetings}/${meeting.id}/takePresence`)
-    }
-
-    // function getLocation(meeting) {
-    //     const options = {
-    //         enableHighAccuracy: true,
-    //         timeout: 5000,
-    //         maximumAge: 0
-    //     }
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition((location) => onPositionRetrieved(location, meeting), onError);
-    //     } else {
-    //         let message = "Geolocation is not supported by this browser.";
-    //         showErrorModal(message)
-    //     }
-    // }
-
-    function onPositionRetrieved(position, meeting) {
-        const latitude = position.coords.latitude
-        const longitude = position.coords.longitude
-        const accuracy = position.coords.accuracy
-        const altitude = position.coords.altitude
-        console.log(latitude, longitude, accuracy, altitude);
-        const coordinate = `lat:${latitude};long:${longitude}`
-        attend(meeting, coordinate)
-    }
-
-    function onError(error) {
-        let message
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                message = "Anda tidak memberikan izin untuk akses lokasi."
-                break;
-            case error.POSITION_UNAVAILABLE:
-                message = "Location information is unavailable."
-                break;
-            case error.TIMEOUT:
-                message = "The request to get user location timed out."
-                break;
-            case error.UNKNOWN_ERROR:
-                message = "An unknown error occurred."
-                break;
-        }
-        showErrorModal(message)
-    }
-
-    const attend = (meeting, position) => {
-        const currentTime = getCurrentDateTime()
-        let status = "Hadir"
-        let notes = "Tepat waktu"
-        const timeDifference = getMoment().diff(getDateTimeFromString(meeting.schedule))
-        const isLate = timeDifference > 0
-        if (isLate) notes = "Terlambat " + Math.round(timeDifference / 60000) + " Menit"
-        const attendance = {
-            status: status,
-            location: position,
-            checkInTime: currentTime,
-            notes: notes,
-            meeting: meeting.id,
-            user: userId
-        }
-
-        createAttendance({
-            attendance,
-            onSuccess: (newData) => {
-                fetchData()
-                showSuccessNotification({
-                    description: "Anda hadir pada pukul " + formatDateTime(currentTime, "HH:mm"),
-                    duration: 5
-                })
-            }
-        })
     }
 
     const iconStyle = {color: COLOR_PRIMARY}
@@ -240,7 +114,6 @@ function MeetingList(props) {
                 <Typography.Text><ClockCircleOutlined style={iconStyle}/> {strStartTime}-{strEndTime}</Typography.Text>
             </Space>
         )
-        // `${strDate} ${strStartTime}-${strEndTime}`
     }
 
     const handleTakeAttendance = (e, meeting) => {
