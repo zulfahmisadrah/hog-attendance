@@ -41,6 +41,14 @@ class DatasetRequest extends APIRequest {
         })
     }
 
+    takePresence = (data) => {
+        return axios.post(this.baseUrl + "take_presence", data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+    }
+
     deleteStudentDataset = (username, fileName) => {
         return axios.delete(this.baseUrl + username + "/" + fileName)
     }

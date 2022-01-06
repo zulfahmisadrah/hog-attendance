@@ -4,6 +4,8 @@ import Webcam from "react-webcam";
 function WebcamCapture(props, ref) {
 
     const videoConstraints = {
+        // height: 1800,
+        // width: 3200,
         facingMode: {exact: "environment"}
     }
 

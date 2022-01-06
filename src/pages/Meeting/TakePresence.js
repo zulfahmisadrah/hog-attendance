@@ -83,48 +83,50 @@ function TakePresence() {
 
     const recognize = useCallback(
         () => {
-            const course_id = meeting?.course?.id
             const imageSrc = webcamRef.current.getScreenshot();
             const data = new FormData()
             data.append('file', imageSrc)
-            data.append('course_id', course_id)
-            datasetService.recognizeUser({
+            data.append('meeting_id', meeting_id)
+            datasetService.takePresence({
                 data: data,
                 onSuccess: (res) => {
                     console.log(`response = `, res);
                     setResult(res);
+                    let list_attend = []
+                    let list_has_attended = []
                     res.predictions.forEach(user => {
                         const studentAttendance = attendances.find(attendance => attendance.student.user.username === user.username)
-                        // console.log(`studentAttendance = `, studentAttendance);
                         if (studentAttendance) {
                             if (studentAttendance?.status === attendanceStatus.attend) {
-                                showInfoMessage(
-                                    <>
-                                        <Typography.Text strong>{studentAttendance.student.user.name}</Typography.Text>
-                                        <Typography.Text> telah {attendanceStatus.attend}</Typography.Text>
-                                    </>,
-                                    3
-                                );
+                                list_has_attended.push(studentAttendance.student.user.name)
+
                             } else {
-                                const updatedAttendance = {
-                                    id: studentAttendance?.id,
-                                    status: attendanceStatus.attend
-                                }
-                                attendanceService.updateData({
-                                    data: updatedAttendance,
-                                    onSuccess: () => {
-                                        fetchMeetingAttendances(meeting_id);
-                                        showDataUpdatedMessage(
-                                            <>
-                                                <Typography.Text strong>{studentAttendance.student.user.name}</Typography.Text>
-                                                <Typography.Text> {attendanceStatus.attend}</Typography.Text>
-                                            </>
-                                        );
-                                    }
-                                })
+                                list_attend.push(studentAttendance.student.user.name)
                             }
                         }
-                    })
+                    });
+
+                    fetchMeetingAttendances(meeting_id);
+
+                    if (list_has_attended.length > 0) {
+                        showInfoMessage(
+                            <>
+                                <Typography.Text strong>{list_has_attended.join(", ")}</Typography.Text>
+                                <Typography.Text> telah {attendanceStatus.attend}</Typography.Text>
+                            </>,
+                            list_has_attended.length < 3 ? 3 : list_has_attended.length + 3
+                        );
+                    }
+
+                    if (list_attend.length > 0) {
+                        showDataUpdatedMessage(
+                            <>
+                                <Typography.Text strong>{list_attend.join(", ")}</Typography.Text>
+                                <Typography.Text> {attendanceStatus.attend}</Typography.Text>
+                            </>,
+                            list_attend.length < 3 ? 3 : list_attend.length + 3
+                        );
+                    }
                 }
             })
         },

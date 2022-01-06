@@ -310,6 +310,6 @@ export const showSuccessMessage = (content = 'Sukses', duration = 2) => {
     message.success(content, duration)
 }
 
-export const showDataUpdatedMessage = (content = 'Data berhasil diperbarui.') => {
-    showSuccessMessage(content)
+export const showDataUpdatedMessage = (content = 'Data berhasil diperbarui.', duration = 2) => {
+    showSuccessMessage(content, duration)
 }
