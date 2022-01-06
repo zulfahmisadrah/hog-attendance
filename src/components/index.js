@@ -24,5 +24,6 @@ export {AttendanceBadge} from "./AttendanceBadge";
 export {ButtonFormModal} from "./ButtonFormModal";
 export {ButtonShowModal} from "./ButtonShowModal";
 export {AttendanceBadgesLegend} from "./AttendanceBadgesLegend";
+export {AttendanceFilter} from "./AttendanceFilter";
 
 

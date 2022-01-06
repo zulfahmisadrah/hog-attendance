@@ -4,9 +4,18 @@ import {Button, Card, Col, Layout, List, Row, Select, Space, Typography} from "a
 import {MeetingService} from "../../services/services";
 import {attendanceStatusOptions, showDataUpdatedMessage} from "../../utils/Commons";
 import {AttendanceService} from "../../services/services/AttendanceService";
-import {AttendanceBadge, AttendanceBadgesLegend} from "../../components";
-import {attendanceStatus} from "../../utils/Constants";
+import {AttendanceBadge, AttendanceBadgesLegend, AttendanceFilter} from "../../components";
+import styled from "styled-components";
 
+const StyledCard  = styled(Card)`
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  .ant-card-body {
+    padding-top: 4px;
+    padding-bottom: 8px;
+  }
+`
 
 export function EditAttendances() {
     let {meeting_id} = useParams();
@@ -15,6 +24,8 @@ export function EditAttendances() {
     const [updatedAttendances, setUpdatedAttendances] = useState([]);
     const [loading, setLoading] = useState(false);
     const [saveDisabled, setSaveDisabled] = useState(true);
+    const [filter, setFilter] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
     const meetingService = new MeetingService();
     const attendanceService = new AttendanceService();
@@ -23,8 +34,9 @@ export function EditAttendances() {
         meetingService.getListAttendances({
             id: meeting_id,
             onSuccess: (listData) => {
-                const attendances = listData.sort((a ,b) => a.student?.user?.username?.localeCompare(b.student?.user?.username));
+                const attendances = listData.sort((a, b) => a.student?.user?.username?.localeCompare(b.student?.user?.username));
                 setAttendances(attendances);
+                // setFilteredData(attendances);
             }
         })
     }
@@ -34,7 +46,6 @@ export function EditAttendances() {
     }, [meeting_id]);
 
     const handleSaveAttendance = () => {
-        console.log(updatedAttendances)
         setLoading(true);
         updatedAttendances.forEach((data, index) => {
             attendanceService.updateData({
@@ -48,6 +59,12 @@ export function EditAttendances() {
                 }
             })
         })
+    }
+
+    const filterAttendance = (filter) => {
+        setFilter(filter);
+        const filteredData = attendances.filter(attendance => attendance.status === filter);
+        setFilteredData(filteredData);
     }
 
     const handleAttendanceChanged = (attendance, newValue) => {
@@ -85,8 +102,18 @@ export function EditAttendances() {
 
     return (
         <Layout.Content>
-            <Card>
-                <Row className="w-100">
+            <StyledCard>
+                <Row className="w-100" gutter={[8, 8]}>
+                    <Col span={24}>
+                        <Row className="w-100" align="middle" justify="start" gutter={8}>
+                            <Col>
+                                <Typography.Text strong>Filter: </Typography.Text>
+                            </Col>
+                            <Col flex="90px">
+                                <AttendanceFilter onSelected={filterAttendance} type="dropdown"/>
+                            </Col>
+                        </Row>
+                    </Col>
                     <Col span={17}>
                         <Typography.Title level={5}>Daftar Mahasiswa</Typography.Title>
                     </Col>
@@ -97,8 +124,10 @@ export function EditAttendances() {
                         </Row>
                     </Col>
                 </Row>
+            </StyledCard>
+            <Card style={{marginTop: 60}}>
                 <List
-                    dataSource={attendances}
+                    dataSource={filter ? filteredData : attendances}
                     renderItem={attendance => (
                         <List.Item key={attendance.id}>
                             <Row className="w-100" wrap={false}>
@@ -118,7 +147,7 @@ export function EditAttendances() {
                                 </Col>
                                 {attendance?.status_by_student !== attendance.status && (
                                     <Col flex="10px">
-                                        <AttendanceBadge data={attendance.status_by_student} />
+                                        <AttendanceBadge data={attendance.status_by_student}/>
                                     </Col>
                                 )}
                                 <Col flex="90px">

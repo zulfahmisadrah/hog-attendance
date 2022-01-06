@@ -50,7 +50,10 @@ function TakePresence() {
     const canvasRef = useRef(null)
     const [meeting, setMeeting] = useState(null);
     const [result, setResult] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [attendances, setAttendances] = useState([]);
+    const [listAttend, setListAttend] = useState([]);
+    const [listHasAttended, setListHasAttended] = useState([]);
 
     const totalAttend = attendances.filter(attendance => attendance?.status === attendanceStatus.attend).length
 
@@ -83,6 +86,7 @@ function TakePresence() {
 
     const recognize = useCallback(
         () => {
+            setLoading(true);
             const imageSrc = webcamRef.current.getScreenshot();
             const data = new FormData()
             data.append('file', imageSrc)
@@ -92,41 +96,44 @@ function TakePresence() {
                 onSuccess: (res) => {
                     console.log(`response = `, res);
                     setResult(res);
-                    let list_attend = []
-                    let list_has_attended = []
+                    const listAttend = []
+                    const listHasAttended = []
                     res.predictions.forEach(user => {
                         const studentAttendance = attendances.find(attendance => attendance.student.user.username === user.username)
                         if (studentAttendance) {
                             if (studentAttendance?.status === attendanceStatus.attend) {
-                                list_has_attended.push(studentAttendance.student.user.name)
-
+                                if (!listHasAttended.includes(user)) listHasAttended.push(user)
                             } else {
-                                list_attend.push(studentAttendance.student.user.name)
+                                if (!listAttend.includes(user)) listAttend.push(user)
                             }
                         }
                     });
-
+                    setListAttend(listAttend);
+                    setListHasAttended(listHasAttended);
                     fetchMeetingAttendances(meeting_id);
+                    const listAttendName = listAttend.map(user => user.name);
+                    const listHasAttendedName = listHasAttended.map(user => user.name);
 
-                    if (list_has_attended.length > 0) {
+                    if (listHasAttendedName.length > 0) {
                         showInfoMessage(
                             <>
-                                <Typography.Text strong>{list_has_attended.join(", ")}</Typography.Text>
+                                <Typography.Text strong>{listHasAttendedName.join(", ")}</Typography.Text>
                                 <Typography.Text> telah {attendanceStatus.attend}</Typography.Text>
                             </>,
-                            list_has_attended.length < 3 ? 3 : list_has_attended.length + 3
+                            listHasAttendedName.length < 3 ? 3 : listHasAttendedName.length + 3
                         );
                     }
 
-                    if (list_attend.length > 0) {
+                    if (listAttendName.length > 0) {
                         showDataUpdatedMessage(
                             <>
-                                <Typography.Text strong>{list_attend.join(", ")}</Typography.Text>
+                                <Typography.Text strong>{listAttendName.join(", ")}</Typography.Text>
                                 <Typography.Text> {attendanceStatus.attend}</Typography.Text>
                             </>,
-                            list_attend.length < 3 ? 3 : list_attend.length + 3
+                            listAttendName.length < 3 ? 3 : listAttendName.length + 3
                         );
                     }
+                    setLoading(false);
                 }
             })
         },
@@ -136,14 +143,51 @@ function TakePresence() {
     const showLastResult = () => {
         if (result) {
             return Modal.info({
-                title: "Hasil Pengenalan Wajah",
+                title: "Hasil Pengambilan Presensi",
                 okText: 'Tutup',
                 style: { top: 10 },
                 content: (
-                    <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
+                    <Row>
+                        <Col span={24}>
+                            <a href={BASE_RESULT_URL + result.image_name} target="_blank">
+                                <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
+                            </a>
+                        </Col>
+                        {listAttend.length > 0 && (
+                            <Col span={24}>
+                                <Row>
+                                    <Col span={24}>
+                                        <Typography.Text strong>Hadir:</Typography.Text>
+                                    </Col>
+                                    <Col span={24}>
+                                        <Space direction="vertical">
+                                            {listAttend.map(user => (
+                                                <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                                            ))}
+                                        </Space>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        )}
+                        {listHasAttended.length > 0 && (
+                            <Col span={24}>
+                                <Row>
+                                    <Col span={24}>
+                                        <Typography.Text strong>Telah Hadir:</Typography.Text>
+                                    </Col>
+                                    <Col span={24}>
+                                        <Space direction="vertical">
+                                            {listHasAttended.map(user => (
+                                                <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                                            ))}
+                                        </Space>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        )}
+                    </Row>
                 )
             })
-
         }
     }
 
@@ -157,7 +201,8 @@ function TakePresence() {
                     <Row>
                         <Col xs={24} md={4}>
                             <Space direction="vertical">
-                                <Button className="w-100" type="primary" size="large" onClick={recognize}>Scan</Button>
+                                <Button className="w-100" type="primary" size="large" loading={loading}
+                                        disabled={loading} onClick={recognize}>Scan</Button>
                                 <Button className="w-100" onClick={showLastResult}>Hasil Scan</Button>
                                 <ButtonShowDrawer>Total Hadir : {totalAttend}/{attendances.length}</ButtonShowDrawer>
                             </Space>
