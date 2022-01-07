@@ -102,9 +102,9 @@ function TakePresence() {
                         const studentAttendance = attendances.find(attendance => attendance.student.user.username === user.username)
                         if (studentAttendance) {
                             if (studentAttendance?.status === attendanceStatus.attend) {
-                                if (!listHasAttended.includes(user)) listHasAttended.push(user)
+                                if (!listHasAttended.some(item => item.username === user.username)) listHasAttended.push(user)
                             } else {
-                                if (!listAttend.includes(user)) listAttend.push(user)
+                                if (!listAttend.some(item => item.username === user.username)) listAttend.push(user)
                             }
                         }
                     });
