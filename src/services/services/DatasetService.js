@@ -72,18 +72,6 @@ export class DatasetService extends APIService {
         })
     }
 
-    takePresence = ({data, onSuccess, onError}) => {
-        this.apiRequest.takePresence(data).then((res) => {
-            onSuccess(res.data)
-        }).catch(e => {
-            if (onError instanceof Function){
-                onError(e)
-            } else {
-                console.log("takePresence", e)
-            }
-        })
-    }
-
     deleteStudentDataset = ({username, fileName, onSuccess, onError}) => {
         this.apiRequest.deleteStudentDataset(username, fileName).then(res => {
             onSuccess(res.data)

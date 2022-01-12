@@ -27,6 +27,17 @@ class AttendanceRequest extends APIRequest {
     getMyAttendances = () => axios.get(this.baseUrl + "me")
     getMyMeetingAttendance = (meeting_id) => axios.get(this.baseUrl + `${meeting_id}/me`)
 
+    takePresence = (data) => {
+        return axios.post(this.baseUrl + "take_presence", data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+    }
+
+    resetAttendanceValidate = (data) => axios.post(this.baseUrl + "reset_attendance_validate", data)
+    applyAttendanceValidate = (data) => axios.post(this.baseUrl + "apply_attendance_validate", data)
+
 }
 
 export default AttendanceRequest;

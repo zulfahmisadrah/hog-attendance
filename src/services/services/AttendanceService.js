@@ -35,4 +35,40 @@ export class AttendanceService extends APIService {
             }
         })
     }
+
+    takePresence = ({data, onSuccess, onError}) => {
+        this.apiRequest.takePresence(data).then((res) => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("takePresence", e)
+            }
+        })
+    }
+
+    resetAttendanceValidate = ({data, onSuccess, onError}) => {
+        this.apiRequest.resetAttendanceValidate(data).then((res) => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("resetAttendanceValidate", e)
+            }
+        })
+    }
+
+    applyAttendanceValidate = ({data, onSuccess, onError}) => {
+        this.apiRequest.applyAttendanceValidate(data).then((res) => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("applyAttendanceValidate", e)
+            }
+        })
+    }
 }
