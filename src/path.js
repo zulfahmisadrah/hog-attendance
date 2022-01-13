@@ -18,7 +18,8 @@ export const noAppbarPath = {
 export const userPath = {
     ...bottomNavPath,
     meetingDetails: `${bottomNavPath.meetings}/:meeting_id/details`,
-    meetingEditAttendances: `${bottomNavPath.meetings}/:meeting_id/attendances/edit`,
+    meetingEditAttendances: `${bottomNavPath.meetings}/:meeting_id/edit`,
+    meetingValidateAttendances: `${bottomNavPath.meetings}/:meeting_id/validate`,
     ...noAppbarPath
 }
 
@@ -27,6 +28,7 @@ export const teacherPathTitle = {
     [userPath.meetings]: "Pertemuan",
     [userPath.meetingDetails]: "Rincian Pertemuan",
     [userPath.meetingEditAttendances]: "Edit Presensi",
+    [userPath.meetingValidateAttendances]: "Validasi Presensi",
     [userPath.history]: "Riwayat",
     [userPath.profile]: "Profil",
 }
