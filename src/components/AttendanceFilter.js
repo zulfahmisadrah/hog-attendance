@@ -38,7 +38,7 @@ export function AttendanceFilter(props) {
     ) : (
         <Radio.Group onChange={e => handleChange(e.target.value)} defaultValue={selected} {...rest}>
             {Object.values(attendanceStatus).map(value => (
-                <Radio.Button value={value}>{value}</Radio.Button>
+                <Radio.Button value={value} key={value}>{value}</Radio.Button>
             ))}
         </Radio.Group>
     )
