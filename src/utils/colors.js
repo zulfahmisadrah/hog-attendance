@@ -1,4 +1,5 @@
 export const COLOR_PRIMARY = "#0747A6"
 export const COLOR_ACCENT = "#d09228"
+export const COLOR_DIFFERENT_ATTENDANCE_STATUS = "#ecd6d6"
 export const COLOR_BOTTOM_NAV_ACTIVE = COLOR_PRIMARY
 export const COLOR_BOTTOM_NAV_INACTIVE = "#4D4D4D"
