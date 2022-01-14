@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Radio, Select} from "antd";
 import PropTypes from "prop-types";
 import {attendanceStatusOptions} from "../utils/Commons";
+import {attendanceStatus} from "../utils/Constants";
 
 AttendanceFilter.propTypes = {
     type: PropTypes.oneOf(["dropdown", "buttons"]),
@@ -9,7 +10,7 @@ AttendanceFilter.propTypes = {
 }
 
 export function AttendanceFilter(props) {
-    const {type, onSelected} = props;
+    const {type, onSelected, ...rest} = props;
 
     const [selected, setSelected] = useState("");
 
@@ -32,11 +33,12 @@ export function AttendanceFilter(props) {
             onChange={handleChange}
             options={listFilters}
             defaultValue={listFilters[0].value}
+            {...rest}
         />
     ) : (
-        <Radio.Group onChange={e => handleChange(e.target.value)} defaultValue={selected}>
-            {Object.keys(listFilters).map(key => (
-                <Radio.Button value={key}>{listFilters[key]}</Radio.Button>
+        <Radio.Group onChange={e => handleChange(e.target.value)} defaultValue={selected} {...rest}>
+            {Object.values(attendanceStatus).map(value => (
+                <Radio.Button value={value}>{value}</Radio.Button>
             ))}
         </Radio.Group>
     )
