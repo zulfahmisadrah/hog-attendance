@@ -2,6 +2,7 @@ export const BASE_URL = "http://localhost:8000/";
 export const BASE_API_URL = `${BASE_URL}api/`;
 export const BASE_AVATAR_URL = `${BASE_API_URL}assets/avatar/`;
 export const BASE_DATASET_URL = `${BASE_API_URL}assets/dataset/`;
+export const BASE_DATASET_SAMPLE_URL = `${BASE_API_URL}assets/dataset/sample/`;
 export const BASE_DATASET_TRAIN_URL = `${BASE_DATASET_URL}train/`;
 export const BASE_DATASET_VAL_URL = `${BASE_DATASET_URL}val/`;
 export const BASE_RESULT_URL = `${BASE_API_URL}assets/result/`;
