@@ -84,4 +84,16 @@ export class MeetingService extends APIService {
             }
         })
     }
+
+    getCourseMeetings = ({course_id, onSuccess, onError}) => {
+        this.apiRequest.getCourseMeetings(course_id).then(res => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("getCourseMeetings", e)
+            }
+        })
+    }
 }

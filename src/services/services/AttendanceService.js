@@ -71,4 +71,16 @@ export class AttendanceService extends APIService {
             }
         })
     }
+
+    getCourseAttendances = ({course_id, onSuccess, onError}) => {
+        this.apiRequest.getCourseAttendances(course_id).then((res) => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("recapAttendances", e)
+            }
+        })
+    }
 }

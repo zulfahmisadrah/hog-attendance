@@ -9,8 +9,9 @@ class MeetingRequest extends APIRequest {
         super(baseUrl);
     }
 
-    getMyMeetings = () => axios.get(this.baseUrl + "me")
-    getListAttendances = (id) => axios.get(this.baseUrl + id + "/attendances")
+    getMyMeetings = () => axios.get(this.baseUrl + "me");
+    getListAttendances = (id) => axios.get(this.baseUrl + id + "/attendances");
+    getCourseMeetings = (course_id) => axios.get(this.baseUrl + "course/" + course_id);
 }
 
 export default MeetingRequest;
