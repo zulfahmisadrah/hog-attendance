@@ -1,13 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {WebcamCapture} from "../../components";
 import {Button, Col, Modal, Row, Space, Typography} from "antd";
 import {AttendanceService} from "../../services/services/AttendanceService";
-import {DatasetService, MeetingService} from "../../services/services";
+import {MeetingService} from "../../services/services";
 import {showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
 import {attendanceStatus, BASE_RESULT_URL} from "../../utils/Constants";
 import {ButtonShowDrawer} from "./components/ButtonShowDrawer";
+import {RetweetOutlined} from "@ant-design/icons";
 
 const StyledDiv = styled.div`
   .fullscreen-center {
@@ -18,14 +19,14 @@ const StyledDiv = styled.div`
     right: 0;
     text-align: center;
     z-index: 9;
-    //max-width: 640px;
+    max-width: 100%;
     height: 100%;
   }
 
   .full {
     margin: 0;
     padding: 0;
-    width: 100vw;
+    max-width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -44,7 +45,10 @@ const StyledDiv = styled.div`
 `
 
 function TakePresence() {
-    let {meeting_id} = useParams()
+    let {meeting_id} = useParams();
+    const location = useLocation();
+    const validate = location?.state?.validate;
+    const status_key = validate ? 'status_validate' : 'status';
 
     const webcamRef = useRef(null)
     const canvasRef = useRef(null)
@@ -54,11 +58,11 @@ function TakePresence() {
     const [attendances, setAttendances] = useState([]);
     const [listAttend, setListAttend] = useState([]);
     const [listHasAttended, setListHasAttended] = useState([]);
+    const [facingMode, setFacingMode] = useState("environment");
 
-    const totalAttend = attendances.filter(attendance => attendance?.status === attendanceStatus.attend).length
+    const totalAttend = attendances.filter(attendance => attendance[status_key] === attendanceStatus.attend).length
 
     const attendanceService = new AttendanceService();
-    const datasetService = new DatasetService();
     const meetingService = new MeetingService();
 
     const fetchMeetingDetails = (meeting_id) => {
@@ -88,10 +92,11 @@ function TakePresence() {
         () => {
             setLoading(true);
             const imageSrc = webcamRef.current.getScreenshot();
-            const data = new FormData()
-            data.append('file', imageSrc)
-            data.append('meeting_id', meeting_id)
-            datasetService.takePresence({
+            const data = new FormData();
+            data.append('file', imageSrc);
+            data.append('meeting_id', meeting_id);
+            data.append('validate', !!validate);
+            attendanceService.takePresence({
                 data: data,
                 onSuccess: (res) => {
                     console.log(`response = `, res);
@@ -101,7 +106,7 @@ function TakePresence() {
                     res.predictions.forEach(user => {
                         const studentAttendance = attendances.find(attendance => attendance.student.user.username === user.username)
                         if (studentAttendance) {
-                            if (studentAttendance?.status === attendanceStatus.attend) {
+                            if (studentAttendance[status_key] === attendanceStatus.attend) {
                                 if (!listHasAttended.some(item => item.username === user.username)) listHasAttended.push(user)
                             } else {
                                 if (!listAttend.some(item => item.username === user.username)) listAttend.push(user)
@@ -149,7 +154,7 @@ function TakePresence() {
                 content: (
                     <Row>
                         <Col span={24}>
-                            <a href={BASE_RESULT_URL + result.image_name} target="_blank">
+                            <a href={BASE_RESULT_URL + result.image_name} target="_blank" rel="noreferrer">
                                 <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
                             </a>
                         </Col>
@@ -191,16 +196,22 @@ function TakePresence() {
         }
     }
 
+    const changeFacingMode = () => {
+        const newFacingMode = facingMode === "environment" ? "user" : "environment";
+        setFacingMode(newFacingMode);
+    }
+
 
     return (
         <StyledDiv>
             <div className="full">
-                <WebcamCapture ref={webcamRef} className="fullscreen-center"/>
+                <WebcamCapture ref={webcamRef} facingMode={facingMode} className="fullscreen-center"/>
                 <canvas id="overlay" ref={canvasRef} className="fullscreen-center"/>
                 <div className="buttons-container" style={{opacity: 0.7}}>
                     <Row>
                         <Col xs={24} md={4}>
                             <Space direction="vertical">
+                                <Button type="primary" onClick={changeFacingMode} icon={<RetweetOutlined/>} />
                                 <Button className="w-100" type="primary" size="large" loading={loading}
                                         disabled={loading} onClick={recognize}>Scan</Button>
                                 <Button className="w-100" onClick={showLastResult}>Hasil Scan</Button>

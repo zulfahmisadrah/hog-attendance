@@ -8,14 +8,15 @@ import {
     dateTextFormat,
     MeetingStatus,
     timeFormat,
-    timeTextFormat
+    timeTextFormat,
+    BASE_DATASET_SAMPLE_URL,
 } from "../../utils/Constants";
 import {useParams, useHistory} from "react-router-dom";
 import {userPath} from "../../path";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {CameraFilled} from "@ant-design/icons";
 import {ButtonEditSchedule} from "./components/ButtonEditSchedule";
-import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag} from "../../components";
+import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag, AvatarModal} from "../../components";
 import {useSelector} from "react-redux";
 
 
@@ -115,7 +116,11 @@ export function MeetingDetails() {
     }
 
     const handleManualAttendance = () => {
-        history.push(`${userPath.meetings}/${meeting.id}/attendances/edit`)
+        history.push(`${userPath.meetings}/${meeting.id}/edit`)
+    }
+
+    const handleValidateAttendance = () => {
+        history.push(`${userPath.meetings}/${meeting.id}/validate`)
     }
 
     const updateMeeting = (data, onSuccess, onError) => {
@@ -212,14 +217,20 @@ export function MeetingDetails() {
                         </Col>
                         {userRole === 3 && meeting?.status === MeetingStatus.Berlangsung && (
                             <Col span={24}>
-                                <Row gutter={16} justify="end">
-                                    <Col xs={12} lg={4}>
-                                        <Button className="w-100" size="large" onClick={handleManualAttendance}>Presensi
-                                            Manual</Button>
-                                    </Col>
-                                    <Col xs={12} lg={4}>
+                                <Row gutter={[8,8]} justify="end">
+                                    <Col xs={{span: 24, order: 1}} lg={{span: 4, order: 3}}>
                                         <Button className="w-100" icon={<CameraFilled/>} size="large" type="primary"
                                                 onClick={handleTakeAttendance}>Ambil Presensi</Button>
+                                    </Col>
+                                    <Col xs={{span: 12, order: 2}} lg={{span: 4, order: 2}}>
+                                        <Button className="w-100" size="large" onClick={handleManualAttendance}>
+                                            Presensi Manual
+                                        </Button>
+                                    </Col>
+                                    <Col xs={{span: 12, order: 3}} lg={{span: 4, order: 1}}>
+                                        <Button className="w-100" size="large" onClick={handleValidateAttendance}>
+                                            Validasi
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Col>
