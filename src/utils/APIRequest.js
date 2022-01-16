@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from '../utils/axiosInstance';
 import {DEFAULT_PAGE_OFFSET, DEFAULT_PAGE_SIZE} from "../config/api";
 
 class APIRequest {

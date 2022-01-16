@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../utils/axiosInstance';
 import APIRequest from "../../utils/APIRequest";
 import {BASE_API_SEMESTERS} from "./_constants";
 

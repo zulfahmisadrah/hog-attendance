@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../utils/axiosInstance';
 import {BASE_API_FACULTIES} from "./_constants";
 import APIRequest from "../../utils/APIRequest";
 import {DEFAULT_PAGE_OFFSET} from "../../config/api";

@@ -1,6 +1,6 @@
 import APIRequest from "../../utils/APIRequest";
 import {BASE_API_USERS} from "./_constants";
-import axios from "axios";
+import axios from '../../utils/axiosInstance';
 
 const baseUrl = BASE_API_USERS;
 
