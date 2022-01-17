@@ -26,8 +26,9 @@ export const _columns = [
         render: (value) => <AttendanceTag data={value} />,
     },
     {
-        title: 'Keterangan',
-        dataIndex: 'note',
-        width: 130,
+        title: 'Status Diajukan',
+        dataIndex: 'status_by_student',
+        width: 60,
+        render: (value) => value && <AttendanceTag data={value} />,
     }
 ]

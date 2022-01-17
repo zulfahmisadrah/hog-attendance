@@ -7,8 +7,7 @@ import {
     showDataUpdatedNotification,
 } from "../../../../utils/Commons";
 import {_columns} from "./_columns";
-import {ColumnNumber, ColumnCreatedAt, ColumnActions} from "../../../../components";
-import {_detailRows} from "./_detailRows";
+import {ColumnNumber, ColumnCreatedAt, AttendanceFilter} from "../../../../components";
 import {AttendanceService} from "../../../../services/services/AttendanceService";
 
 AttendanceTable.propTypes = {
@@ -67,7 +66,6 @@ export function AttendanceTable(props) {
         ...isSelectDataMode ? [] : [ColumnNumber],
         ..._columns,
         ColumnCreatedAt,
-        ...isSelectDataMode ? [] : [ColumnActions(_detailRows, onUpdateFinished, deleteData)]
     ]
 
     const onCreateFinished = () => {
@@ -94,16 +92,6 @@ export function AttendanceTable(props) {
         onChange: (selectedRowKeys, selectedRows) => onSelectChange(selectedRowKeys, selectedRows),
     }
 
-    const onSearch = keyword => {
-        if (keyword !== "") {
-            const dataUser = data.map(value => ({...value, ...value.user}))
-            const results = searchData(dataUser, keyword, ["name", "email"])
-            setFilteredData(results);
-        } else {
-            setFilteredData(data);
-        }
-    }
-
     const reload = () => {
         setIsLoading(prevState => ({...prevState, reload: true}));
         setSelectedRowKeys([]);
@@ -111,35 +99,57 @@ export function AttendanceTable(props) {
     }
 
     const pagination = {
-        hideOnSinglePage: true,
+        total: filteredData?.length,
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
         defaultPageSize: 10,
-        position: ["bottomCenter"]
+        position: ["bottomCenter"],
+        showSizeChanger: true,
+        showQuickJumper: true
+    }
+
+    const updateAttendances = (status) => {
+        setIsLoading(prevState => ({...prevState, reload: true}));
+        selectedRowKeys.forEach((key, index) => {
+            const originalData = filteredData.find(data => data.id === key);
+            if (originalData && status !== originalData.status) {
+                const updatedAttendance = {
+                    id: key,
+                    status: status
+                }
+                attendanceService.updateData({
+                    data: updatedAttendance,
+                    onSuccess: () => {
+                        if (index === selectedRowKeys.length - 1) {
+                            fetchData();
+                            showDataUpdatedNotification();
+                            setSelectedRowKeys([]);
+                            setIsLoading(prevState => ({...prevState, reload: false}));
+                        }
+                    },
+                    onError: (e) => {
+                        console.log(e);
+                        setIsLoading(prevState => ({...prevState, reload: false}));
+                    }
+                })
+            }
+        })
     }
 
     return (
         <>
-            <Row justify={isSelectDataMode ? "space-between" : "end"}>
-                {isSelectDataMode &&
+            <Row justify="start">
                 <Space>
                     <Button type="secondary" onClick={reload} disabled={!hasSelected}
                             loading={isLoading.reload}>
-                        Batal
+                        Selesai
                     </Button>
+                    <AttendanceFilter type="buttons" onSelected={updateAttendances} disabled={!hasSelected}/>
                     <Typography.Text>{hasSelected ? `${selectedRowKeys.length} data terseleksi` : `Total data: ${filteredData.length}`}</Typography.Text>
-                </Space>
-                }
-                <Space>
-                    <Input.Search placeholder="Cari..." allowClear enterButton onSearch={onSearch}
-                                  style={{width: 200}}/>
-                    {
-                        isSelectDataMode ? null :
-                            <Button type="primary" onClick={() => showModal('create')}>Tambah Data</Button>
-                    }
                 </Space>
             </Row>
             <Table scroll={{scrollToFirstRowOnChange: true, x: 1000, y: 600}} sticky
-                   pagination={!isSelectDataMode && pagination} loading={isLoading.fetch}
-                   rowSelection={isSelectDataMode && rowSelection} columns={columns}
+                   pagination={pagination} loading={isLoading.fetch}
+                   rowSelection={rowSelection} columns={columns}
                    dataSource={filteredData} rowKey="id"/>
         </>
 
