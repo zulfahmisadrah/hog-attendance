@@ -14,7 +14,7 @@ const StyledBadge  = styled(Badge)`
 `
 
 AttendanceBadge.propTypes = {
-    data: PropTypes.string.isRequired,
+    data: PropTypes.string,
     text: PropTypes.string
 }
 
