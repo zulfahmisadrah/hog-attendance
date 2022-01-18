@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {Col, Divider, Drawer, List, Row, Typography} from "antd";
 import {MeetingService} from "../../services/services";
 import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag} from "../../components";
@@ -8,6 +8,9 @@ import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag} from "../../comp
 export function AttendancesDrawer(props) {
     let {visible, onClose} = props;
     let {meeting_id} = useParams();
+    const location = useLocation();
+    const validate = location?.state?.validate;
+    const status_key = validate ? 'status_validate' : 'status';
 
     const [attendances, setAttendances] = useState([]);
 
@@ -51,13 +54,13 @@ export function AttendancesDrawer(props) {
                                     </Col>
                                 </Row>
                             </Col>
-                            {attendance?.status_by_student !== attendance.status && (
+                            {attendance?.status_by_student !== attendance[status_key] && (
                                 <Col flex="10px">
                                     <AttendanceBadge data={attendance.status_by_student} />
                                 </Col>
                             )}
                             <Col flex="50px">
-                                <AttendanceTag data={attendance.status}/>
+                                <AttendanceTag data={attendance[status_key]}/>
                             </Col>
                         </Row>
                     </List.Item>
