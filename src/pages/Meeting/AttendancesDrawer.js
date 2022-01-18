@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useLocation, useParams} from "react-router-dom";
 import {Col, Divider, Drawer, List, Row, Typography} from "antd";
 import {MeetingService} from "../../services/services";
-import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag} from "../../components";
+import {AttendanceBadge, AttendanceBadgesLegend, AttendanceTag, AvatarModal} from "../../components";
+import {BASE_DATASET_SAMPLE_URL} from "../../utils/Constants";
 
 
 export function AttendancesDrawer(props) {
@@ -42,6 +43,9 @@ export function AttendancesDrawer(props) {
                 renderItem={attendance => (
                     <List.Item key={attendance.id}>
                         <Row className="w-100">
+                            <Col flex="50px">
+                                <AvatarModal url={BASE_DATASET_SAMPLE_URL + attendance.student?.user?.username} />
+                            </Col>
                             <Col flex="1">
                                 <Row>
                                     <Col span={24}>

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {Button, Card, Col, Layout, List, Row, Select, Space, Typography} from "antd";
+import {Button, Card, Col, Layout, List, Row, Select, Typography} from "antd";
 import {MeetingService} from "../../services/services";
 import {attendanceStatusOptions, showDataUpdatedMessage} from "../../utils/Commons";
 import {AttendanceService} from "../../services/services/AttendanceService";
-import {AttendanceBadge, AttendanceBadgesLegend, AttendanceFilter} from "../../components";
+import {AttendanceBadge, AttendanceBadgesLegend, AttendanceFilter, AvatarModal} from "../../components";
 import styled from "styled-components";
+import {BASE_DATASET_SAMPLE_URL} from "../../utils/Constants";
 
 const StyledCard  = styled(Card)`
   position: fixed;
@@ -131,6 +132,9 @@ export function EditAttendances() {
                     renderItem={attendance => (
                         <List.Item key={attendance.id}>
                             <Row className="w-100" wrap={false}>
+                                <Col flex="50px">
+                                    <AvatarModal url={BASE_DATASET_SAMPLE_URL + attendance.student?.user?.username} />
+                                </Col>
                                 <Col flex="auto">
                                     <Row>
                                         <Col span={24}>

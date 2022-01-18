@@ -303,6 +303,9 @@ export function MeetingDetails() {
                         renderItem={attendance => (
                             <List.Item key={attendance.id}>
                                 <Row className="w-100" wrap={false}>
+                                    <Col flex="50px">
+                                        <AvatarModal url={BASE_DATASET_SAMPLE_URL + attendance.student?.user?.username} />
+                                    </Col>
                                     <Col flex="auto">
                                         <Row>
                                             <Col span={24}>
@@ -338,6 +341,9 @@ export function MeetingDetails() {
                         renderItem={student => (
                             <List.Item key={student.id}>
                                 <Row className="w-100" wrap={false}>
+                                    <Col flex="50px">
+                                        <AvatarModal url={BASE_DATASET_SAMPLE_URL + student?.user?.username} />
+                                    </Col>
                                     <Col flex="auto">
                                         <Row>
                                             <Col span={24}>
