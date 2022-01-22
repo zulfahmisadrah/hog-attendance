@@ -124,8 +124,7 @@ export function GenerateDataset() {
                                        </Col>
                                        <Col xs={24} md={12}>
                                            <Typography.Text>
-                                               Rata-rata Waktu
-                                               Komputasi: {result.average_computation_time} detik/mahasiswa
+                                               Rata-rata Waktu Komputasi: {result.average_computation_time} detik/citra
                                            </Typography.Text>
                                        </Col>
                                    </Row>
