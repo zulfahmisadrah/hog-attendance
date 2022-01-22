@@ -42,7 +42,7 @@ export function AttendancesDrawer(props) {
                 dataSource={attendances}
                 renderItem={attendance => (
                     <List.Item key={attendance.id}>
-                        <Row className="w-100">
+                        <Row className="w-100" wrap={false}>
                             <Col flex="50px">
                                 <AvatarModal url={BASE_DATASET_SAMPLE_URL + attendance.student?.user?.username} />
                             </Col>
