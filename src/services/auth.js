@@ -11,4 +11,9 @@ const getToken = () => {
     return storedAuth?.access_token
 }
 
-export {storeAuth, removeAuth, getToken};
+const getRefreshToken = () => {
+    const storedAuth = localStorage.auth ? JSON.parse(localStorage.auth) : null
+    return storedAuth?.refresh_token
+}
+
+export {storeAuth, removeAuth, getToken, getRefreshToken};

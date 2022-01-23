@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axios from 'axios';
 import App from './App';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
@@ -10,13 +9,8 @@ import {BrowserRouter, Switch} from "react-router-dom";
 import {loginPath, rootPath} from "./path";
 import {GuestRoute, Login, PrivateRoute} from "./components";
 import {getToken} from "./services/auth";
+import {fetchUserData} from './services/client';
 
-import {BASE_API_URL} from './utils/Constants';
-import { fetchUserData, setAuthToken } from './services/client';
-
-axios.defaults.baseURL = BASE_API_URL
-axios.defaults.headers.post['Accept'] = 'application/json'
-axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 function render() {
     ReactDOM.render(
@@ -36,7 +30,6 @@ function render() {
 
 const token = getToken()
 if (token) {
-    setAuthToken(token)
     fetchUserData().then(res => {
         const user = res.data
         if (user.is_active) {

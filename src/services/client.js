@@ -1,10 +1,8 @@
 import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 import {BASE_API_AUTH_URL} from "../utils/Constants";
+import {getRefreshToken} from "./auth";
 
-
-export const setAuthToken = (token) => {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-}
 
 export const authLogin = (formData) => {
     const params = new URLSearchParams();
@@ -18,24 +16,11 @@ export const authLogin = (formData) => {
 }
 
 export const fetchUserData = () => {
-    return axios.post(BASE_API_AUTH_URL + "me")
+    return axiosInstance.post("auth/me")
 }
 
 export const refreshToken = () => {
-    return axios.post("oauth/access_token", {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: JSON.stringify({
-            grant_type: 'refresh_token',
-            refresh_token: JSON.parse(localStorage.auth).refresh_token
-        })
-    })
-        .then(res => {
-            console.log("refresh", res)
-            localStorage.auth = JSON.stringify(res)
-        })
-        .catch(() => {
-            throw new Error("Unable to refresh!")
-        })
+    const data = new FormData();
+    data.append("refresh_token", getRefreshToken());
+    return axios.post(BASE_API_AUTH_URL + "refresh", data);
 }

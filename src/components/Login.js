@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
-import {Link, useHistory} from 'react-router-dom';
-import {adminRootPath, registerPath, rootPath} from "../path";
-import {Alert, Button, Card, Col, Divider, Form, Input, Row, Typography, Space} from "antd";
+import {useHistory} from 'react-router-dom';
+import {adminRootPath, rootPath} from "../path";
+import {Alert, Button, Card, Col, Divider, Form, Input, Row} from "antd";
 import styled from 'styled-components';
 import LockOutlined from "@ant-design/icons/lib/icons/LockOutlined";
 import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
 import {showErrorModal} from "../utils/Commons";
-import {getToken, removeAuth, storeAuth} from "../services/auth"
-import {authLogin, fetchUserData, setAuthToken} from '../services/client';
+import {removeAuth, storeAuth} from "../services/auth"
+import {authLogin, fetchUserData} from '../services/client';
 import {useDispatch} from 'react-redux';
 import {APP_NAME} from "../utils/Constants";
 
@@ -69,8 +69,6 @@ function Login() {
         authLogin(values).then( res => {
             const userAuthData = res.data
             storeAuth(userAuthData)
-            const token = getToken()
-            setAuthToken(token)
             fetchUserData().then(userData => {
                 const user = userData.data
                 if (user.is_active) {
