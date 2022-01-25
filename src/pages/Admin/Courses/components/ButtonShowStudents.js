@@ -54,8 +54,8 @@ export function ButtonShowStudents(props) {
         courseService.removeCourseStudents({
             course_id: course?.id,
             data: data,
-            onSuccess: (listData) => {
-                setData(listData);
+            onSuccess: () => {
+                fetchData();
                 showDataDeletedNotification();
             }
         })
@@ -66,8 +66,8 @@ export function ButtonShowStudents(props) {
         courseService.removeCourseStudents({
             course_id: course?.id,
             data: data,
-            onSuccess: (listData) => {
-                setData(listData);
+            onSuccess: () => {
+                fetchData();
                 showDataDeletedNotification();
             }
         })
