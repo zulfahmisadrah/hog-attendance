@@ -1,9 +1,15 @@
 import React, {forwardRef} from 'react';
 import Webcam from "react-webcam";
 import useWindowSize from "../utils/useWindowSize";
+import PropTypes from "prop-types";
+
+WebcamCapture.propTypes = {
+    facingMode: PropTypes.oneOf(["environment", "user"]),
+    orientation: PropTypes.oneOf(["portrait", "landscape"])
+}
 
 function WebcamCapture(props, ref) {
-    const {facingMode, ...rest} = props;
+    const {facingMode, orientation, ...rest} = props;
     
     const size = useWindowSize();
     const isLandscape = size.height <= size.width;
@@ -18,7 +24,7 @@ function WebcamCapture(props, ref) {
         <Webcam
             audio={false}
             ref={ref}
-            style={{maxWidth: size.width}}
+            style={orientation === "landscape" ? {maxWidth: size.width} : {maxHeight: size.height}}
             screenshotFormat = "image/jpeg"
             forceScreenshotSourceSize="true"
             minScreenshotHeight={1200}
