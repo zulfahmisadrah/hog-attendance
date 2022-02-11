@@ -13,6 +13,7 @@ export const bottomNavPath = {
 
 export const noAppbarPath = {
     meetingAttendances: `${bottomNavPath.meetings}/:meeting_id/attendances`,
+    takePhoto: `${bottomNavPath.profile}/take-photo`,
 }
 
 export const userPath = {
