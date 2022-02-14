@@ -16,7 +16,16 @@ import {
     Departments,
     Roles
 } from "./pages/Admin";
-import {Home, Meeting, Attendance, Profile, TakePresence, EditAttendances, AttendancesValidate} from "./pages";
+import {
+    Home,
+    Meeting,
+    Attendance,
+    Profile,
+    TakePresence,
+    EditAttendances,
+    AttendancesValidate,
+    TakePhoto
+} from "./pages";
 import AdminRoute from "./components/AdminRoute";
 import {MeetingDetails} from "./pages";
 
@@ -49,7 +58,8 @@ export const getRoutes = (props) => (
         <Route path={userPath.meetingValidateAttendances} component={AttendancesValidate}/>
         <Route path={userPath.meetingAttendances} component={TakePresence}/>
         <Route path={userPath.history} component={Attendance}/>
-        <Route path={userPath.profile} component={Profile}/>
+        <Route exact path={userPath.profile} component={Profile}/>
+        <Route path={userPath.takePhoto} component={TakePhoto}/>
         <Redirect from={rootPath} to={userPath.home}/>
     </Switch>
 )
