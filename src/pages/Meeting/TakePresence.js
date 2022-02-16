@@ -146,54 +146,64 @@ function TakePresence() {
     )
 
     const showLastResult = () => {
-        if (result) {
-            return Modal.info({
-                title: "Hasil Pengambilan Presensi",
-                okText: 'Tutup',
-                style: { top: 10 },
-                content: (
-                    <Row>
-                        <Col span={24}>
-                            <a href={BASE_RESULT_URL + result.image_name} target="_blank" rel="noreferrer">
-                                <img className="w-100" src={BASE_RESULT_URL + result.image_name} alt="result"/>
-                            </a>
-                        </Col>
-                        {listAttend.length > 0 && (
-                            <Col span={24}>
-                                <Row>
+        attendanceService.getMeetingAttendanceResults({
+            meeting_id: meeting_id,
+            onSuccess: (result) => {
+                console.log(`response = `, result);
+                if (result) {
+                    return Modal.info({
+                        title: "Hasil Pengambilan Presensi",
+                        okText: 'Tutup',
+                        style: { top: 10 },
+                        content: (
+                            <Row gutter={[8,8]}>
+                                {
+                                    result.map(image_name => (
+                                        <Col span={8}>
+                                            <a href={BASE_RESULT_URL + meeting_id + "/" + image_name} target="_blank" rel="noreferrer">
+                                                <img className="w-100" src={BASE_RESULT_URL + meeting_id + "/" + image_name} alt="result"/>
+                                            </a>
+                                        </Col>
+                                    ))
+                                }
+                                {listAttend.length > 0 && (
                                     <Col span={24}>
-                                        <Typography.Text strong>Hadir:</Typography.Text>
+                                        <Row>
+                                            <Col span={24}>
+                                                <Typography.Text strong>Hadir:</Typography.Text>
+                                            </Col>
+                                            <Col span={24}>
+                                                <Space direction="vertical">
+                                                    {listAttend.map(user => (
+                                                        <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                                                    ))}
+                                                </Space>
+                                            </Col>
+                                        </Row>
                                     </Col>
+                                )}
+                                {listHasAttended.length > 0 && (
                                     <Col span={24}>
-                                        <Space direction="vertical">
-                                            {listAttend.map(user => (
-                                                <Typography.Text>{user.username} - {user.name}</Typography.Text>
-                                            ))}
-                                        </Space>
+                                        <Row>
+                                            <Col span={24}>
+                                                <Typography.Text strong>Telah Hadir:</Typography.Text>
+                                            </Col>
+                                            <Col span={24}>
+                                                <Space direction="vertical">
+                                                    {listHasAttended.map(user => (
+                                                        <Typography.Text>{user.username} - {user.name}</Typography.Text>
+                                                    ))}
+                                                </Space>
+                                            </Col>
+                                        </Row>
                                     </Col>
-                                </Row>
-                            </Col>
-                        )}
-                        {listHasAttended.length > 0 && (
-                            <Col span={24}>
-                                <Row>
-                                    <Col span={24}>
-                                        <Typography.Text strong>Telah Hadir:</Typography.Text>
-                                    </Col>
-                                    <Col span={24}>
-                                        <Space direction="vertical">
-                                            {listHasAttended.map(user => (
-                                                <Typography.Text>{user.username} - {user.name}</Typography.Text>
-                                            ))}
-                                        </Space>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        )}
-                    </Row>
-                )
-            })
-        }
+                                )}
+                            </Row>
+                        )
+                    })
+                }
+            },
+        })
     }
 
     const changeFacingMode = () => {
