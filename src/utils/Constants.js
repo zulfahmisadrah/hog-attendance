@@ -20,6 +20,8 @@ export const dateTimeTextFormat = "dddd, DD MMM YYYY HH:mm";
 export const dateTimeISOFormat = "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
 export const dateTimeIdFormat = "YYYYMMDD_HHmmss";
 
+export const MAX_SIZE_IMAGE_MB = 3;
+
 export const MeetingListType = {
     ACTIVE: "active",
     SCHEDULED: "scheduled",
