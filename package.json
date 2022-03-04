@@ -1,5 +1,6 @@
 {
-  "name": "hog-attendance",
+  "name": "neo-attendance",
+  "homepage": "https://dev.eng.unhas.ac.id/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
