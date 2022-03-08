@@ -2,15 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Avatar, Button, Card, Col, List, Row, Skeleton, Typography} from "antd";
 import {EditOutlined, LogoutOutlined, UnlockOutlined} from "@ant-design/icons";
-import {ProfileFormModal, ChangePasswordModal} from "./components";
+import {ProfileFormModal, ChangePasswordModal, StudentDatasetsModal} from "./components";
 import {handleInputPhoneNumber, showDataUpdatedMessage} from "../../utils/Commons";
 import {removeAuth} from "../../services/auth"
 import {UserService} from "../../services/services/UserService";
-import {ButtonFormModal} from "../../components";
+import {ButtonFormModal, ButtonShowModal} from "../../components";
 import {BASE_AVATAR_URL} from "../../utils/Constants";
 const initialVisible = {password: false, edit: false}
 
-function Profile() {
+export function Profile() {
     const dispatch = useDispatch();
 
     const userId = useSelector(state => state.auth.user.id);
@@ -140,17 +140,25 @@ function Profile() {
                             <Typography.Text>{data.username}</Typography.Text><br/>
                         </Col>
                     </Row>
-                    <Row justify="space-between" align="middle" style={{marginTop: 16}}>
-                        <Button icon={<UnlockOutlined/>} onClick={() => showModal("password")}>Ubah Password</Button>
-                        <ButtonFormModal
-                            data={data}
-                            title="Edit Profil"
-                            formModal={ProfileFormModal}
-                            icon={<EditOutlined/>}
-                            onSubmit={handleUpdateProfile}
-                        >
-                            Edit Profil
-                        </ButtonFormModal>
+                    <Row justify="end" align="middle" style={{marginTop: 16}} gutter={[16,8]}>
+                        <Col xs={12} md={6}>
+                            <Button className="w-100" icon={<UnlockOutlined/>} onClick={() => showModal("password")}>Ubah Password</Button>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <ButtonFormModal
+                                data={data}
+                                title="Edit Profil"
+                                formModal={ProfileFormModal}
+                                icon={<EditOutlined/>}
+                                onSubmit={handleUpdateProfile}
+                                className="w-100"
+                            >
+                                Edit Profil
+                            </ButtonFormModal>
+                        </Col>
+                        <Col xs={24} md={12}>
+                            <ButtonShowModal modal={StudentDatasetsModal} type="primary" className="w-100">Upload Dataset</ButtonShowModal>
+                        </Col>
                     </Row>
                 </Skeleton>
             </Card>
@@ -181,5 +189,3 @@ function Profile() {
         </div>
     )
 }
-
-export default Profile;
