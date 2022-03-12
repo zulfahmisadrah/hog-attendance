@@ -160,8 +160,8 @@ function TakePresence() {
                                 {
                                     result.map(image_name => (
                                         <Col span={8}>
-                                            <a href={BASE_RESULT_URL + meeting_id + "/" + image_name} target="_blank" rel="noreferrer">
-                                                <img className="w-100" src={BASE_RESULT_URL + meeting_id + "/" + image_name} alt="result"/>
+                                            <a href={BASE_RESULT_URL + "0/" + meeting_id + "/" + image_name} target="_blank" rel="noreferrer">
+                                                <img className="w-100" src={BASE_RESULT_URL + "0/" + meeting_id + "/" + image_name} alt="result"/>
                                             </a>
                                         </Col>
                                     ))

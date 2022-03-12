@@ -146,8 +146,8 @@ export function Recognize() {
                                                    </Col>
                                                )}
                                                <Col span={24}>
-                                                   <a href={BASE_RESULT_URL + result.image_name} target="_blank">
-                                                       <img className="w-100" src={BASE_RESULT_URL + result.image_name}
+                                                   <a href={BASE_RESULT_URL + selectedCourse + "/0/" + result.image_name} target="_blank">
+                                                       <img className="w-100" src={BASE_RESULT_URL + selectedCourse + "/0/" + result.image_name}
                                                             alt="result"/>
                                                    </a>
                                                </Col>
