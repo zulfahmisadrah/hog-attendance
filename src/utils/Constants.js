@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:8000/";
+// export const BASE_URL = "https://dev.eng.unhas.ac.id/backend/";
 export const BASE_API_URL = `${BASE_URL}api/`;
 export const BASE_AVATAR_URL = `${BASE_API_URL}assets/avatar/`;
 export const BASE_DATASET_URL = `${BASE_API_URL}assets/dataset/`;
