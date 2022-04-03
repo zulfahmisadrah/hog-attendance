@@ -88,7 +88,10 @@ export function CoursesTable() {
             detailRows: _detailRows,
             formModal: CourseFormModal,
             onUpdate: handleSubmit,
-            onConfirmDelete: deleteData
+            onConfirmDelete: deleteData,
+            visible: {
+                delete: false
+            }
         })
     ]
 
