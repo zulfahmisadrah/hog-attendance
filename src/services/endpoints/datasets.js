@@ -13,6 +13,10 @@ class DatasetRequest extends APIRequest {
         return axios.get(this.baseUrl + datasetType + "/" + username)
     }
 
+    getConfig = () => {
+        return axios.get(this.baseUrl + "config")
+    }
+
     getStudentTotalDatasets = (username) => {
         return axios.get(this.baseUrl + "total_datasets/" + username)
     }
