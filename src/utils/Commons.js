@@ -158,6 +158,7 @@ export const toCountDownFormat = (timeInSeconds) => {
 }
 
 export const handleInputPhoneNumber = (input, prefix = "62") => {
+    if (input.charAt(0) === '+') input = input.substring(1);
     if (input.charAt(0) === '0') input = input.substring(1);
     else if (input.substring(0, 2) === "62") {
         input = input.substring(2);
