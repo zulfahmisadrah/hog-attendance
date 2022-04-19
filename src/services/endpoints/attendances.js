@@ -2,6 +2,7 @@ import axios from '../../utils/axiosInstance';
 import APIRequest from "../../utils/APIRequest";
 import {DEFAULT_PAGE_OFFSET, DEFAULT_PAGE_SIZE} from "../../config/api";
 import {BASE_API_ATTENDANCES} from "./_constants";
+import {BASE_RESULT_URL} from "../../utils/Constants";
 
 const baseUrl = BASE_API_ATTENDANCES;
 
@@ -28,6 +29,7 @@ class AttendanceRequest extends APIRequest {
     getMyMeetingAttendance = (meeting_id) => axios.get(this.baseUrl + `${meeting_id}/me`);
     getCourseAttendances = (course_id) => axios.get(this.baseUrl + "course/" + course_id);
     getMeetingAttendanceResults = (meeting_id) => axios.get(this.baseUrl + "result/" + meeting_id);
+    deleteMeetingAttendanceResult = (course_id, meeting_id, file_name) => axios.delete(BASE_RESULT_URL + `${course_id}/${meeting_id}/${file_name}`);
 
     takePresence = (data) => {
         return axios.post(this.baseUrl + "take_presence", data, {
