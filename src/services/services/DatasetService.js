@@ -16,6 +16,14 @@ export class DatasetService extends APIService {
         })
     }
 
+    getConfig = (callback) => {
+        this.apiRequest.getConfig().then(res => {
+            callback(res.data)
+        }).catch(e => {
+            console.log("getConfig", e)
+        })
+    }
+
     fetchStudentTotalDatasets = (username, callback) => {
         this.apiRequest.getStudentTotalDatasets(username).then(res => {
             callback(res.data)
