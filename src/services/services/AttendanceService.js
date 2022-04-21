@@ -95,4 +95,16 @@ export class AttendanceService extends APIService {
             }
         })
     }
+
+    deleteMeetingAttendanceResult = ({course_id, meeting_id, file_name, onSuccess, onError}) => {
+        this.apiRequest.deleteMeetingAttendanceResult(course_id, meeting_id, file_name).then((res) => {
+            onSuccess(res.data)
+        }).catch(e => {
+            if (onError instanceof Function){
+                onError(e)
+            } else {
+                console.log("recapAttendances", e)
+            }
+        })
+    }
 }
