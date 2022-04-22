@@ -8,6 +8,7 @@ import {removeAuth} from "../../services/auth"
 import {UserService} from "../../services/services/UserService";
 import {ButtonFormModal, ButtonShowModal} from "../../components";
 import {BASE_AVATAR_URL} from "../../utils/Constants";
+
 const initialVisible = {password: false, edit: false}
 
 export function Profile() {
@@ -55,19 +56,17 @@ export function Profile() {
                 const avatarUrl = BASE_AVATAR_URL + origin.avatar;
                 const avatarModified = values.fileList[0]?.thumbUrl !== avatarUrl;
                 delete values.fileList;
-                if (avatarModified) {
-                    if (file) {
-                        userService.uploadUserAvatar({
-                            data: avatarFormData,
-                            onSuccess: (filePath) => {
-                                values.avatar = filePath
-                                updateUser(values, onSuccess, onError);
-                            }
-                        });
-                    } else {
-                        values.avatar = null;
-                        updateUser(values, onSuccess, onError);
-                    }
+                if (file && avatarModified) {
+                    userService.uploadUserAvatar({
+                        data: avatarFormData,
+                        onSuccess: (filePath) => {
+                            values.avatar = filePath
+                            updateUser(values, onSuccess, onError);
+                        }
+                    });
+                } else {
+                    values.avatar = null;
+                    updateUser(values, onSuccess, onError);
                 }
             }
         }
@@ -140,9 +139,11 @@ export function Profile() {
                             <Typography.Text>{data.username}</Typography.Text><br/>
                         </Col>
                     </Row>
-                    <Row justify="end" align="middle" style={{marginTop: 16}} gutter={[16,8]}>
+                    <Row justify="end" align="middle" style={{marginTop: 16}} gutter={[16, 8]}>
                         <Col xs={12} md={6}>
-                            <Button className="w-100" icon={<UnlockOutlined/>} onClick={() => showModal("password")}>Ubah Password</Button>
+                            <Button className="w-100" icon={<UnlockOutlined/>} onClick={() => showModal("password")}>
+                                Ubah Password
+                            </Button>
                         </Col>
                         <Col xs={12} md={6}>
                             <ButtonFormModal
@@ -157,7 +158,9 @@ export function Profile() {
                             </ButtonFormModal>
                         </Col>
                         <Col xs={24} md={12}>
-                            <ButtonShowModal modal={StudentDatasetsModal} type="primary" className="w-100">Upload Dataset</ButtonShowModal>
+                            <ButtonShowModal modal={StudentDatasetsModal} type="primary" className="w-100">
+                                Upload Dataset
+                            </ButtonShowModal>
                         </Col>
                     </Row>
                 </Skeleton>
