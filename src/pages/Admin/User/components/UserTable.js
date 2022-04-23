@@ -53,19 +53,17 @@ export function UserTable() {
                 const avatarUrl = BASE_AVATAR_URL + origin.avatar;
                 const avatarModified = values.fileList[0]?.thumbUrl !== avatarUrl;
                 delete values.fileList;
-                if (avatarModified) {
-                    if (file) {
-                        userService.uploadUserAvatar({
-                            data: avatarFormData,
-                            onSuccess: (filePath) => {
-                                values.avatar = filePath
-                                updateUser(values, onSuccess, onError);
-                            }
-                        });
-                    } else {
-                        values.avatar = null;
-                        updateUser(values, onSuccess, onError);
-                    }
+                if (file && avatarModified) {
+                    userService.uploadUserAvatar({
+                        data: avatarFormData,
+                        onSuccess: (filePath) => {
+                            values.avatar = filePath
+                            updateUser(values, onSuccess, onError);
+                        }
+                    });
+                } else {
+                    values.avatar = null;
+                    updateUser(values, onSuccess, onError);
                 }
             } else {
                 delete values.fileList
