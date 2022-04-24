@@ -50,19 +50,17 @@ export function StudentTable() {
                 const avatarUrl = BASE_AVATAR_URL + origin.avatar;
                 const avatarModified = values.fileList[0]?.thumbUrl !== avatarUrl;
                 delete values.fileList;
-                if (avatarModified) {
-                    if (file) {
-                        userService.uploadUserAvatar({
-                            data: avatarFormData,
-                            onSuccess: (filePath) => {
-                                values.avatar = filePath
-                                updateStudent(values, onSuccess, onError);
-                            }
-                        });
-                    } else {
-                        values.avatar = null;
-                        updateStudent(values, onSuccess, onError);
-                    }
+                if (file && avatarModified) {
+                    userService.uploadUserAvatar({
+                        data: avatarFormData,
+                        onSuccess: (filePath) => {
+                            values.avatar = filePath
+                            updateStudent(values, onSuccess, onError);
+                        }
+                    });
+                } else {
+                    values.avatar = null;
+                    updateStudent(values, onSuccess, onError);
                 }
             } else {
                 delete values.fileList
