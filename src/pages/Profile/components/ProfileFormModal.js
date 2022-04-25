@@ -69,7 +69,7 @@ function ProfileFormModal(props) {
                     message = 'Image size must be smaller than 2MB!'
                 }
 
-                return isJpgOrPng && isLt2M ? Promise.resolve() : Promise.reject(message)
+                return (!file.size && !file.type) || (isJpgOrPng && isLt2M) ? Promise.resolve() : Promise.reject(message)
             }
         }
         return Promise.resolve()
@@ -90,7 +90,7 @@ function ProfileFormModal(props) {
             onFinish={onFinish}
         >
             <Row gutter={32}>
-                <Col xs={24} md={12}>
+                <Col xs={24} lg={12}>
                     {data?.teacher ?
                         <Form.Item name={["teacher", "id"]} hidden required>
                             <Input/>
@@ -124,7 +124,7 @@ function ProfileFormModal(props) {
                         <Input placeholder="ex.6281234567890" style={{width: '100%'}}/>
                     </Form.Item>
                 </Col>
-                <Col xs={24} lg={{span: 11, offset: 2}}>
+                <Col xs={24} lg={{span: 11, offset: 1}}>
                     {role === 3 ? (
                         <>
                             <Form.Item label="NIP" name={["lecturer", "nip"]}>
@@ -142,7 +142,7 @@ function ProfileFormModal(props) {
                                 {required: true, type: "number", min: 0},
                             ]}
                         >
-                            <InputNumber placeholder="ex. 2021"/>
+                            <InputNumber placeholder="ex. 2021" disabled={true}/>
                         </Form.Item>
                     )}
                     <Form.Item
