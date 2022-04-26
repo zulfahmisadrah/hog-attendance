@@ -104,7 +104,7 @@ export function UserFormModal(props) {
                     message = 'Image size must be smaller than 2MB!'
                 }
 
-                return isJpgOrPng && isLt2M ? Promise.resolve() : Promise.reject(message)
+                return (!file.size && !file.type) || (isJpgOrPng && isLt2M) ? Promise.resolve() : Promise.reject(message)
             }
         }
         return Promise.resolve()
@@ -160,14 +160,18 @@ export function UserFormModal(props) {
                     </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
-                    <Form.Item label="Role" name="role" required rules={[{required: true}]}>
-                        <Select
-                            placeholder="User Role"
-                            options={roleOptions}
-                            disabled={data}
-                            onChange={onRoleChange}
-                        />
-                    </Form.Item>
+                    {
+                        !data && (
+                            <Form.Item label="Role" name="role" required rules={[{required: true}]}>
+                                <Select
+                                    placeholder="User Role"
+                                    options={roleOptions}
+                                    disabled={data}
+                                    onChange={onRoleChange}
+                                />
+                            </Form.Item>
+                        )
+                    }
                     {formItemVisible.lecturer && (
                         <>
                             <Form.Item label="Fakultas" name="faculty">
