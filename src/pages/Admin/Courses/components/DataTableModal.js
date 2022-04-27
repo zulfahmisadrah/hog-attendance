@@ -15,9 +15,9 @@ DataTableModal.propTypes = {
 }
 
 export function DataTableModal(props) {
-    const {columns, data, title, visible, fetchOptions, onRemoveSelected, onSubmit, onCancel} = props
+    const {columns, data, defaultValue, title, visible, fetchOptions, onRemoveSelected, onSubmit, onCancel} = props
 
-    const [selectedOptions, setSelectedOptions] = React.useState([]);
+    const [selectedOptions, setSelectedOptions] = React.useState(defaultValue);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -57,7 +57,7 @@ export function DataTableModal(props) {
             cancelText="Tutup"
             onCancel={onCancel}
             width={640}
-            okButtonProps={{ style: { display: 'none' } }}
+            okButtonProps={{style: {display: 'none'}}}
             bodyStyle={{height: '500px', overflowY: 'auto'}}
         >
             <Row gutter={16}>
@@ -73,6 +73,7 @@ export function DataTableModal(props) {
                         style={{
                             width: '100%',
                         }}
+                        maxTagTextLength={10}
                     />
                 </Col>
                 <Col span={8}>
@@ -88,7 +89,7 @@ export function DataTableModal(props) {
                 rowSelection={rowSelection}
                 dataSource={data}
                 columns={columns}
-                pagination={{hideOnSinglePage: true}}
+                pagination={{hideOnSinglePage: true, showSizeChanger: true}}
                 size="small"
                 rowKey="id"/>
         </Modal>
