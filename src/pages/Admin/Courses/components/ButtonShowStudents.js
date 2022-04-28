@@ -16,21 +16,28 @@ export function ButtonShowStudents(props) {
     const {course} = props
 
     const [data, setData] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [visible, setVisible] = useState(false);
 
     const courseService = new CourseService();
     const studentRequest = new StudentRequest(BASE_API_STUDENTS);
 
     const showStudents = () => {
-        showModal();
-        fetchData();
+        fetchData(showModal);
     }
 
-    const fetchData = () => {
+    const fetchData = (callback) => {
         courseService.getCourseStudents({
             course_id: course?.id,
             onSuccess: (listData) => {
                 setData(listData);
+                const selectedOptions = listData.map(student => ({
+                    key: student.id,
+                    label: `${student.user.username} - ${student.user.name}`,
+                    value: student.id
+                }));
+                setSelectedOptions(selectedOptions);
+                if (callback instanceof Function) callback();
             }
         })
     }
@@ -110,6 +117,7 @@ export function ButtonShowStudents(props) {
                 <DataTableModal
                     columns={columns}
                     data={data}
+                    defaultValue={selectedOptions}
                     visible={visible}
                     title={`Daftar Mahasiswa - ${course?.name}`}
                     fetchOptions={fetchListStudents}
