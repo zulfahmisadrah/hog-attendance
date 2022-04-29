@@ -16,21 +16,28 @@ export function ButtonShowLecturers(props) {
     const {course} = props
 
     const [data, setData] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [visible, setVisible] = useState(false);
 
     const courseService = new CourseService();
     const lecturerRequest = new LecturerRequest(BASE_API_LECTURERS);
 
     const showLecturers = () => {
-        showModal()
-        fetchData()
+        fetchData(showModal)
     }
 
-    const fetchData = () => {
+    const fetchData = (callback) => {
         courseService.getCourseLecturers({
             course_id: course?.id,
             onSuccess: (listData) => {
                 setData(listData);
+                const selectedOptions = listData.map(lecturer => ({
+                    key: lecturer.id,
+                    label: `${lecturer.user.username} - ${lecturer.user.name}`,
+                    value: lecturer.id
+                }));
+                setSelectedOptions(selectedOptions);
+                if (callback instanceof Function) callback();
             }
         })
     }
@@ -53,8 +60,8 @@ export function ButtonShowLecturers(props) {
         courseService.removeCourseLecturers({
             course_id: course?.id,
             data: data,
-            onSuccess: (listData) => {
-                setData(listData);
+            onSuccess: () => {
+                fetchData();
                 showDataDeletedNotification();
             }
         })
@@ -65,8 +72,8 @@ export function ButtonShowLecturers(props) {
         courseService.removeCourseLecturers({
             course_id: course?.id,
             data: data,
-            onSuccess: (listData) => {
-                setData(listData);
+            onSuccess: () => {
+                fetchData();
                 showDataDeletedNotification();
             }
         })
@@ -109,6 +116,7 @@ export function ButtonShowLecturers(props) {
                 <DataTableModal
                     columns={columns}
                     data={data}
+                    defaultValue={selectedOptions}
                     visible={visible}
                     title={`Daftar Dosen - ${course?.name}`}
                     fetchOptions={fetchListLecturers}
