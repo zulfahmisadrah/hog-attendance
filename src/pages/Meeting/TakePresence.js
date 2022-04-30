@@ -2,10 +2,10 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {useLocation, useParams} from "react-router-dom";
 import {WebcamCapture} from "../../components";
-import {Button, Col, Modal, Row, Space, Typography} from "antd";
+import {Button, Col, Modal, Popconfirm, Row, Space, Typography} from "antd";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {MeetingService} from "../../services/services";
-import {showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
+import {showDataDeletedNotification, showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
 import {attendanceStatus, BASE_RESULT_URL} from "../../utils/Constants";
 import {ButtonShowDrawer} from "./components/ButtonShowDrawer";
 import {RetweetOutlined} from "@ant-design/icons";
@@ -145,6 +145,18 @@ function TakePresence() {
         [meeting, webcamRef, attendances]
     )
 
+    const handleRemove = (course_id, meeting_id, file_name) => {
+        attendanceService.deleteMeetingAttendanceResult({
+            course_id: course_id,
+            meeting_id: meeting_id,
+            file_name: file_name,
+            onSuccess: () => {
+                showDataUpdatedMessage('Data berhasil dihapus');
+                Modal.destroyAll();
+            }
+        })
+    }
+
     const showLastResult = () => {
         attendanceService.getMeetingAttendanceResults({
             meeting_id: meeting_id,
@@ -159,7 +171,16 @@ function TakePresence() {
                             <Row gutter={[8,8]}>
                                 {
                                     result.map(image_name => (
-                                        <Col span={8}>
+                                        <Col span={8} key={image_name}>
+                                            <Popconfirm
+                                                placement="topRight"
+                                                title="Yakin ingin menghapus data ini?"
+                                                onConfirm={() => handleRemove(0, meeting_id, image_name)}
+                                                okText="Hapus"
+                                                cancelText="Batal"
+                                            >
+                                                <Button type="danger" size="small">X</Button>
+                                            </Popconfirm>
                                             <a href={BASE_RESULT_URL + "0/" + meeting_id + "/" + image_name} target="_blank" rel="noreferrer">
                                                 <img className="w-100" src={BASE_RESULT_URL + "0/" + meeting_id + "/" + image_name} alt="result"/>
                                             </a>
