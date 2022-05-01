@@ -5,6 +5,7 @@ import {showDataAddedNotification} from "../../../../utils/Commons";
 
 export function TrainModel() {
     const [coursesOptions, setCoursesOptions] = useState([]);
+    const [config, setConfig] = useState([]);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -15,10 +16,15 @@ export function TrainModel() {
 
     useEffect(() => {
         initListCourses();
+        initConfig();
     }, []);
 
     const initListCourses = () => {
         courseService.getListCoursesOptions((listCoursesOptions) => setCoursesOptions(listCoursesOptions));
+    }
+
+    const initConfig = () => {
+        datasetService.getConfig((config) => setConfig(config))
     }
 
     const train = () => {
@@ -78,6 +84,11 @@ export function TrainModel() {
                                     <Form.Item name="validate_model" valuePropName="checked" noStyle>
                                         <Checkbox>Validasi</Checkbox>
                                     </Form.Item>
+                                </Col>
+                                <Col xs={24} md={12}>
+                                    <Typography.Text>Metode: {config?.face_recognition_method ? "FACENET" : "HOG"}</Typography.Text>
+                                    <Typography.Text>, </Typography.Text>
+                                    <Typography.Text>Masker: {config?.with_masked_datasets ? "Ya" : "Tidak"}</Typography.Text>
                                 </Col>
                             </Row>
                         </Collapse.Panel>
