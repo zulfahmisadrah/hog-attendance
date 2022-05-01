@@ -61,9 +61,10 @@ export function TakePhoto() {
             setLoading(true);
             const imageSrc = webcamRef.current.getScreenshot();
             const formData = new FormData();
-            formData.append('username', user?.username)
+            formData.append('username', user?.username);
             formData.append('dataset_type', DatasetType.TRAINING);
-            formData.append('files', imageSrc)
+            formData.append('files', imageSrc);
+            formData.append('detect_face', true);
             datasetService.datasetCapture({
                 data: formData,
                 onSuccess: (res) => {

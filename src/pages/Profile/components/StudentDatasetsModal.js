@@ -71,6 +71,7 @@ export function StudentDatasetsModal(props) {
             files.forEach(file => {
                 formData.append('files', file);
             })
+            formData.append('detect_face', true);
             datasetService.datasetCapture({
                 data: formData,
                 onSuccess: (response) => {

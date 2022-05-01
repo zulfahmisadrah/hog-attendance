@@ -56,9 +56,10 @@ export function RawDataset() {
             form.validateFields().then((values) => {
                 const imageSrc = webcamRef.current.getScreenshot();
                 const formData = new FormData();
-                formData.append('username', values.username)
+                formData.append('username', values.username);
                 formData.append('dataset_type', datasetType);
-                formData.append('files', imageSrc)
+                formData.append('files', imageSrc);
+                formData.append('detect_face', false);
                 datasetService.datasetCapture({
                     data: formData,
                     onSuccess: (res) => {
@@ -89,6 +90,7 @@ export function RawDataset() {
             files.forEach(file => {
                 formData.append('files', file);
             })
+            formData.append('detect_face', false);
             datasetService.datasetCapture({
                 data: formData,
                 onSuccess: (response) => {
