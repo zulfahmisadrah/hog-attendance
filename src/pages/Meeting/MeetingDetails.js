@@ -190,7 +190,7 @@ export function MeetingDetails() {
                                         </Col>
                                     </Row>
                                 </Col>
-                                {userRole === 3 && meeting && meeting?.status !== MeetingStatus.Selesai && (
+                                {userRole === 3 && (
                                     <Col>
                                         <ButtonEditSchedule data={meeting} onSubmit={updateMeeting}>Ubah</ButtonEditSchedule>
                                     </Col>
