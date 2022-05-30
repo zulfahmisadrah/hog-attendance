@@ -25,6 +25,7 @@ export const dateTimeIdFormat = "YYYYMMDD_HHmmss";
 export const MAX_SIZE_IMAGE_MB = 3;
 
 export const MeetingListType = {
+    NEAREST: "nearest",
     ACTIVE: "active",
     SCHEDULED: "scheduled",
     FINISHED: "finished"
