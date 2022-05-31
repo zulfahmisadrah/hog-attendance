@@ -78,7 +78,7 @@ export const DayOfWeek = {
     4: "Kamis",
     5: "Jumat",
     6: "Sabtu",
-    7: "Ahad"
+    7: "Minggu"
 }
 
 export const DayOfWeekInteger = {
@@ -88,7 +88,7 @@ export const DayOfWeekInteger = {
     "Kamis": 4,
     "Jumat": 5,
     "Sabtu": 6,
-    "Ahad": 7
+    "Minggu": 7
 }
 
 export const MeetingStatus = {
