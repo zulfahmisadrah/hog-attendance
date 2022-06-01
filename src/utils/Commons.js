@@ -7,7 +7,7 @@ import {
     listRole,
     attendanceStatus,
     DayOfWeek,
-    SemesterType
+    SemesterType, MeetingStatus
 } from "./Constants";
 import * as moment from "moment";
 import 'moment/locale/id'
@@ -65,6 +65,12 @@ export const semesterTypeOptions = Object.values(SemesterType).map(value => ({
 export const dayOfWeekOptions = Object.keys(DayOfWeek).map(key => ({
         label: DayOfWeek[key],
         value: key
+    })
+)
+
+export const meetingStatusOptions = Object.values(MeetingStatus).map(value => ({
+        label: value,
+        value: value
     })
 )
 
