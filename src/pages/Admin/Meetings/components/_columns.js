@@ -35,5 +35,10 @@ export const _columns = [
             const strEndTime = formatDateTime(record.end_time || record.schedule?.end_time, timeTextFormat, timeFormat)
             return `${strStartTime} - ${strEndTime}`
         }
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        width: 80,
     }
 ]
