@@ -39,7 +39,7 @@ const StyledList = styled(List)`
 `
 
 MeetingList.propTypes = {
-    type: PropTypes.oneOf(["active", "scheduled", "finished"]),
+    type: PropTypes.oneOf(["active", "scheduled", "finished", "nearest"]),
     limit: PropTypes.number
 }
 
@@ -62,8 +62,8 @@ function MeetingList(props) {
     const fetchData = () => {
         setLoading(true);
         switch (type) {
-            case MeetingListType.ACTIVE:
-                meetingService.getListTodayMeeting({
+            case MeetingListType.NEAREST:
+                meetingService.getNearestMeeting({
                     onSuccess: onDataFetched
                 })
                 break;
