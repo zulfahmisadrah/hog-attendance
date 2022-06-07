@@ -15,7 +15,7 @@ function Menu() {
                     Pertemuan Terdekat
                 </Typography.Title>
             </Row>
-            <MeetingList type="active" limit={1}/>
+            <MeetingList type="nearest" limit={1}/>
         </Layout>
     )
 }
