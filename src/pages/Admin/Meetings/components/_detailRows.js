@@ -1,4 +1,4 @@
-import {DataType} from "../../../../utils/Constants";
+import {DataType, DayOfWeek} from "../../../../utils/Constants";
 import {RowID, RowTimeStamp} from "../../../../components";
 
 export const _detailRows = [
@@ -11,6 +11,11 @@ export const _detailRows = [
     {
         title: 'Nomor Pertemuan',
         dataIndex: 'number',
+        type: DataType.TEXT
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
         type: DataType.TEXT
     },
     {
@@ -36,6 +41,16 @@ export const _detailRows = [
     {
         title: 'Jam Selesai',
         dataIndex: ['schedule', 'end_time'],
+        type: DataType.TIME
+    },
+    {
+        title: 'Jam Mulai (Custom)',
+        dataIndex:'start_time',
+        type: DataType.TIME
+    },
+    {
+        title: 'Jam Selesai (Custom)',
+        dataIndex: 'end_time',
         type: DataType.TIME
     },
     ...RowTimeStamp
