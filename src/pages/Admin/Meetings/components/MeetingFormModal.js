@@ -1,7 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {Form, Input, Row, Col, Select, InputNumber, DatePicker, TimePicker,} from 'antd';
-import {dateFormat, DayOfWeekInteger, timeFormat, timeTextFormat} from "../../../../utils/Constants";
-import {formatMomentToString, getDateTimeFromString, getDayFromMoment} from "../../../../utils/Commons";
+import {dateFormat, DayOfWeekInteger, MeetingStatus, timeFormat, timeTextFormat} from "../../../../utils/Constants";
+import {
+    formatMomentToString,
+    getDateTimeFromString,
+    getDayFromMoment,
+    meetingStatusOptions
+} from "../../../../utils/Commons";
 import {CourseService, ScheduleService} from "../../../../services/services";
 import {FormModal} from "../../../../components";
 
@@ -64,6 +69,17 @@ export function MeetingFormModal(props) {
                     <Form.Item label="Nama" name="name">
                         <Input placeholder="Nama Pertemuan"/>
                     </Form.Item>
+                    {
+                        data && (
+                            <Form.Item label="Status" name="status">
+                                <Select
+                                    options={meetingStatusOptions}
+                                    placeholder="Status"
+                                    defaultValue={MeetingStatus.Terjadwal}
+                                />
+                            </Form.Item>
+                        )
+                    }
                 </Col>
                 <Col xs={24} md={12}>
                     <Form.Item label="Jadwal" name="schedule_id" required rules={[{required: true}]}>
