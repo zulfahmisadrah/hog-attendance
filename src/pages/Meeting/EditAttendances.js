@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {Button, Card, Col, Layout, List, Row, Select, Typography} from "antd";
+import {Button, Card, Col, Layout, List, Modal, Row, Select, Typography} from "antd";
 import {MeetingService} from "../../services/services";
 import {attendanceStatusOptions, showDataUpdatedMessage} from "../../utils/Commons";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {AttendanceBadge, AttendanceBadgesLegend, AttendanceFilter, AvatarModal} from "../../components";
 import styled from "styled-components";
 import {BASE_DATASET_SAMPLE_URL} from "../../utils/Constants";
+import {ExclamationCircleOutlined} from "@ant-design/icons";
 
 const StyledCard  = styled(Card)`
   position: fixed;
@@ -53,6 +54,45 @@ export function EditAttendances() {
                 data: data,
                 onSuccess: () => {
                     if (index === updatedAttendances.length - 1) {
+                        fetchMeetingAttendances(meeting_id);
+                        showDataUpdatedMessage();
+                        setLoading(false);
+                    }
+                }
+            })
+        })
+    }
+
+    const handleApplyStudentsProposal = () => {
+        Modal.confirm({
+            icon: <ExclamationCircleOutlined/>,
+            title: 'Terapkan Ajuan Mahasiswa',
+            content: 'Yakin ingin menerapkan semua status kehadiran yang diajukan oleh mahasiswa?',
+            cancelText: 'Batal',
+            okText: 'Terapkan',
+            okType: "primary",
+            onOk: () => applyStudentsProposal()
+        })
+    }
+
+    const applyStudentsProposal = () => {
+        setLoading(true);
+        const listAttendances = []
+        attendances.forEach(attendance => {
+            if (attendance.status_by_student && attendance.status !== attendance.status_by_student) {
+                const updatedAttendance = {
+                    id: attendance.id,
+                    status: attendance.status_by_student
+                }
+                listAttendances.push(updatedAttendance)
+            }
+        })
+        listAttendances.forEach((data, index) => {
+            attendanceService.updateData({
+                data: data,
+                onSuccess: () => {
+                    setAttendances([]);
+                    if (index === listAttendances.length - 1) {
                         fetchMeetingAttendances(meeting_id);
                         showDataUpdatedMessage();
                         setLoading(false);
@@ -113,6 +153,7 @@ export function EditAttendances() {
                             <Col flex="90px">
                                 <AttendanceFilter onSelected={filterAttendance} type="dropdown"/>
                             </Col>
+                            <Button onClick={handleApplyStudentsProposal} loading={loading}>Terapkan Ajuan Mahasiswa</Button>
                         </Row>
                     </Col>
                     <Col span={17}>
