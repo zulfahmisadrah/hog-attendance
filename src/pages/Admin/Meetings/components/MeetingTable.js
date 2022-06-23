@@ -14,7 +14,6 @@ import {_detailRows} from "./_detailRows";
 import {MeetingService} from "../../../../services/services";
 import {MeetingFormModal} from "./MeetingFormModal";
 import {ButtonGenerateMeeting} from "./ButtonGenerateMeeting";
-import {dateFormat} from "../../../../utils/Constants";
 
 
 export function MeetingTable() {
