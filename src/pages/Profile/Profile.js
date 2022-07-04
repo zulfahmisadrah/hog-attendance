@@ -157,11 +157,13 @@ export function Profile() {
                                 Edit Profil
                             </ButtonFormModal>
                         </Col>
-                        <Col xs={24} md={12}>
-                            <ButtonShowModal modal={StudentDatasetsModal} type="primary" className="w-100">
-                                Upload Dataset
-                            </ButtonShowModal>
-                        </Col>
+                        { role === 4 &&
+                            <Col xs={24} md={12}>
+                                <ButtonShowModal modal={StudentDatasetsModal} type="primary" className="w-100">
+                                    Upload Dataset
+                                </ButtonShowModal>
+                            </Col>
+                        }
                     </Row>
                 </Skeleton>
             </Card>
