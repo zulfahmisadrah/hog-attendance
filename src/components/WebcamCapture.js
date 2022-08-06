@@ -13,7 +13,7 @@ function WebcamCapture(props, ref) {
     
     const size = useWindowSize();
     const isLandscape = size.height <= size.width;
-    const ratio = isLandscape ? size.width / size.height : size.height / size.width;
+    const ratio = isLandscape ? 16 / 9 : 9 / 16;
 
     const videoConstraints = {
         facingMode: {exact: facingMode},
