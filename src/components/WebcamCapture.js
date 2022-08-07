@@ -24,7 +24,7 @@ function WebcamCapture(props, ref) {
         <Webcam
             audio={false}
             ref={ref}
-            style={orientation === "landscape" ? {maxWidth: size.width} : {maxHeight: size.height}}
+            style={orientation === "landscape" ? {minWidth: size.width} : {minHeight: size.height}}
             screenshotFormat = "image/jpeg"
             forceScreenshotSourceSize="true"
             minScreenshotHeight={1200}
