@@ -1,6 +1,10 @@
 {
   "short_name": "Neo Attendance",
   "name": "Neo Attendance Unhas",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0747a6",
+  "background_color": "#ffffff",
   "icons": [
     {
       "src": "favicon.ico",
@@ -17,9 +21,5 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }
