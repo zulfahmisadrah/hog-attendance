@@ -49,7 +49,7 @@ export const listEducation = {
     Sarjana: "Sarjana",
     Magister: "Magister",
     Doktor: "Doktor",
-    Professor: "Professor",
+    Professor: "Professor"
 }
 
 export const CourseType = {
