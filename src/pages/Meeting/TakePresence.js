@@ -5,7 +5,7 @@ import {WebcamCapture} from "../../components";
 import {Button, Col, Modal, Popconfirm, Row, Space, Typography} from "antd";
 import {AttendanceService} from "../../services/services/AttendanceService";
 import {MeetingService} from "../../services/services";
-import {showDataDeletedNotification, showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
+import {showDataUpdatedMessage, showInfoMessage} from "../../utils/Commons";
 import {attendanceStatus, BASE_RESULT_URL} from "../../utils/Constants";
 import {ButtonShowDrawer} from "./components/ButtonShowDrawer";
 import {RetweetOutlined} from "@ant-design/icons";
