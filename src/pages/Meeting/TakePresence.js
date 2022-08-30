@@ -161,7 +161,6 @@ function TakePresence() {
         attendanceService.getMeetingAttendanceResults({
             meeting_id: meeting_id,
             onSuccess: (result) => {
-                console.log(`response = `, result);
                 if (result) {
                     return Modal.info({
                         title: "Hasil Pengambilan Presensi",
