@@ -99,7 +99,6 @@ function TakePresence() {
             attendanceService.takePresence({
                 data: data,
                 onSuccess: (res) => {
-                    console.log(`response = `, res);
                     setResult(res);
                     const listAttend = []
                     const listHasAttended = []
