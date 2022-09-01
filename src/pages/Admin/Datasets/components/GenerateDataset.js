@@ -45,7 +45,6 @@ export function GenerateDataset() {
             datasetService.createFromRawDataset({
                 data: data,
                 onSuccess: (response) => {
-                    console.log(`response = `, response);
                     setResult(response);
                     setLoading(initialLoadingDataset);
                     showDataAddedNotification();
