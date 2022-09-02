@@ -46,7 +46,6 @@ export function Recognize() {
                 datasetService.recognizeUser({
                     data: data,
                     onSuccess: (response) => {
-                        console.log(`response = `, response)
                         setResult(response);
                     }
                 })
