@@ -63,7 +63,6 @@ export function RawDataset() {
                 datasetService.datasetCapture({
                     data: formData,
                     onSuccess: (res) => {
-                        console.log(`response = `, res)
                         showDataAddedNotification();
                         fetchStudentTotalDatasets(values.username);
                     },
