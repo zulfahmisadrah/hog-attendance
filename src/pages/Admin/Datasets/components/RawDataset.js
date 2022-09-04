@@ -82,7 +82,6 @@ export function RawDataset() {
     const handleUpload = (datasetType, values, onSuccess, onError) => {
         if (values.fileList) {
             const files = values.fileList.map((file) => file.originFileObj)
-            console.log(files);
             const formData = new FormData();
             formData.append('username', selectedStudent);
             formData.append('dataset_type', datasetType);
