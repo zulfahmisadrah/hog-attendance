@@ -92,7 +92,6 @@ export function RawDataset() {
             datasetService.datasetCapture({
                 data: formData,
                 onSuccess: (response) => {
-                    console.log(`response = `, response)
                     showDataAddedNotification();
                     fetchStudentTotalDatasets(selectedStudent);
                     onSuccess();
